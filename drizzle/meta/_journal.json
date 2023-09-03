@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1693750697882,
+      "tag": "0000_dark_squadron_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1693756013400,
+      "tag": "0001_chemical_siren",
+      "breakpoints": true
+    }
+  ]
+}
