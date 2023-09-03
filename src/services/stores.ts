@@ -43,7 +43,7 @@ export async function getUserStores() {
             return {
                 id: storeData ? storeData.id : guild.id,
                 name: storeData ? storeData.name : guild.name,
-                active: false,
+                active: storeData !== undefined,
                 administrator: haveAdministratorPermission && userAreAdmin
             }
         })

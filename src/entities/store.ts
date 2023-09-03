@@ -1,15 +1,18 @@
 import { z } from 'zod'
 
-const InsertStoreSchema = z.object({
+export const InsertStoreSchema = z.object({
     name: z
         .string({
             required_error: 'Campo obrigatório',
             invalid_type_error: 'Digite um nome válido'
         })
+        .nonempty('Campo obrigatório'),
+    server: z
+        .string({
+            required_error: 'Campo obrigatório',
+            invalid_type_error: 'Escolha um servidor válido'
+        })
         .nonempty('Campo obrigatório')
 })
 
-type InsertStoreData = z.infer<typeof InsertStoreSchema>
-
-export { InsertStoreSchema }
-export type { InsertStoreData }
+export type InsertStoreData = z.infer<typeof InsertStoreSchema>

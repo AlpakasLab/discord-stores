@@ -3,13 +3,13 @@ import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonStyles = tv({
-    base: 'font-semibold shrink-0 rounded-md transition-all duration-300',
+    base: 'font-semibold shrink-0 rounded-md transition-all duration-300 disabled:grayscale',
     variants: {
         color: {
-            primary: 'bg-cyan-500 text-white hover:bg-cyan-700',
-            secondary: 'bg-purple-500 text-white'
+            primary: 'bg-cyan-500 text-white hover:bg-cyan-700'
         },
         size: {
+            sm: 'py-2 px-5 text-base',
             md: 'py-2 px-5 text-lg'
         }
     },
