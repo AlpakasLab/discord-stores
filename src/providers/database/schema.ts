@@ -3,7 +3,9 @@ import {
     timestamp,
     mysqlTable,
     primaryKey,
-    varchar
+    varchar,
+    text,
+    boolean
 } from 'drizzle-orm/mysql-core'
 import type { AdapterAccount } from 'next-auth/adapters'
 
@@ -67,5 +69,41 @@ export const verificationTokens = mysqlTable(
 export const stores = mysqlTable('stores', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     name: varchar('name', { length: 255 }).notNull(),
-    serverId: varchar('serverId', { length: 255 }).notNull().unique()
+    serverId: varchar('server_id', { length: 255 }).notNull().unique(),
+    ownerId: varchar('owner_id', { length: 255 }).notNull(),
+    active: boolean('active').default(true)
 })
+
+export const products = mysqlTable('products', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    description: text('description'),
+    price: int('price').notNull(),
+    image: varchar('image', { length: 255 }),
+    categoryId: varchar('category_id', { length: 255 }).notNull(),
+    active: boolean('active').default(true),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const productCategories = mysqlTable('product_categories', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const tags = mysqlTable('tags', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const productsToTags = mysqlTable(
+    'products_to_tags',
+    {
+        productId: varchar('product_id', { length: 255 }).notNull(),
+        tagId: varchar('tag_id', { length: 255 }).notNull()
+    },
+    table => ({
+        compoundKey: primaryKey(table.productId, table.tagId)
+    })
+)

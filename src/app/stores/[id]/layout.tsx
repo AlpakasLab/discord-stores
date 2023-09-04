@@ -43,14 +43,14 @@ export default async function StoreLayout({
                                 <li>
                                     <MenuItem
                                         title="Funcionarios"
-                                        route={`/stores/${params.id}/employees`}
+                                        route={`/stores/${params.id}/employees/`}
                                         icon={<FaUsers className="text-lg" />}
                                     />
                                 </li>
                                 <li>
                                     <MenuItem
                                         title="Configurações"
-                                        route={`/stores/${params.id}/configuration`}
+                                        route={`/stores/${params.id}/configuration/`}
                                         icon={<FaCog className="text-lg" />}
                                     />
                                 </li>

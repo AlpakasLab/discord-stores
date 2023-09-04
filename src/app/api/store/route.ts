@@ -1,6 +1,6 @@
 import { InsertStoreSchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
-import { stores } from '@/providers/database/schema'
+import { accounts, stores } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
         !session ||
         !session.user ||
         !session.user.discord ||
+        !session.user.email ||
         !session.user.role ||
         session.user.role !== 'ADMIN'
     )
@@ -25,10 +26,24 @@ export async function POST(request: NextRequest) {
     const parsedBody = InsertStoreSchema.safeParse(data)
 
     if (parsedBody.success) {
+        const userRegisters = await db
+            .select({ id: accounts.userId })
+            .from(accounts)
+            .where(eq(accounts.access_token, session.user.discord))
+        const user = userRegisters.at(0)
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not authenticated or not authorized' },
+                { status: 401 }
+            )
+        }
+
         await db.insert(stores).values({
             id: crypto.randomUUID(),
             name: parsedBody.data.name,
-            serverId: parsedBody.data.server
+            serverId: parsedBody.data.server,
+            ownerId: user.id
         })
 
         const storesRegisters = await db

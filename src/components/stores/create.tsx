@@ -32,29 +32,22 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
 
         const [dialogData, setDialogData] = useState<{
             opened: boolean
-            guildId: null | string
         }>({
-            opened: false,
-            guildId: null
+            opened: false
         })
 
         const createStore = async (data: InsertStoreData) => {
-            if (!dialogData || !dialogData.guildId)
-                return setResult('Não foi possível registrar a loja :(')
-
             setResult(null)
             setCreating(true)
 
             try {
-                const requestUrl = new URL(
-                    `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/store/`
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/store/`,
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(data)
+                    }
                 )
-                requestUrl.searchParams.append('id', dialogData.guildId)
-
-                const response = await fetch(requestUrl, {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                })
 
                 if (!response.ok) {
                     setCreating(false)
@@ -73,8 +66,7 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
             return {
                 open(id) {
                     setDialogData({
-                        opened: true,
-                        guildId: id
+                        opened: true
                     })
                     setValue('server', id)
                 }
@@ -86,8 +78,7 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
                 open={dialogData.opened}
                 onClose={() => {
                     setDialogData({
-                        opened: false,
-                        guildId: null
+                        opened: false
                     })
                 }}
                 className="relative z-50"
@@ -118,6 +109,11 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
                                 text={creating ? 'Registrando...' : 'Criar'}
                                 size="sm"
                             />
+                            {result && (
+                                <p className="w-full pt-1 text-center text-xs text-red-700">
+                                    {result}
+                                </p>
+                            )}
                         </form>
                     </Dialog.Panel>
                 </div>

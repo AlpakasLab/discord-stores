@@ -5,6 +5,7 @@ import { FaSignOutAlt } from 'react-icons/fa'
 export default function Signout() {
     return (
         <button
+            className="ml-5"
             type="button"
             title="Sair"
             onClick={() => {
