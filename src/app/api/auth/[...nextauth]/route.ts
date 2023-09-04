@@ -3,6 +3,7 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import DiscordProvider from 'next-auth/providers/discord'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '@/providers/database/client'
+import { getUserAccount } from '@/services/user'
 
 export const authOptions: NextAuthOptions = {
     adapter: DrizzleAdapter(db),
@@ -18,6 +19,19 @@ export const authOptions: NextAuthOptions = {
         error: '/',
         signIn: '/',
         signOut: '/'
+    },
+    callbacks: {
+        async session({ session, user }) {
+            const account = await getUserAccount(user.id)
+            return {
+                ...session,
+                user: {
+                    ...session.user,
+                    role: account.role,
+                    discord: account.discordToken
+                }
+            }
+        }
     }
 }
 

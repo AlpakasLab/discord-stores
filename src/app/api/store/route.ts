@@ -1,14 +1,21 @@
 import { InsertStoreSchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
 import { stores } from '@/providers/database/schema'
-import { getUserAccount } from '@/services/user'
 import { eq } from 'drizzle-orm'
+import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
+import { authOptions } from '../auth/[...nextauth]/route'
 
 export async function POST(request: NextRequest) {
-    const { discordToken, role } = await getUserAccount()
-    if (!discordToken || role !== 'ADMIN')
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.role ||
+        session.user.role !== 'ADMIN'
+    )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }

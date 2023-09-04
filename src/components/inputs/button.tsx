@@ -3,14 +3,15 @@ import { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonStyles = tv({
-    base: 'font-semibold shrink-0 rounded-md transition-all duration-300 disabled:grayscale',
+    base: 'font-semibold w-auto shrink-0 rounded-md transition-all duration-300 disabled:grayscale',
     variants: {
         color: {
-            primary: 'bg-cyan-500 text-white hover:bg-cyan-700'
+            primary: 'bg-cyan-500 text-white hover:bg-cyan-700',
+            secondary: 'bg-emerald-500 text-white hover:bg-emerald-700'
         },
         size: {
-            sm: 'py-2 px-5 text-base',
-            md: 'py-2 px-5 text-lg'
+            md: 'py-2 px-5 text-lg',
+            sm: 'py-2 px-4 text-base'
         }
     },
     defaultVariants: {
@@ -39,7 +40,10 @@ export default function Button(props: Props) {
     if (props.component === 'link') {
         return (
             <Link
-                className={buttonStyles({ color: props.color })}
+                className={buttonStyles({
+                    color: props.color,
+                    size: props.size
+                })}
                 href={props.href ?? '#'}
                 {...props}
             >
@@ -50,7 +54,10 @@ export default function Button(props: Props) {
         return (
             <button
                 type="button"
-                className={buttonStyles({ color: props.color })}
+                className={buttonStyles({
+                    color: props.color,
+                    size: props.size
+                })}
                 {...props}
             >
                 {props.text}

@@ -3,14 +3,21 @@ import { Routes } from 'discord-api-types/v10'
 import { db } from '@/providers/database/client'
 import { eq, inArray } from 'drizzle-orm'
 import { stores } from '@/providers/database/schema'
-import { getUserAccount } from './user'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 export async function getUserStores() {
-    const { discordToken, role } = await getUserAccount()
-    if (!discordToken) throw new Error('User not authenticated')
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.role
+    )
+        throw new Error('User not authenticated')
 
     const rest = new REST({ version: '10', authPrefix: 'Bearer' }).setToken(
-        discordToken
+        session.user.discord
     )
 
     try {
@@ -38,7 +45,7 @@ export async function getUserStores() {
 
             const haveAdministratorPermission =
                 (Number(guild.permissions) & 0x8) === 8
-            const userAreAdmin = role === 'ADMIN'
+            const userAreAdmin = session.user.role === 'ADMIN'
 
             return {
                 id: storeData ? storeData.id : guild.id,
