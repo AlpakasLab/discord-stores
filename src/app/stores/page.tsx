@@ -1,6 +1,5 @@
 import StoresShow from '@/components/stores/show'
 import { getUserStores } from '@/services/stores'
-import React from 'react'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

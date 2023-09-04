@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v10'
 import { db } from '@/providers/database/client'
-import { inArray } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { stores } from '@/providers/database/schema'
 import { getUserAccount } from './user'
 
@@ -49,5 +49,26 @@ export async function getUserStores() {
         })
     } catch (error) {
         throw new Error('Cannot get user guilds')
+    }
+}
+
+export async function getStoreName(id: string) {
+    try {
+        const storesRegistred = await db
+            .select({
+                name: stores.name
+            })
+            .from(stores)
+            .where(eq(stores.id, id))
+
+        const store = storesRegistred.at(0)
+
+        if (store) {
+            return store.name
+        } else {
+            throw new Error('Cannot get store name')
+        }
+    } catch (error) {
+        throw new Error('Cannot get store name')
     }
 }
