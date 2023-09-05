@@ -1,11 +1,11 @@
-import React, { type InputHTMLAttributes } from 'react'
+import React, { type TextareaHTMLAttributes } from 'react'
 
-type TextInputProps = {
+type MessageInputProps = {
     label?: string
     error?: string
-} & InputHTMLAttributes<HTMLInputElement>
+} & TextareaHTMLAttributes<HTMLTextAreaElement>
 
-const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+const MessageInput = React.forwardRef<HTMLTextAreaElement, MessageInputProps>(
     ({ label, error, ...rest }, ref) => {
         return (
             <div className="relative flex w-full flex-col items-start">
@@ -14,10 +14,10 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 )}
 
                 <div className="relative flex w-full items-center">
-                    <input
+                    <textarea
                         ref={ref}
                         data-error={error !== undefined}
-                        className="h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700"
+                        className="h-24 w-full resize-none rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700"
                         {...rest}
                     />
                 </div>
@@ -30,6 +30,5 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     }
 )
 
-TextInput.displayName = 'TextInput'
-
-export default TextInput
+MessageInput.displayName = 'MessageInput'
+export default MessageInput

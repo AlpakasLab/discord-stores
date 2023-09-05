@@ -33,27 +33,41 @@ export async function getUserStores() {
             .select({
                 name: stores.name,
                 id: stores.id,
-                server: stores.serverId
+                server: stores.serverId,
+                active: stores.active
             })
             .from(stores)
             .where(inArray(stores.serverId, serversIds))
 
-        return guilds.map(guild => {
-            const storeData = storesRegistred.find(
-                item => item.server === guild.id
-            )
+        const userAreAdmin = session.user.role === 'ADMIN'
 
-            const haveAdministratorPermission =
-                (Number(guild.permissions) & 0x8) === 8
-            const userAreAdmin = session.user.role === 'ADMIN'
+        if (userAreAdmin) {
+            return guilds.map(guild => {
+                const storeData = storesRegistred.find(
+                    item => item.server === guild.id
+                )
 
-            return {
-                id: storeData ? storeData.id : guild.id,
-                name: storeData ? storeData.name : guild.name,
-                active: storeData !== undefined,
-                administrator: haveAdministratorPermission && userAreAdmin
-            }
-        })
+                const haveAdministratorPermission =
+                    (Number(guild.permissions) & 0x8) === 8
+
+                return {
+                    id: storeData ? storeData.id : guild.id,
+                    name: storeData ? storeData.name : guild.name,
+                    active:
+                        storeData !== undefined && storeData.active === true,
+                    administrator: haveAdministratorPermission && userAreAdmin
+                }
+            })
+        } else {
+            return storesRegistred.map(store => {
+                return {
+                    id: store.id,
+                    name: store.name,
+                    active: store.active === true,
+                    administrator: false
+                }
+            })
+        }
     } catch (error) {
         throw new Error('Cannot get user guilds')
     }

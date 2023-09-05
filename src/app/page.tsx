@@ -8,7 +8,9 @@ export default function Home() {
         <div className="relative flex h-screen w-full flex-grow flex-col items-center justify-center">
             <FaDiscord className="text-5xl text-zinc-300" />
             <p className="mb-10 mt-1 text-xl text-zinc-300">Discord Store</p>
-            <Signin />
+            <div className="max-w-xs">
+                <Signin />
+            </div>
             <div className="absolute bottom-0 left-4">
                 <Image
                     src={Alpaka}

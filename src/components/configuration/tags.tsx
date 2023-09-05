@@ -73,7 +73,7 @@ export default function TagsConfiguration({
             </div>
             <form
                 onSubmit={handleSubmit(createTag)}
-                className="mt-4 flex items-end gap-x-2 border-t border-zinc-800 pt-2"
+                className="mt-4 flex items-start gap-x-2 border-t border-zinc-800 pt-2"
             >
                 <TextInput
                     {...register('name')}
@@ -83,14 +83,17 @@ export default function TagsConfiguration({
                     error={errors.name?.message}
                     placeholder="Esgotado, Especial, Mais Vendido..."
                 />
-                <Button
-                    disabled={isSubmitting || creating}
-                    component="button"
-                    type="submit"
-                    color="secondary"
-                    size="sm"
-                    text={creating ? 'Salvando' : 'Criar'}
-                />
+
+                <div className="mt-7 max-w-[10rem]">
+                    <Button
+                        disabled={isSubmitting || creating}
+                        component="button"
+                        type="submit"
+                        color="secondary"
+                        size="sm"
+                        text={creating ? 'Salvando' : 'Criar'}
+                    />
+                </div>
             </form>
 
             {result && (

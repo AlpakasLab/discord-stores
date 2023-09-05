@@ -2,7 +2,7 @@
 const nextConfig = {
     trailingSlash: true,
     images: {
-        domains: ['cdn.discordapp.com']
+        domains: ['cdn.discordapp.com', 'i.imgur.com']
     }
 }
 
