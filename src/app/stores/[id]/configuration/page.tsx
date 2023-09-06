@@ -1,9 +1,17 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import CategoriesConfiguration from '@/components/configuration/categories'
 import TagsConfiguration from '@/components/configuration/tags'
-import { getProductCategories, getTags } from '@/services/configuration'
+import WebHooksConfiguration from '@/components/configuration/webhooks'
+import {
+    getProductCategories,
+    getTags,
+    getWebhooks
+} from '@/services/configuration'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function Configuration({
     params
@@ -13,6 +21,7 @@ export default async function Configuration({
     const session = await getServerSession(authOptions)
     const categories = await getProductCategories(params.id)
     const tags = await getTags(params.id)
+    const webhooks = await getWebhooks(params.id)
 
     if (!session || (session && session.user.role !== 'ADMIN')) {
         redirect('/')
@@ -32,6 +41,10 @@ export default async function Configuration({
             <div className="h-fit rounded-md border border-zinc-700 p-4">
                 <p className="font-semibold">Tags ({tags.length})</p>
                 <TagsConfiguration tags={tags} store={params.id} />
+            </div>
+            <div className="h-fit rounded-md border border-zinc-700 p-4">
+                <p className="font-semibold">Discord Webhooks</p>
+                <WebHooksConfiguration webhooks={webhooks} store={params.id} />
             </div>
         </div>
     )

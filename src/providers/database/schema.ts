@@ -107,3 +107,33 @@ export const productsToTags = mysqlTable(
         compoundKey: primaryKey(table.productId, table.tagId)
     })
 )
+
+export const discordWebhooks = mysqlTable('discord_webhooks', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    url: varchar('url', { length: 255 }).notNull(),
+    category: varchar('category', {
+        length: 6,
+        enum: ['SELL', 'LOGS']
+    }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const employeeRoles = mysqlTable('employee_roles', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    comission: int('comission').notNull(),
+    manager: boolean('manager').default(false).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const employees = mysqlTable('employees', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    status: varchar('status', {
+        length: 8,
+        enum: ['ACTIVE', 'DISABLED', 'PENDING']
+    }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    employeeRoleId: varchar('employee_role_id', { length: 255 })
+})
