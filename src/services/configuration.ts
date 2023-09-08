@@ -83,3 +83,32 @@ export async function getWebhooks(store: string) {
         throw new Error('Cannot get webhooks')
     }
 }
+
+export async function verifyOrderEnabled(store: string) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.role
+    )
+        throw new Error('User not authenticated')
+
+    try {
+        const hooksRegistred = await db
+            .select({
+                id: discordWebhooks.id,
+                url: discordWebhooks.url,
+                category: discordWebhooks.category
+            })
+            .from(discordWebhooks)
+            .where(eq(discordWebhooks.storeId, store))
+
+        return (
+            hooksRegistred.length > 0 &&
+            hooksRegistred.find(hook => hook.category === 'SELL') !== undefined
+        )
+    } catch (error) {
+        throw new Error('Cannot get webhooks')
+    }
+}

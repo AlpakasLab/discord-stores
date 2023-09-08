@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -23,6 +24,13 @@ export default function RootLayout({
                 <main className="flex h-full w-full flex-grow flex-col items-center">
                     {children}
                 </main>
+                <Toaster
+                    toastOptions={{
+                        style: {
+                            backgroundColor: '#d4d4d8'
+                        }
+                    }}
+                />
             </body>
         </html>
     )

@@ -50,6 +50,15 @@ export default function SelectInput({
                 item => item.value === defaultOption
             )
             if (defaultItem) setSelectedOption(defaultItem)
+        } else if (
+            mode === 'multi' &&
+            defaultOption &&
+            selectedOption === null
+        ) {
+            const defaultItems = options.filter(item =>
+                defaultOption.find(option => option === item.value)
+            )
+            setSelectedOption(defaultItems)
         }
     }, [defaultOption, mode, options, selectedOption])
 

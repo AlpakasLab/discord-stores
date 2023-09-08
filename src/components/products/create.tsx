@@ -54,6 +54,15 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
         const [storeId, setStoreId] = useState<string | null>(null)
         const [isEditing, setIsEditing] = useState(false)
         const [productId, setProductId] = useState<string | null>(null)
+        const [loadedProductInitialData, setLoadedProductInitialData] =
+            useState(false)
+
+        const [categoryDefaultValue, setCategoryDefaultValue] = useState<
+            null | string
+        >(null)
+        const [tagsDefaultValue, setTagsDefaultValue] = useState<
+            null | string[]
+        >(null)
 
         const [dialogData, setDialogData] = useState<{
             opened: boolean
@@ -69,7 +78,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                 const response = await fetch(
                     `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/product/`,
                     {
-                        method: 'POST',
+                        method: isEditing ? 'PUT' : 'POST',
                         body: JSON.stringify(data)
                     }
                 )
@@ -77,16 +86,19 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                 setCreating(false)
 
                 if (!response.ok) {
-                    setResult('Não foi possível registrar o produto :(')
+                    setResult('Não foi possível salvar o produto :(')
                 } else {
                     reset()
                     router.refresh()
                     setIsEditing(false)
                     setProductId(null)
+                    setCategoryDefaultValue(null)
+                    setTagsDefaultValue(null)
+                    setLoadedProductInitialData(false)
                     setDialogData({ opened: false })
                 }
             } catch (e) {
-                setResult('Não foi possível registrar o produto :(')
+                setResult('Não foi possível salvar o produto :(')
             }
         }
 
@@ -114,9 +126,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setValue('id', product.id)
                     setProductId(product.id)
                     setValue('price', product.price)
-
-                    setCategories(null)
-                    setTags(null)
+                    setLoadedProductInitialData(false)
                 }
             }
         })
@@ -128,12 +138,15 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                 )
                 url.searchParams.append('id', storeId)
 
-                if (productId) url.searchParams.append('product', productId)
-
                 fetch(url)
                     .then(response => response.json())
                     .then(
-                        (response: { data: { name: string; id: string }[] }) =>
+                        (response: {
+                            data: {
+                                name: string
+                                id: string
+                            }[]
+                        }) =>
                             setCategories(
                                 response.data.map(item => ({
                                     label: item.name,
@@ -145,7 +158,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                         setCategories([])
                     })
             }
-        }, [categories, storeId, productId])
+        }, [categories, storeId])
 
         useEffect(() => {
             if (storeId && tags === null) {
@@ -153,8 +166,6 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/tag/`
                 )
                 url.searchParams.append('id', storeId)
-
-                if (productId) url.searchParams.append('product', productId)
 
                 fetch(url)
                     .then(response => response.json())
@@ -171,7 +182,46 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                         setTags([])
                     })
             }
-        }, [tags, storeId, productId])
+        }, [tags, storeId])
+
+        useEffect(() => {
+            if (
+                storeId &&
+                productId !== null &&
+                loadedProductInitialData === false
+            ) {
+                const url = new URL(
+                    `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/product/`
+                )
+                url.searchParams.append('id', productId)
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(
+                        (response: {
+                            data: {
+                                category: string
+                                id: string
+                            }
+                            tags: { id: string }[]
+                        }) => {
+                            setCategoryDefaultValue(response.data.category)
+                            setValue('category', response.data.category)
+                            setTagsDefaultValue(
+                                response.tags.map(tag => tag.id)
+                            )
+                            setValue(
+                                'tags',
+                                response.tags.map(tag => tag.id)
+                            )
+                            setLoadedProductInitialData(true)
+                        }
+                    )
+                    .catch(() => {
+                        setLoadedProductInitialData(true)
+                    })
+            }
+        }, [loadedProductInitialData, productId, setValue, storeId])
 
         return (
             <Dialog
@@ -182,6 +232,9 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     })
                     setIsEditing(false)
                     setProductId(null)
+                    setCategoryDefaultValue(null)
+                    setTagsDefaultValue(null)
+                    setLoadedProductInitialData(false)
                 }}
                 className="relative z-50"
             >
@@ -190,7 +243,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <Dialog.Panel className="flex w-full max-w-xl flex-col items-center rounded bg-zinc-800 p-5 text-white">
                         <Dialog.Title className="mb-5 text-xl font-semibold">
-                            Novo produto
+                            {isEditing ? 'Editando Produto' : 'Novo produto'}
                         </Dialog.Title>
 
                         {categories === null || tags === null ? (
@@ -216,7 +269,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                 <SelectInput
                                     mode="single"
                                     label="Categoria:"
-                                    defaultOption={defaultValues?.category}
+                                    defaultOption={categoryDefaultValue}
                                     options={categories}
                                     onSelectOption={option => {
                                         if (option) {
@@ -260,7 +313,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                     <SelectInput
                                         label="Tags:"
                                         mode="multi"
-                                        // defaultOption={defaultValues?.tags}
+                                        defaultOption={tagsDefaultValue}
                                         options={tags}
                                         onSelectOption={options => {
                                             if (options) {
@@ -288,9 +341,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                         component="button"
                                         type="submit"
                                         text={
-                                            creating
-                                                ? 'Registrando...'
-                                                : 'Criar'
+                                            creating ? 'Salvando...' : 'Salvar'
                                         }
                                         size="sm"
                                         color="secondary"

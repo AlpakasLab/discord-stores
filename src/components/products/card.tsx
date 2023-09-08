@@ -1,7 +1,8 @@
 import { numberToMoney } from '@/utils/formatter'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaCameraRetro } from 'react-icons/fa'
+import { useSellContext } from '../sell/context'
 
 type ProductCardProps = {
     product: {
@@ -21,7 +22,16 @@ export default function ProductCard({
     product,
     onProductClick
 }: ProductCardProps) {
-    const [quantity, setQuantity] = useState(0)
+    const { items, dispatchSell } = useSellContext()
+    const [quantity, setQuantity] = useState<number | null>(null)
+
+    useEffect(() => {
+        const item = items.find(item => item.id === product.id)
+
+        if (!item && quantity !== null) {
+            setQuantity(null)
+        }
+    }, [items, product.id, quantity])
 
     return (
         <div className="flex h-full w-full flex-col items-stretch justify-between rounded-md border border-zinc-800 p-2">
@@ -62,11 +72,20 @@ export default function ProductCard({
             </div>
             <input
                 className="w-full rounded-md border border-zinc-600 bg-zinc-700 p-2 text-sm font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500"
-                value={quantity <= 0 ? '' : quantity}
+                value={quantity ?? ''}
                 placeholder="Quantidade"
                 type="number"
+                min={0}
                 onChange={e => {
-                    setQuantity(Number(e.target.value))
+                    const valueInNumber = Number(e.target.value)
+                    setQuantity(valueInNumber <= 0 ? null : valueInNumber)
+
+                    dispatchSell(valueInNumber <= 0 ? 'REMOVE' : 'CHANGE', {
+                        id: product.id,
+                        name: product.name,
+                        quantity: valueInNumber ?? 0,
+                        unitPrice: product.price
+                    })
                 }}
             />
         </div>
