@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v10'
 import { db } from '@/providers/database/client'
-import { eq, inArray } from 'drizzle-orm'
-import { stores } from '@/providers/database/schema'
+import { and, eq, inArray } from 'drizzle-orm'
+import { accounts, employees, stores } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
@@ -21,6 +21,16 @@ export async function getUserStores() {
     )
 
     try {
+        const userRegisters = await db
+            .select({ id: accounts.userId })
+            .from(accounts)
+            .where(eq(accounts.access_token, session.user.discord))
+        const user = userRegisters.at(0)
+
+        if (!user) {
+            throw new Error('User not authenticated or not authorized')
+        }
+
         const guilds = (await rest.get(Routes.userGuilds())) as {
             id: string
             name: string
@@ -34,10 +44,18 @@ export async function getUserStores() {
                 name: stores.name,
                 id: stores.id,
                 server: stores.serverId,
-                active: stores.active
+                active: stores.active,
+                employee: employees.status
             })
             .from(stores)
             .where(inArray(stores.serverId, serversIds))
+            .leftJoin(
+                employees,
+                and(
+                    eq(employees.storeId, stores.id),
+                    eq(employees.userId, user.id)
+                )
+            )
 
         const userAreAdmin = session.user.role === 'ADMIN'
 
@@ -55,7 +73,8 @@ export async function getUserStores() {
                     name: storeData ? storeData.name : guild.name,
                     active:
                         storeData !== undefined && storeData.active === true,
-                    administrator: haveAdministratorPermission && userAreAdmin
+                    administrator: haveAdministratorPermission && userAreAdmin,
+                    employee: null
                 }
             })
         } else {
@@ -63,8 +82,12 @@ export async function getUserStores() {
                 return {
                     id: store.id,
                     name: store.name,
-                    active: store.active === true,
-                    administrator: false
+                    active:
+                        store.employee === 'DISABLED'
+                            ? false
+                            : store.active === true,
+                    administrator: false,
+                    employee: store.employee
                 }
             })
         }

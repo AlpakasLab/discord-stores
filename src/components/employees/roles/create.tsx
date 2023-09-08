@@ -39,6 +39,7 @@ const CreateEmployeeRoleDialog =
         const [creating, setCreating] = useState(false)
         const [result, setResult] = useState<string | null>(null)
         const [isEditing, setIsEditing] = useState(false)
+        const [isAdminRole, setIsAdminRole] = useState(false)
 
         const [dialogData, setDialogData] = useState<{
             opened: boolean
@@ -51,6 +52,7 @@ const CreateEmployeeRoleDialog =
                 opened: false
             })
             setIsEditing(false)
+            setIsAdminRole(false)
             setResult(null)
             setCreating(false)
             reset()
@@ -100,6 +102,10 @@ const CreateEmployeeRoleDialog =
                     setValue('name', role.name)
                     setValue('store', role.store)
                     setValue('id', role.id)
+
+                    if (role.name === 'Proprietário') {
+                        setIsAdminRole(true)
+                    }
                 }
             }
         })
@@ -129,6 +135,7 @@ const CreateEmployeeRoleDialog =
                                 label="Nome:"
                                 type="text"
                                 autoComplete="none"
+                                disabled={isAdminRole}
                                 placeholder="Gerente, Vendedor, Aprendiz"
                                 error={errors.name?.message}
                             />
@@ -144,6 +151,7 @@ const CreateEmployeeRoleDialog =
                             />
                             <CheckboxInput
                                 type="checkbox"
+                                disabled={isAdminRole}
                                 {...register('manager')}
                                 error={errors.manager?.message}
                             >

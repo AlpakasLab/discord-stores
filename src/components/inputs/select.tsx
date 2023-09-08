@@ -5,6 +5,7 @@ import { FaCheck } from 'react-icons/fa'
 type BaseProps = {
     label?: string
     error?: string
+    disabled?: boolean
     options: Array<{ label: string; value: string }>
 }
 
@@ -26,11 +27,13 @@ export default function SelectInput({
     mode,
     label,
     error,
+    disabled = false,
     options,
     defaultOption,
     onSelectOption
 }: SelectInputProps) {
     const [selectedOption, setSelectedOption] = useState<
+        | null
         | {
               label: string
               value: string
@@ -39,7 +42,16 @@ export default function SelectInput({
               label: string
               value: string
           }[]
-    >([])
+    >(null)
+
+    useEffect(() => {
+        if (mode === 'single' && defaultOption && selectedOption === null) {
+            const defaultItem = options.find(
+                item => item.value === defaultOption
+            )
+            if (defaultItem) setSelectedOption(defaultItem)
+        }
+    }, [defaultOption, mode, options, selectedOption])
 
     return (
         <div className="relative flex w-full flex-col items-start">
@@ -50,7 +62,7 @@ export default function SelectInput({
             <Listbox
                 as="div"
                 className="relative flex w-full flex-col"
-                value={selectedOption}
+                value={mode === 'multi' ? selectedOption ?? [] : selectedOption}
                 onChange={option => {
                     setSelectedOption(option)
                     if (
@@ -68,10 +80,11 @@ export default function SelectInput({
                         onSelectOption(option)
                 }}
                 multiple={mode === 'multi'}
+                disabled={disabled}
             >
                 <Listbox.Button
                     data-error={error !== undefined}
-                    className="form-select h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-left text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700"
+                    className="form-select h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-left text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700 ui-disabled:cursor-not-allowed ui-disabled:opacity-50"
                 >
                     {selectedOption !== null &&
                         'label' in selectedOption &&

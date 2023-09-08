@@ -1,11 +1,12 @@
 'use client'
 
-import { FaStoreAlt, FaStoreAltSlash } from 'react-icons/fa'
+import { FaClock, FaCrown, FaStoreAlt } from 'react-icons/fa'
 import CreateStoreDialog, {
     CreateStoreDialogHandles
 } from '@/components/stores/create'
 import React, { useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import RequestEntryDialog, { RequestEntryDialogHandles } from './request'
 
 type StoresShowProps = {
     stores: {
@@ -13,16 +14,14 @@ type StoresShowProps = {
         id: string
         name: string
         administrator: boolean
+        employee: 'ACTIVE' | 'DISABLED' | 'PENDING' | null
     }[]
 }
 
 export default function StoresShow({ stores }: StoresShowProps) {
     const createStoreDialogRef = useRef<CreateStoreDialogHandles>(null)
+    const requestEntryDialogRef = useRef<RequestEntryDialogHandles>(null)
     const router = useRouter()
-
-    const createStore = async (id: string) => {
-        createStoreDialogRef.current?.open(id)
-    }
 
     return (
         <>
@@ -32,31 +31,41 @@ export default function StoresShow({ stores }: StoresShowProps) {
                         <button
                             disabled={!store.active && !store.administrator}
                             type="button"
-                            title={
-                                store.active
-                                    ? 'Loja encontrada'
-                                    : 'Loja ainda não cadastrada'
-                            }
-                            onClick={async () => {
+                            onClick={() => {
                                 if (store.active) {
-                                    router.push(`/stores/${store.id}/`)
+                                    if (store.administrator) {
+                                        router.push(`/stores/${store.id}/`)
+                                    } else {
+                                        if (store.employee === 'ACTIVE') {
+                                            router.push(`/stores/${store.id}/`)
+                                        } else {
+                                            requestEntryDialogRef.current?.open(
+                                                store.id
+                                            )
+                                        }
+                                    }
                                 } else {
-                                    await createStore(store.id)
+                                    createStoreDialogRef.current?.open(store.id)
                                 }
                             }}
                             className="flex items-center justify-between rounded-md bg-zinc-700 p-4 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <p className="text-lg">{store.name}</p>
-                            {store.active ? (
+                            {store.active && store.employee === 'ACTIVE' && (
                                 <FaStoreAlt className="text-green-500" />
-                            ) : (
-                                <FaStoreAltSlash className="text-red-500" />
+                            )}
+                            {store.active && store.employee === 'PENDING' && (
+                                <FaClock className="text-orange-500" />
+                            )}
+                            {store.active && store.administrator && (
+                                <FaCrown className="text-yellow-500" />
                             )}
                         </button>
                     ))
                 )}
             </div>
             <CreateStoreDialog ref={createStoreDialogRef} />
+            <RequestEntryDialog ref={requestEntryDialogRef} />
         </>
     )
 }

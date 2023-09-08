@@ -23,18 +23,21 @@ export default async function StoreDetail({
                         Produtos ({products.length})
                     </p>
                     <div className="flex items-center gap-x-5">
-                        <TextInput
+                        {/* <TextInput
                             type="text"
                             placeholder="Pesquisar Produto"
-                        />
-                        <div className="max-w-[10rem]">
-                            {session && session.user.role === 'ADMIN' && (
+                        /> */}
+                        {session && session.user.role === 'ADMIN' && (
+                            <div className="max-w-[10rem]">
                                 <NewProduct />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </header>
-                <ProductsShow products={products} />
+                <ProductsShow
+                    products={products}
+                    isAdmin={session?.user.role === 'ADMIN'}
+                />
             </div>
             <aside className="h-full w-96 flex-shrink-0 pl-5"></aside>
         </div>

@@ -1,7 +1,8 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import NewEmployeeRole from '@/components/employees/roles/new'
 import ShowEmployeeRoles from '@/components/employees/roles/show'
-import { getEmployeeRoles } from '@/services/employees'
+import ShowEmployees from '@/components/employees/show'
+import { getEmployee, getEmployeeRoles } from '@/services/employees'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
@@ -15,6 +16,7 @@ export default async function Employees({
 }) {
     const session = await getServerSession(authOptions)
     const roles = await getEmployeeRoles(params.id)
+    const employees = await getEmployee(params.id)
 
     if (!session || (session && session.user.role !== 'ADMIN')) {
         redirect('/')
@@ -32,7 +34,12 @@ export default async function Employees({
                 <ShowEmployeeRoles roles={roles} />
             </div>
             <div className="col-span-2 h-fit rounded-md border border-zinc-700 p-4">
-                <p className="font-semibold">Funcionários</p>
+                <div className="flex w-full items-center justify-between">
+                    <p className="font-semibold">
+                        Funcionários ({employees.length})
+                    </p>
+                </div>
+                <ShowEmployees employees={employees} />
             </div>
         </div>
     )

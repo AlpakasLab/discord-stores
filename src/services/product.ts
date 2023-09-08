@@ -29,7 +29,8 @@ export async function getProducts(store: string) {
                 image: products.image,
                 active: products.active,
                 category: productCategories.name,
-                tags: sql<string>`group_concat(${tags.name})`
+                tags: sql<string>`group_concat(${tags.name})`,
+                store: products.storeId
             })
             .from(products)
             .where(eq(products.storeId, store))

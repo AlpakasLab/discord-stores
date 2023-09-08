@@ -3,6 +3,7 @@
 import React, { useRef } from 'react'
 import ProductCard from './card'
 import ProductDetailDialog, { ProductDetailDialogHandles } from './detail'
+import CreateProductDialog, { CreateProductDialogHandles } from './create'
 
 type ProductsShowProps = {
     products: {
@@ -14,11 +15,14 @@ type ProductsShowProps = {
         active: boolean
         category: string
         tags: string
+        store: string
     }[]
+    isAdmin: boolean
 }
 
-export default function ProductsShow({ products }: ProductsShowProps) {
+export default function ProductsShow({ products, isAdmin }: ProductsShowProps) {
     const productDetailDialogRef = useRef<ProductDetailDialogHandles>(null)
+    const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
 
     const getProductsWithCategories = () => {
         if (products.length <= 0) return []
@@ -60,7 +64,8 @@ export default function ProductsShow({ products }: ProductsShowProps) {
                             category: product.category,
                             description: product.description,
                             price: product.price,
-                            tags: product.tags
+                            tags: product.tags,
+                            id: product.id
                         })
                     }
                 />
@@ -75,7 +80,15 @@ export default function ProductsShow({ products }: ProductsShowProps) {
             <div className="grid h-full flex-grow grid-cols-5 place-items-stretch gap-5 pb-10">
                 {React.Children.toArray(getProductsWithCategories())}
             </div>
-            <ProductDetailDialog ref={productDetailDialogRef} />
+            <ProductDetailDialog
+                ref={productDetailDialogRef}
+                isAdmin={isAdmin}
+                onEditClick={id => {
+                    const product = products.find(item => item.id === id)
+                    if (product) createProductDialogRef.current?.edit(product)
+                }}
+            />
+            <CreateProductDialog ref={createProductDialogRef} />
         </>
     )
 }

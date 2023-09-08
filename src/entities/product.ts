@@ -1,6 +1,11 @@
 import { z } from 'zod'
 
 export const InsertProductSchema = z.object({
+    id: z
+        .string({
+            invalid_type_error: 'ID inválido'
+        })
+        .optional(),
     name: z
         .string({
             required_error: 'Campo obrigatório',

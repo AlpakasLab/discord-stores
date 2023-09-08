@@ -15,6 +15,17 @@ import MessageInput from '../inputs/mensagem'
 
 export type CreateProductDialogHandles = {
     open: (storeId: string) => void
+    edit: (product: {
+        id: string
+        name: string
+        description: string | null
+        price: number
+        image: string | null
+        active: boolean
+        category: string
+        tags: string
+        store: string
+    }) => void
 }
 
 const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
@@ -41,6 +52,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
         const [creating, setCreating] = useState(false)
         const [result, setResult] = useState<string | null>(null)
         const [storeId, setStoreId] = useState<string | null>(null)
+        const [isEditing, setIsEditing] = useState(false)
+        const [productId, setProductId] = useState<string | null>(null)
 
         const [dialogData, setDialogData] = useState<{
             opened: boolean
@@ -61,12 +74,15 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     }
                 )
 
+                setCreating(false)
+
                 if (!response.ok) {
-                    setCreating(false)
                     setResult('Não foi possível registrar o produto :(')
                 } else {
                     reset()
                     router.refresh()
+                    setIsEditing(false)
+                    setProductId(null)
                     setDialogData({ opened: false })
                 }
             } catch (e) {
@@ -80,8 +96,27 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setDialogData({
                         opened: true
                     })
+                    setIsEditing(false)
                     setStoreId(storeId)
                     setValue('store', storeId)
+                },
+                edit(product) {
+                    setDialogData({
+                        opened: true
+                    })
+                    setIsEditing(true)
+                    setStoreId(product.store)
+                    setValue('store', product.store)
+                    setValue('name', product.name)
+                    if (product.description)
+                        setValue('description', product.description)
+                    if (product.image) setValue('image', product.image)
+                    setValue('id', product.id)
+                    setProductId(product.id)
+                    setValue('price', product.price)
+
+                    setCategories(null)
+                    setTags(null)
                 }
             }
         })
@@ -92,6 +127,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/product/category/`
                 )
                 url.searchParams.append('id', storeId)
+
+                if (productId) url.searchParams.append('product', productId)
 
                 fetch(url)
                     .then(response => response.json())
@@ -108,7 +145,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                         setCategories([])
                     })
             }
-        }, [categories, storeId])
+        }, [categories, storeId, productId])
 
         useEffect(() => {
             if (storeId && tags === null) {
@@ -116,6 +153,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/tag/`
                 )
                 url.searchParams.append('id', storeId)
+
+                if (productId) url.searchParams.append('product', productId)
 
                 fetch(url)
                     .then(response => response.json())
@@ -132,7 +171,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                         setTags([])
                     })
             }
-        }, [tags, storeId])
+        }, [tags, storeId, productId])
 
         return (
             <Dialog
@@ -141,6 +180,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setDialogData({
                         opened: false
                     })
+                    setIsEditing(false)
+                    setProductId(null)
                 }}
                 className="relative z-50"
             >

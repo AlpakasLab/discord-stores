@@ -6,14 +6,15 @@ import React, { useImperativeHandle } from 'react'
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import TextInput from '../inputs/text'
-import { InsertStoreData, InsertStoreSchema } from '@/entities/store'
 import { useRouter } from 'next/navigation'
 import Button from '../inputs/button'
-export type CreateStoreDialogHandles = {
+import { RequestEntryData, RequestEntrySchema } from '@/entities/store'
+
+export type RequestEntryDialogHandles = {
     open: (id: string) => void
 }
 
-const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
+const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
     (_, ref) => {
         const router = useRouter()
 
@@ -23,8 +24,8 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
             reset,
             setValue,
             formState: { errors, isSubmitting }
-        } = useForm<InsertStoreData>({
-            resolver: zodResolver(InsertStoreSchema)
+        } = useForm<RequestEntryData>({
+            resolver: zodResolver(RequestEntrySchema)
         })
 
         const [creating, setCreating] = useState(false)
@@ -36,29 +37,30 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
             opened: false
         })
 
-        const createStore = async (data: InsertStoreData) => {
+        const requestEntry = async (data: RequestEntryData) => {
             setResult(null)
             setCreating(true)
 
             try {
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/store/`,
+                    `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/store/request`,
                     {
                         method: 'POST',
                         body: JSON.stringify(data)
                     }
                 )
 
+                setCreating(false)
+
                 if (!response.ok) {
-                    setCreating(false)
-                    setResult('Não foi possível registrar a loja :(')
+                    setResult('Não foi possível solicitar a entrada :(')
                 } else {
-                    const data = await response.json()
-                    router.push(`/stores/${data.id}/`)
+                    setDialogData({ opened: false })
                     reset()
+                    router.refresh()
                 }
             } catch (e) {
-                setResult('Não foi possível registrar a loja :(')
+                setResult('Não foi possível solicitar a entrada :(')
             }
         }
 
@@ -88,10 +90,10 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
                 <div className="fixed inset-0 flex items-center justify-center p-4">
                     <Dialog.Panel className="flex w-full max-w-md flex-col items-center rounded bg-zinc-800 p-5 text-white">
                         <Dialog.Title className="mb-5 text-xl font-semibold">
-                            Criar nova loja
+                            Solicitar Entrada
                         </Dialog.Title>
                         <form
-                            onSubmit={handleSubmit(createStore)}
+                            onSubmit={handleSubmit(requestEntry)}
                             className="flex w-full flex-col gap-5"
                         >
                             <TextInput
@@ -99,32 +101,15 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
                                 label="Nome:"
                                 type="text"
                                 autoComplete="none"
-                                placeholder="Minha Loja"
-                                error={errors.name?.message}
-                            />
-                            <TextInput
-                                {...register('ownerName')}
-                                label="Nome do Proprietário (Você):"
-                                type="text"
-                                autoComplete="none"
                                 placeholder="Nome Sobrenome"
-                                error={errors.ownerName?.message}
-                            />
-                            <TextInput
-                                {...register('comission')}
-                                label="Porcentagem de Comissão do Proprietário (Cargo):"
-                                type="number"
-                                autoComplete="none"
-                                placeholder="50"
-                                max={100}
-                                min={0}
-                                error={errors.comission?.message}
+                                error={errors.name?.message}
                             />
                             <Button
                                 disabled={isSubmitting || creating}
                                 component="button"
                                 type="submit"
-                                text={creating ? 'Registrando...' : 'Criar'}
+                                color="secondary"
+                                text={creating ? 'Solicitando...' : 'Solicitar'}
                                 size="sm"
                             />
                             {result && (
@@ -140,5 +125,5 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
     }
 )
 
-CreateStoreDialog.displayName = 'CreateStoreDialog'
-export default CreateStoreDialog
+RequestEntryDialog.displayName = 'RequestEntryDialog'
+export default RequestEntryDialog

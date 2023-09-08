@@ -1,16 +1,11 @@
-import { InsertStoreSchema } from '@/entities/store'
+import { RequestEntrySchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
-import {
-    accounts,
-    employeeRoles,
-    employees,
-    stores
-} from '@/providers/database/schema'
+import { accounts, employees } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '../../auth/[...nextauth]/route'
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -19,8 +14,7 @@ export async function POST(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
@@ -28,7 +22,7 @@ export async function POST(request: NextRequest) {
         )
 
     const data = await request.json()
-    const parsedBody = InsertStoreSchema.safeParse(data)
+    const parsedBody = RequestEntrySchema.safeParse(data)
 
     if (parsedBody.success) {
         const userRegisters = await db
@@ -44,35 +38,15 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const storeId = crypto.randomUUID()
-
-        await db.insert(stores).values({
-            id: storeId,
-            name: parsedBody.data.name,
-            serverId: parsedBody.data.server,
-            ownerId: user.id
-        })
-
-        const roleId = crypto.randomUUID()
-
-        await db.insert(employeeRoles).values({
-            id: roleId,
-            name: 'Proprietário',
-            comission: parsedBody.data.comission,
-            storeId: storeId,
-            manager: true
-        })
-
         await db.insert(employees).values({
             id: crypto.randomUUID(),
-            name: parsedBody.data.ownerName,
-            storeId: storeId,
-            status: 'ACTIVE',
-            userId: user.id,
-            employeeRoleId: roleId
+            name: parsedBody.data.name,
+            status: 'PENDING',
+            storeId: parsedBody.data.server,
+            userId: user.id
         })
 
-        return NextResponse.json({ id: storeId }, { status: 201 })
+        return NextResponse.json({ success: true }, { status: 201 })
     } else {
         return NextResponse.json({ error: 'Invalidy data' }, { status: 400 })
     }

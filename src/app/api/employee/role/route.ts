@@ -6,6 +6,38 @@ import { employeeRoles } from '@/providers/database/schema'
 import { EmployeeRoleSchema } from '@/entities/employeeRole'
 import { eq } from 'drizzle-orm'
 
+export async function GET(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.email ||
+        !session.user.role ||
+        session.user.role !== 'ADMIN'
+    )
+        return NextResponse.json(
+            { error: 'User not authenticated or not authorized' },
+            { status: 401 }
+        )
+
+    const requestUrl = new URL(request.url)
+    const storeId = requestUrl.searchParams.get('id')
+
+    if (!storeId)
+        return NextResponse.json(
+            { error: 'Store id is not provided' },
+            { status: 400 }
+        )
+
+    const roles = await db
+        .select({ name: employeeRoles.name, id: employeeRoles.id })
+        .from(employeeRoles)
+        .where(eq(employeeRoles.storeId, storeId))
+
+    return NextResponse.json({ data: roles }, { status: 200 })
+}
+
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (
