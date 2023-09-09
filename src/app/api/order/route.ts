@@ -6,6 +6,7 @@ import { db } from '@/providers/database/client'
 import {
     accounts,
     discordWebhooks,
+    employeeRoles,
     employees
 } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
@@ -31,10 +32,18 @@ export async function POST(request: NextRequest) {
 
     if (parsedBody.success) {
         const userRegisters = await db
-            .select({ id: accounts.userId, employee: employees.name })
+            .select({
+                id: accounts.userId,
+                employee: employees.name,
+                comission: employeeRoles.comission
+            })
             .from(accounts)
             .where(eq(accounts.access_token, session.user.discord))
             .innerJoin(employees, eq(employees.userId, accounts.userId))
+            .innerJoin(
+                employeeRoles,
+                eq(employeeRoles.id, employees.employeeRoleId)
+            )
         const user = userRegisters.at(0)
 
         if (!user) {
@@ -87,7 +96,15 @@ export async function POST(request: NextRequest) {
 
         if (parsedBody.data.discount) {
             const discountValue = (total / 100) * parsedBody.data.discount
-            discountTotal = numberToMoney(total - discountValue)
+            discountTotal = total - Math.round(discountValue)
+        }
+
+        let comission = 0
+
+        if (discountTotal) {
+            comission = (discountTotal / 100) * user.comission
+        } else {
+            comission = (total / 100) * user.comission
         }
 
         const result = await sendOrderMessage(
@@ -96,8 +113,12 @@ export async function POST(request: NextRequest) {
             parsedBody.data.client,
             productsList,
             numberToMoney(total),
+            numberToMoney(comission),
             parsedBody.data.discount,
-            discountTotal
+            discountTotal ? numberToMoney(discountTotal) : undefined,
+            parsedBody.data.delivery
+                ? numberToMoney(parsedBody.data.delivery)
+                : undefined
         )
 
         if (!result)

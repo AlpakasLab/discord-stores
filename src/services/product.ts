@@ -57,7 +57,6 @@ export async function getProducts(store: string) {
 
         return productsRegistred
     } catch (error) {
-        console.log(error)
         throw new Error('Cannot get products')
     }
 }

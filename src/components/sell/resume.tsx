@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { OrderCreateData, OrderCreateSchema } from '@/entities/order'
 import toast from 'react-hot-toast'
+import CheckboxInput from '../inputs/checkbox'
 
 type OrderResumeProps = {
     enableOrder: boolean
@@ -47,6 +48,7 @@ export default function OrderResume({
 
     const [result, setResult] = useState<null | string>(null)
     const [saving, setSaving] = useState(false)
+    const [isDelivery, setIsDelivery] = useState(false)
 
     const discountValue = watch('discount')
 
@@ -71,6 +73,7 @@ export default function OrderResume({
                 reset()
                 dispatchSell('RESET')
                 toast.success('Venda Registrada!')
+                setIsDelivery(false)
             }
         } catch (e) {
             setResult('Não foi possível realizar o pedido :(')
@@ -161,7 +164,10 @@ export default function OrderResume({
                                         ({numberToMoney(total)})
                                     </span>
                                     {numberToMoney(
-                                        total - (total / 100) * discountValue
+                                        total -
+                                            Math.round(
+                                                (total / 100) * discountValue
+                                            )
                                     )}
                                 </>
                             ) : (
@@ -193,6 +199,25 @@ export default function OrderResume({
                     min={0}
                     error={errors.discount?.message}
                 />
+                <CheckboxInput
+                    checked={isDelivery}
+                    onChange={e => {
+                        setIsDelivery(e.target.checked)
+                    }}
+                >
+                    Possuí taxa de entrega?
+                </CheckboxInput>
+                {isDelivery && (
+                    <TextInput
+                        {...register('delivery')}
+                        label="Taxa de entrega:"
+                        type="number"
+                        autoComplete="none"
+                        placeholder="250"
+                        min={0}
+                        error={errors.delivery?.message}
+                    />
+                )}
                 <Button
                     disabled={saving || items.length <= 0}
                     component="button"

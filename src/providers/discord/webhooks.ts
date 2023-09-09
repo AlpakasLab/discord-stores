@@ -9,8 +9,10 @@ export const sendOrderMessage = async (
     customer: string,
     items: string,
     total: string,
+    comission: string,
     discount?: number,
-    discountTotal?: string
+    discountTotal?: string,
+    delivery?: string
 ) => {
     const embed = new EmbedBuilder()
         .setTitle('💰 Registro de Venda')
@@ -56,6 +58,24 @@ export const sendOrderMessage = async (
             }
         ])
     }
+
+    if (delivery) {
+        embed.addFields([
+            {
+                name: '📦 Delivery',
+                value: delivery,
+                inline: true
+            }
+        ])
+    }
+
+    embed.addFields([
+        {
+            name: 'Comissão do Vendedor',
+            value: comission,
+            inline: false
+        }
+    ])
 
     const parsedWebhookUrl = parseWebhookURL(webhookUrl)
 

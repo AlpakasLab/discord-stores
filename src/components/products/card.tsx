@@ -79,7 +79,7 @@ export default function ProductCard({
                 type="number"
                 min={0}
                 onChange={e => {
-                    const valueInNumber = Number(e.target.value)
+                    const valueInNumber = Math.round(Number(e.target.value))
                     setQuantity(valueInNumber <= 0 ? null : valueInNumber)
 
                     dispatchSell(valueInNumber <= 0 ? 'REMOVE' : 'CHANGE', {
