@@ -1,7 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import { employeeRoles, employees } from '@/providers/database/schema'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 
 export async function getEmployeeRoles(store: string) {
@@ -25,7 +25,7 @@ export async function getEmployeeRoles(store: string) {
             })
             .from(employeeRoles)
             .where(eq(employeeRoles.storeId, store))
-            .orderBy(employeeRoles.comission)
+            .orderBy(desc(employeeRoles.comission))
 
         return rolesRegistred
     } catch (error) {

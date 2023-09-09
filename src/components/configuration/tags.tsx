@@ -62,7 +62,7 @@ export default function TagsConfiguration({
 
     return (
         <>
-            <div className="mt-2 flex w-full items-start justify-start gap-2">
+            <div className="mt-2 flex w-full flex-wrap items-start justify-start gap-2">
                 {React.Children.toArray(
                     tags.map(tag => (
                         <div className="w-fit rounded-md bg-slate-500 px-2 py-1 text-sm text-slate-200 odd:bg-slate-700">
