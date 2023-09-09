@@ -2,7 +2,6 @@ import { getDateHourString } from '@/utils/date'
 import { EmbedBuilder } from '@discordjs/builders'
 import { Routes } from 'discord-api-types/v10'
 import { parseWebhookURL } from '@/utils/discord'
-import { env } from '@/core/enviroment'
 
 export const sendOrderMessage = async (
     webhookUrl: string,
@@ -69,7 +68,7 @@ export const sendOrderMessage = async (
         }
 
         const result = await fetch(
-            `${env.DISCORD_API_URL}${Routes.webhook(
+            `${process.env.DISCORD_API_URL}${Routes.webhook(
                 parsedWebhookUrl.id,
                 parsedWebhookUrl.token
             )}`,

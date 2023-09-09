@@ -1,4 +1,3 @@
-import { env } from '@/core/enviroment'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import DiscordProvider from 'next-auth/providers/discord'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
@@ -9,8 +8,8 @@ export const authOptions: NextAuthOptions = {
     adapter: DrizzleAdapter(db),
     providers: [
         DiscordProvider({
-            clientId: env.DISCORD_CLIENT_ID,
-            clientSecret: env.DISCORD_CLIENT_SECRET,
+            clientId: process.env.DISCORD_CLIENT_ID,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET,
             authorization:
                 'https://discord.com/api/oauth2/authorize?scope=identify+email+guilds+guilds.members.read'
         })

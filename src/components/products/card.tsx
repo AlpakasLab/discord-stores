@@ -53,8 +53,10 @@ export default function ProductCard({
                         <FaCameraRetro className="text-3xl text-zinc-600" />
                     )}
                 </div>
-                <p className="mt-2 text-lg font-bold">{product.name}</p>
-                <p className="text-base font-semibold text-green-600">
+                <p className="mt-2 w-full text-left text-lg font-bold">
+                    {product.name}
+                </p>
+                <p className="w-full text-left text-base font-semibold text-green-600">
                     {numberToMoney(product.price)}
                 </p>
             </button>

@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
             discountTotal = numberToMoney(total - discountValue)
         }
 
-        const result = sendOrderMessage(
+        const result = await sendOrderMessage(
             sellHook.url,
             user.employee,
             parsedBody.data.client,
