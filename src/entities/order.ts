@@ -20,6 +20,13 @@ export const OrderCreateSchema = z.object({
         })
         .min(0)
         .max(100)
+        .optional(),
+    delivery: z.coerce
+        .number({
+            required_error: 'Campo obrigatório',
+            invalid_type_error: 'Digite um valor válido'
+        })
+        .min(0)
         .optional()
 })
 

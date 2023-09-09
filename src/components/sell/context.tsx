@@ -38,8 +38,6 @@ export const SellContextProvider = ({ children }: SellContextProviderProps) => {
             quantity: number
         }
     ) => {
-        console.log(action)
-
         if (action === 'RESET') {
             setItems(
                 new Map<

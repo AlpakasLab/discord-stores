@@ -150,7 +150,6 @@ const CreateEmployeeRoleDialog =
                                 error={errors.comission?.message}
                             />
                             <CheckboxInput
-                                type="checkbox"
                                 disabled={isAdminRole}
                                 {...register('manager')}
                                 error={errors.manager?.message}
