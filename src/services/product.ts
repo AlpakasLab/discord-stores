@@ -34,6 +34,7 @@ export async function getProducts(store: string) {
             })
             .from(products)
             .where(eq(products.storeId, store))
+            .orderBy(products.name)
             .innerJoin(
                 productCategories,
                 eq(productCategories.id, products.categoryId)

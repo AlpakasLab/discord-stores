@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useSellContext } from './context'
 import { numberToMoney } from '@/utils/formatter'
 import { FaTrashAlt } from 'react-icons/fa'
@@ -22,10 +22,21 @@ export default function OrderResume({
 }: OrderResumeProps) {
     const { items, dispatchSell } = useSellContext()
 
+    const total = useMemo(() => {
+        let total = 0
+
+        items.forEach(item => {
+            total += item.quantity * item.unitPrice
+        })
+
+        return total
+    }, [items])
+
     const {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors }
     } = useForm<OrderCreateData>({
         resolver: zodResolver(OrderCreateSchema),
@@ -36,6 +47,8 @@ export default function OrderResume({
 
     const [result, setResult] = useState<null | string>(null)
     const [saving, setSaving] = useState(false)
+
+    const discountValue = watch('discount')
 
     const saveOrder = async (data: OrderCreateData) => {
         setResult(null)
@@ -81,7 +94,7 @@ export default function OrderResume({
             className="flex w-full flex-col items-center rounded-md bg-zinc-800 p-4"
         >
             <p className="text-xl font-bold">Venda</p>
-            <table className="mb-5 mt-5 w-full table-auto">
+            <table className="mb-4 mt-5 w-full table-auto">
                 <thead>
                     <tr className="border-b border-t border-zinc-800">
                         <th className="py-1 text-left font-semibold text-zinc-400">
@@ -137,6 +150,27 @@ export default function OrderResume({
                     )}
                 </tbody>
             </table>
+            {items.length > 0 && (
+                <div className="mb-4 flex w-full flex-col items-stretch gap-y-5 border-y border-zinc-700 py-2">
+                    <div className="flex w-full items-center justify-between">
+                        <p className="text-lg font-semibold">Total</p>
+                        <p className="text-green-500">
+                            {discountValue ? (
+                                <>
+                                    <span className="mr-2 text-zinc-400 line-through">
+                                        ({numberToMoney(total)})
+                                    </span>
+                                    {numberToMoney(
+                                        total - (total / 100) * discountValue
+                                    )}
+                                </>
+                            ) : (
+                                numberToMoney(total)
+                            )}
+                        </p>
+                    </div>
+                </div>
+            )}
             <div
                 data-enabled={items.length > 0}
                 className="flex w-full flex-col items-stretch gap-y-5 opacity-50 data-[enabled=true]:opacity-100"
