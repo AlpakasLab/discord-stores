@@ -23,7 +23,7 @@ export default async function Employees({
     }
 
     return (
-        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-3 place-content-start gap-5">
+        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-1 place-content-start gap-5 lg:grid-cols-3">
             <div className="h-fit rounded-md border border-zinc-700 p-4">
                 <div className="flex w-full items-center justify-between">
                     <p className="font-semibold">Cargos ({roles.length})</p>
@@ -33,7 +33,7 @@ export default async function Employees({
                 </div>
                 <ShowEmployeeRoles roles={roles} />
             </div>
-            <div className="col-span-2 h-fit rounded-md border border-zinc-700 p-4">
+            <div className="h-fit rounded-md border border-zinc-700 p-4 lg:col-span-2">
                 <div className="flex w-full items-center justify-between">
                     <p className="font-semibold">
                         Funcionários ({employees.length})

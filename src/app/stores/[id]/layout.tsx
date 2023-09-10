@@ -21,7 +21,7 @@ export default async function StoreLayout({
     return (
         <div className="flex w-full flex-grow flex-col">
             <header className="w-full border-b border-zinc-700">
-                <div className="container flex items-center gap-x-8">
+                <div className="container hidden items-center gap-x-4 md:flex md:gap-x-8">
                     <Link
                         href="/stores/"
                         title="Trocar de Loja"

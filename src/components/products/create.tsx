@@ -256,7 +256,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                         ) : (
                             <form
                                 onSubmit={handleSubmit(createProduct)}
-                                className="grid w-full grid-cols-2 gap-5"
+                                className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5"
                             >
                                 <TextInput
                                     {...register('name')}

@@ -28,7 +28,7 @@ export default async function Configuration({
     }
 
     return (
-        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-3 place-content-start gap-5">
+        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-1 place-content-start gap-5 md:grid-cols-2 xl:grid-cols-3">
             <div className="h-fit rounded-md border border-zinc-700 p-4">
                 <p className="font-semibold">
                     Categorias ({categories.length})
