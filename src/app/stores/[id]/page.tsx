@@ -20,7 +20,7 @@ export default async function StoreDetail({
     return (
         <div className="container relative flex h-full w-full flex-grow flex-row items-stretch justify-stretch">
             <SellContextProvider>
-                <div className="h-full w-full flex-grow pr-5 pt-5">
+                <div className="h-full w-full flex-grow pr-2 pt-5 lg:pr-5">
                     <header className="z-10 flex w-full items-center justify-between bg-zinc-900 pb-5">
                         <p className="text-xl font-bold">
                             Produtos ({products.length})
@@ -38,7 +38,7 @@ export default async function StoreDetail({
                         isAdmin={session?.user.role === 'ADMIN'}
                     />
                 </div>
-                <aside className="sticky top-0 h-fit w-96 flex-shrink-0 pl-5 pt-5">
+                <aside className="fixed bottom-0 left-0 h-fit w-full flex-shrink-0 translate-y-[88%] md:sticky md:bottom-auto md:left-auto md:top-0 md:w-80 md:translate-y-0 md:pl-2 md:pt-5 lg:w-96 lg:pl-5">
                     <OrderResume
                         enableOrder={enableOrder}
                         storeId={params.id}

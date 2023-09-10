@@ -25,7 +25,7 @@ export default function StoresShow({ stores }: StoresShowProps) {
 
     return (
         <>
-            <div className="grid w-full max-w-md grid-cols-2 gap-5">
+            <div className="grid w-full max-w-md grid-cols-1 gap-5 sm:grid-cols-2">
                 {React.Children.toArray(
                     stores.map(store => (
                         <button

@@ -25,10 +25,12 @@ export default async function DashboardLayout({
                 <div className="container flex h-14 items-center justify-between">
                     <div className="flex items-center gap-x-3">
                         <FaDiscord className="text-3xl text-zinc-300" />
-                        <p className="text-lg text-zinc-300">Discord Store</p>
+                        <p className="hidden text-lg text-zinc-300 sm:inline">
+                            Discord Store
+                        </p>
                     </div>
 
-                    <div className="flex items-center gap-x-3">
+                    <div className="flex items-center sm:gap-x-3">
                         {session.user.image && (
                             <div className="relative h-8 w-8 overflow-hidden rounded-full">
                                 <Image
@@ -39,7 +41,7 @@ export default async function DashboardLayout({
                                 />
                             </div>
                         )}
-                        <p className="text-base text-zinc-300">
+                        <p className="hidden text-base text-zinc-300 sm:inline">
                             {session.user?.name ?? '-----'}
                         </p>
                         <Signout />

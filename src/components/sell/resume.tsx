@@ -100,16 +100,16 @@ export default function OrderResume({
             <table className="mb-4 mt-5 w-full table-auto">
                 <thead>
                     <tr className="border-b border-t border-zinc-800">
-                        <th className="py-1 text-left font-semibold text-zinc-400">
+                        <th className="py-1 text-left text-sm font-semibold text-zinc-400 lg:text-base">
                             Qtd.
                         </th>
-                        <th className="py-1 text-left font-semibold text-zinc-400">
+                        <th className="py-1 text-left text-sm font-semibold text-zinc-400 lg:text-base">
                             Produto
                         </th>
-                        <th className="py-1 font-semibold text-zinc-400">
+                        <th className="py-1 text-sm font-semibold text-zinc-400 lg:text-base">
                             Total
                         </th>
-                        <th className="py-1 text-end font-semibold text-zinc-400">
+                        <th className="py-1 text-end text-sm font-semibold text-zinc-400 lg:text-base">
                             Excluir
                         </th>
                     </tr>
@@ -128,11 +128,13 @@ export default function OrderResume({
                     {React.Children.toArray(
                         items.map(item => (
                             <tr className="group">
-                                <td className="py-1 text-left">
+                                <td className="py-1 text-left text-sm lg:text-base">
                                     {item.quantity}
                                 </td>
-                                <td className="py-1 text-left">{item.name}</td>
-                                <td className="py-1 text-center text-green-500">
+                                <td className="py-1 text-left text-sm lg:text-base">
+                                    {item.name}
+                                </td>
+                                <td className="py-1 text-center text-sm text-green-500 lg:text-base">
                                     {numberToMoney(
                                         item.quantity * item.unitPrice
                                     )}
