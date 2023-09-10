@@ -77,7 +77,7 @@ export default function ProductsShow({ products, isAdmin }: ProductsShowProps) {
 
     return (
         <>
-            <div className="grid h-full flex-grow grid-cols-5 place-items-stretch gap-5 pb-10">
+            <div className="grid h-full flex-grow grid-cols-2 place-items-stretch gap-3 pb-10 sm:grid-cols-3 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {React.Children.toArray(getProductsWithCategories())}
             </div>
             <ProductDetailDialog
