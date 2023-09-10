@@ -99,12 +99,12 @@ export async function POST(request: NextRequest) {
             discountTotal = total - Math.round(discountValue)
         }
 
-        let comission = 0
+        let storeValue = 0
 
         if (discountTotal) {
-            comission = (discountTotal / 100) * user.comission
+            storeValue = (discountTotal / 100) * (100 - user.comission)
         } else {
-            comission = (total / 100) * user.comission
+            storeValue = (total / 100) * (100 - user.comission)
         }
 
         const result = await sendOrderMessage(
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
             parsedBody.data.client,
             productsList,
             numberToMoney(total),
-            numberToMoney(comission),
+            numberToMoney(storeValue),
             parsedBody.data.discount,
             discountTotal ? numberToMoney(discountTotal) : undefined,
             parsedBody.data.delivery

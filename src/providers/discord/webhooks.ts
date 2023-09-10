@@ -71,7 +71,7 @@ export const sendOrderMessage = async (
 
     embed.addFields([
         {
-            name: 'Comissão do Vendedor',
+            name: 'Comissão da Loja',
             value: comission,
             inline: false
         }
