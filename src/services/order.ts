@@ -25,8 +25,16 @@ export const sendOrderMessage = async (
     orderId: string
 ) => {
     const embed = new EmbedBuilder()
-        .setTitle(templeate.title ?? 'Registro de Venda')
-        .setColor(templeate.color ?? 0x52525b)
+        .setTitle(
+            templeate.title && templeate.title.length > 0
+                ? templeate.title
+                : 'Registro de Venda'
+        )
+        .setColor(
+            templeate.color && !isNaN(templeate.color)
+                ? templeate.color
+                : 0x52525b
+        )
         .setFooter({
             text: orderId
         })
