@@ -2,91 +2,16 @@ import { getDateHourString } from '@/utils/date'
 import { EmbedBuilder } from '@discordjs/builders'
 import { Routes } from 'discord-api-types/v10'
 import { parseWebhookURL } from '@/utils/discord'
+import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/sell'
 
-export const sendOrderMessage = async (
+export const sendMessageByWebhook = async (
     webhookUrl: string,
-    employee: string,
-    customer: string,
-    items: string,
-    total: string,
-    comission: string,
-    discount?: number,
-    discountTotal?: string,
-    delivery?: string
+    webhookData: object
 ) => {
-    const embed = new EmbedBuilder()
-        .setTitle('💰 Registro de Venda')
-        .setColor(0x52525b)
-        .addFields([
-            {
-                name: 'Vendedor',
-                value: employee,
-                inline: true
-            },
-            {
-                name: 'Cliente',
-                value: customer,
-                inline: true
-            },
-            {
-                name: 'Itens',
-                value: items
-            }
-        ])
-        .setFooter({
-            text: getDateHourString(new Date())
-        })
-
-    if (discount && discountTotal) {
-        embed.addFields([
-            {
-                name: '🎫 Desconto',
-                value: `${discount}%`,
-                inline: true
-            },
-            {
-                name: '💸 Total',
-                value: `~~${total}~~ -> ${discountTotal}`
-            }
-        ])
-    } else {
-        embed.addFields([
-            {
-                name: '💸 Total',
-                value: total,
-                inline: true
-            }
-        ])
-    }
-
-    if (delivery) {
-        embed.addFields([
-            {
-                name: '📦 Delivery',
-                value: delivery,
-                inline: true
-            }
-        ])
-    }
-
-    embed.addFields([
-        {
-            name: 'Comissão da Loja',
-            value: comission,
-            inline: false
-        }
-    ])
-
     const parsedWebhookUrl = parseWebhookURL(webhookUrl)
-
     if (!parsedWebhookUrl) return false
 
     try {
-        const embedJson = embed.toJSON()
-        const dataWebhook = {
-            embeds: [embedJson]
-        }
-
         const result = await fetch(
             `${process.env.DISCORD_API_URL}${Routes.webhook(
                 parsedWebhookUrl.id,
@@ -94,19 +19,69 @@ export const sendOrderMessage = async (
             )}`,
             {
                 method: 'POST',
-                body: JSON.stringify(dataWebhook),
+                body: JSON.stringify(webhookData),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }
         )
 
-        if (!result.ok) {
-            return false
-        }
-
+        if (!result.ok) return false
         return true
     } catch (e) {
         return false
     }
+}
+
+type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
+type OrderData = Record<SellFields, string | undefined>
+
+export const sendOrderMessage = async (
+    webhookUrl: string,
+    templeate: {
+        id: string
+        title: string | null
+        color: number | null
+        image: string | null
+        fields: {
+            values: {
+                title: string
+                value: string
+                inline?: boolean | undefined
+            }[]
+        } | null
+    },
+    orderData: OrderData
+) => {
+    const embed = new EmbedBuilder()
+        .setTitle(templeate.title ?? 'Registro de Venda')
+        .setColor(templeate.color ?? 0x52525b)
+        .setFooter({
+            text: getDateHourString(new Date())
+        })
+
+    if (templeate.image) {
+        embed.setThumbnail(templeate.image)
+    }
+
+    if (templeate.fields) {
+        templeate.fields.values.forEach(field => {
+            const fieldValue = orderData[field.value as SellFields]
+
+            if (fieldValue) {
+                embed.addFields({
+                    name: field.title,
+                    value: fieldValue,
+                    inline: field.inline
+                })
+            }
+        })
+    }
+
+    const embedJson = embed.toJSON()
+    const dataWebhook = {
+        embeds: [embedJson]
+    }
+
+    return sendMessageByWebhook(webhookUrl, dataWebhook)
 }

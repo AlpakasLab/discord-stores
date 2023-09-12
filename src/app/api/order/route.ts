@@ -7,7 +7,8 @@ import {
     accounts,
     discordWebhooks,
     employeeRoles,
-    employees
+    employees,
+    webhooksTemplates
 } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
 import { sendOrderMessage } from '@/providers/discord/webhooks'
@@ -55,7 +56,8 @@ export async function POST(request: NextRequest) {
 
         const hooksRegistred = await db
             .select({
-                url: discordWebhooks.url
+                url: discordWebhooks.url,
+                template: webhooksTemplates
             })
             .from(discordWebhooks)
             .where(
@@ -63,6 +65,10 @@ export async function POST(request: NextRequest) {
                     eq(discordWebhooks.storeId, parsedBody.data.store),
                     eq(discordWebhooks.category, 'SELL')
                 )
+            )
+            .innerJoin(
+                webhooksTemplates,
+                eq(webhooksTemplates.id, discordWebhooks.webhooksTemplateId)
             )
 
         const sellHook = hooksRegistred.at(0)
@@ -107,19 +113,24 @@ export async function POST(request: NextRequest) {
             storeValue = (total / 100) * (100 - user.comission)
         }
 
-        const result = await sendOrderMessage(
-            sellHook.url,
-            user.employee,
-            parsedBody.data.client,
-            productsList,
-            numberToMoney(total),
-            numberToMoney(storeValue),
-            parsedBody.data.discount,
-            discountTotal ? numberToMoney(discountTotal) : undefined,
-            parsedBody.data.delivery
+        const result = await sendOrderMessage(sellHook.url, sellHook.template, {
+            'client-name': parsedBody.data.client,
+            'discount-percentage': parsedBody.data.discount
+                ? `${parsedBody.data.discount}%`
+                : undefined,
+            'employee-name': user.employee,
+            comission: numberToMoney(storeValue),
+            items: productsList,
+            total:
+                parsedBody.data.discount && discountTotal
+                    ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
+                          discountTotal
+                      )}`
+                    : numberToMoney(total),
+            delivery: parsedBody.data.delivery
                 ? numberToMoney(parsedBody.data.delivery)
                 : undefined
-        )
+        })
 
         if (!result)
             return NextResponse.json(

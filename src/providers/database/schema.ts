@@ -5,7 +5,8 @@ import {
     primaryKey,
     varchar,
     text,
-    boolean
+    boolean,
+    json
 } from 'drizzle-orm/mysql-core'
 import type { AdapterAccount } from 'next-auth/adapters'
 
@@ -115,7 +116,10 @@ export const discordWebhooks = mysqlTable('discord_webhooks', {
         length: 6,
         enum: ['SELL', 'LOGS']
     }).notNull(),
-    storeId: varchar('store_id', { length: 255 }).notNull()
+    storeId: varchar('store_id', { length: 255 }).notNull(),
+    webhooksTemplateId: varchar('webhook_id', { length: 255 })
+        .notNull()
+        .unique()
 })
 
 export const employeeRoles = mysqlTable('employee_roles', {
@@ -136,4 +140,14 @@ export const employees = mysqlTable('employees', {
     storeId: varchar('store_id', { length: 255 }).notNull(),
     userId: varchar('user_id', { length: 255 }).notNull(),
     employeeRoleId: varchar('employee_role_id', { length: 255 })
+})
+
+export const webhooksTemplates = mysqlTable('webhooks_templates', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    title: varchar('title', { length: 255 }),
+    color: int('color'),
+    image: varchar('image', { length: 255 }),
+    fields: json('fields').$type<{
+        values: { title: string; value: string; inline?: boolean }[]
+    }>()
 })

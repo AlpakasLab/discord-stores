@@ -38,7 +38,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
             reset,
             setValue,
             resetField,
-            formState: { errors, isSubmitting, defaultValues }
+            formState: { errors, isSubmitting }
         } = useForm<InsertProductData>({
             resolver: zodResolver(InsertProductSchema)
         })

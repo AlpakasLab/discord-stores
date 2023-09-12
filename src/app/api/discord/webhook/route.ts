@@ -1,5 +1,5 @@
 import { db } from '@/providers/database/client'
-import { discordWebhooks } from '@/providers/database/schema'
+import { discordWebhooks, webhooksTemplates } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
@@ -52,11 +52,18 @@ export async function POST(request: NextRequest) {
                     })
                     .where(eq(discordWebhooks.id, logsRegistered.id))
             } else if (logs) {
+                const webhookTempleateId = crypto.randomUUID()
+
+                await db.insert(webhooksTemplates).values({
+                    id: webhookTempleateId
+                })
+
                 await db.insert(discordWebhooks).values({
                     id: crypto.randomUUID(),
                     storeId: storeId,
                     category: 'LOGS',
-                    url: logs
+                    url: logs,
+                    webhooksTemplateId: webhookTempleateId
                 })
             }
 
@@ -68,11 +75,18 @@ export async function POST(request: NextRequest) {
                     })
                     .where(eq(discordWebhooks.id, sellsRegistered.id))
             } else if (sell) {
+                const webhookTempleateId = crypto.randomUUID()
+
+                await db.insert(webhooksTemplates).values({
+                    id: webhookTempleateId
+                })
+
                 await db.insert(discordWebhooks).values({
                     id: crypto.randomUUID(),
                     storeId: storeId,
                     category: 'SELL',
-                    url: sell
+                    url: sell,
+                    webhooksTemplateId: webhookTempleateId
                 })
             }
 
