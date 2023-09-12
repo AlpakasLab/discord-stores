@@ -151,3 +151,20 @@ export const webhooksTemplates = mysqlTable('webhooks_templates', {
         values: { title: string; value: string; inline?: boolean }[]
     }>()
 })
+
+export const orders = mysqlTable('orders', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    employeeName: varchar('employee_name', { length: 255 }).notNull(),
+    clientName: varchar('client_name', { length: 255 }).notNull(),
+    discount: int('discount'),
+    total: int('total').notNull(),
+    delivery: int('delivery'),
+    comission: int('comission').notNull(),
+    storeValue: int('store_value').notNull(),
+    items: json('items')
+        .$type<{
+            values: { name: string; quantity: number; unitPrice: number }[]
+        }>()
+        .notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 6 }).defaultNow()
+})

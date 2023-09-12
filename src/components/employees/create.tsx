@@ -188,7 +188,11 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
                                     options={[
                                         { label: 'Ativo', value: 'ACTIVE' },
                                         { label: 'Inativo', value: 'DISABLED' },
-                                        { label: 'Pendente', value: 'PENDING' }
+                                        {
+                                            label: 'Pendente',
+                                            value: 'PENDING',
+                                            disabled: true
+                                        }
                                     ]}
                                     onSelectOption={option => {
                                         if (option) {

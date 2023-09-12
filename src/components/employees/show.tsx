@@ -23,16 +23,16 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
             <table className="mt-4 w-full table-auto">
                 <thead>
                     <tr className="border-b border-t border-zinc-800">
-                        <th className="py-2 text-left text-base font-semibold text-zinc-400">
+                        <th className="px-1 py-2 text-left text-base font-semibold text-zinc-400">
                             Nome
                         </th>
-                        <th className="py-2 text-base font-semibold text-zinc-400">
+                        <th className="px-1 py-2 text-base font-semibold text-zinc-400">
                             Cargo
                         </th>
-                        <th className="py-2 text-base font-semibold text-zinc-400">
+                        <th className="px-1 py-2 text-base font-semibold text-zinc-400">
                             Status
                         </th>
-                        <th className="py-2 text-end text-base font-semibold text-zinc-400">
+                        <th className="px-1 py-2 text-end text-base font-semibold text-zinc-400">
                             Editar
                         </th>
                     </tr>
@@ -40,21 +40,24 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
                 <tbody>
                     {React.Children.toArray(
                         employees.map(employee => (
-                            <tr className="group">
-                                <td className="py-2 text-sm text-zinc-300 group-last:pb-0">
+                            <tr
+                                data-pending={employee.status === 'PENDING'}
+                                className="group data-[pending=true]:bg-yellow-500/20"
+                            >
+                                <td className="px-1 py-2 text-sm text-zinc-300">
                                     {employee.name}
                                 </td>
-                                <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
+                                <td className="px-1  py-2 text-center text-sm text-zinc-300">
                                     {employee.role ?? '---'}
                                 </td>
-                                <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
+                                <td className="px-1  py-2 text-center text-sm text-zinc-300">
                                     {employee.status === 'ACTIVE' && 'Ativo'}
                                     {employee.status === 'DISABLED' &&
                                         'Inativo'}
                                     {employee.status === 'PENDING' &&
                                         'Pendente'}
                                 </td>
-                                <td className="py-2 pr-4 text-end text-sm text-zinc-300 group-last:pb-0">
+                                <td className="py-2 pl-1 pr-2 text-end text-sm text-zinc-300">
                                     <button
                                         type="button"
                                         onClick={() =>

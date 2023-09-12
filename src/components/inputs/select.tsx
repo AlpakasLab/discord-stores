@@ -6,7 +6,7 @@ type BaseProps = {
     label?: string
     error?: string
     disabled?: boolean
-    options: Array<{ label: string; value: string }>
+    options: Array<{ label: string; value: string; disabled?: boolean }>
 }
 
 type SingleSelectProps = {
@@ -106,8 +106,9 @@ export default function SelectInput({
                     {React.Children.toArray(
                         options.map(option => (
                             <Listbox.Option
-                                className="flex cursor-pointer items-center gap-x-3 px-4 py-2 text-sm text-white transition-all duration-200 hover:bg-cyan-500"
+                                className="flex cursor-pointer items-center gap-x-3 px-4 py-2 text-sm text-white transition-all duration-200 hover:bg-cyan-500 ui-disabled:cursor-not-allowed ui-disabled:bg-zinc-700 ui-disabled:opacity-50"
                                 value={option}
+                                disabled={option.disabled === true}
                             >
                                 {option.label}
                                 <FaCheck className="hidden text-xs text-emerald-500 ui-selected:block" />
