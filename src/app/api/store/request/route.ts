@@ -1,11 +1,16 @@
 import { RequestEntrySchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
-import { accounts, employees } from '@/providers/database/schema'
-import { eq } from 'drizzle-orm'
+import {
+    accounts,
+    discordWebhooks,
+    employees
+} from '@/providers/database/schema'
+import { and, eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { authOptions } from '../../auth/[...nextauth]/route'
+import { sendLogsMessage } from '@/services/logs'
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -25,6 +30,20 @@ export async function POST(request: NextRequest) {
     const parsedBody = RequestEntrySchema.safeParse(data)
 
     if (parsedBody.success) {
+        const hooksRegistred = await db
+            .select({
+                url: discordWebhooks.url
+            })
+            .from(discordWebhooks)
+            .where(
+                and(
+                    eq(discordWebhooks.storeId, parsedBody.data.server),
+                    eq(discordWebhooks.category, 'LOGS')
+                )
+            )
+
+        const logsHook = hooksRegistred.at(0)
+
         const userRegisters = await db
             .select({ id: accounts.userId })
             .from(accounts)
@@ -45,6 +64,14 @@ export async function POST(request: NextRequest) {
             storeId: parsedBody.data.server,
             userId: user.id
         })
+
+        if (logsHook) {
+            await sendLogsMessage(
+                logsHook.url,
+                '**Solicitação de entrada**',
+                `\`${session.user.name}\` solicitou a entrada como funcionário \`${parsedBody.data.name}\``
+            )
+        }
 
         return NextResponse.json({ success: true }, { status: 201 })
     } else {

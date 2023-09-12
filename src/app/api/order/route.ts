@@ -3,16 +3,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { OrderCreateSchema } from '@/entities/order'
 import { db } from '@/providers/database/client'
+import crypto from 'node:crypto'
 import {
     accounts,
     discordWebhooks,
     employeeRoles,
     employees,
+    orders,
     webhooksTemplates
 } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
-import { sendOrderMessage } from '@/providers/discord/webhooks'
 import { numberToMoney } from '@/utils/formatter'
+import { sendOrderMessage } from '@/services/order'
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -106,12 +108,35 @@ export async function POST(request: NextRequest) {
         }
 
         let storeValue = 0
+        let employeeValue = 0
 
         if (discountTotal) {
-            storeValue = (discountTotal / 100) * (100 - user.comission)
+            storeValue = Math.floor(
+                (discountTotal / 100) * (100 - user.comission)
+            )
+            employeeValue = Math.floor((discountTotal / 100) * user.comission)
         } else {
-            storeValue = (total / 100) * (100 - user.comission)
+            storeValue = Math.floor((total / 100) * (100 - user.comission))
+            employeeValue = Math.floor((total / 100) * user.comission)
         }
+
+        await db.insert(orders).values({
+            id: crypto.randomUUID(),
+            clientName: parsedBody.data.client,
+            employeeName: user.employee,
+            comission: employeeValue,
+            storeValue: storeValue,
+            total: total,
+            discount: parsedBody.data.discount,
+            delivery: parsedBody.data.delivery,
+            items: {
+                values: items.map(item => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice
+                }))
+            }
+        })
 
         const result = await sendOrderMessage(sellHook.url, sellHook.template, {
             'client-name': parsedBody.data.client,
