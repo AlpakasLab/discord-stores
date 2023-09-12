@@ -3,7 +3,8 @@ import { db } from '@/providers/database/client'
 import {
     discordWebhooks,
     productCategories,
-    tags
+    tags,
+    webhooksTemplates
 } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
@@ -73,10 +74,15 @@ export async function getWebhooks(store: string) {
             .select({
                 id: discordWebhooks.id,
                 url: discordWebhooks.url,
-                category: discordWebhooks.category
+                category: discordWebhooks.category,
+                template: webhooksTemplates
             })
             .from(discordWebhooks)
             .where(eq(discordWebhooks.storeId, store))
+            .innerJoin(
+                webhooksTemplates,
+                eq(webhooksTemplates.id, discordWebhooks.webhooksTemplateId)
+            )
 
         return hooksRegistred
     } catch (error) {

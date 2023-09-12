@@ -1,8 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Button from '../inputs/button'
-import TextInput from '../inputs/text'
+import Button from '../../inputs/button'
+import TextInput from '../../inputs/text'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useEffect, useState } from 'react'

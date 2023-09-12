@@ -22,6 +22,20 @@
       "when": 1694021509500,
       "tag": "0002_orange_hobgoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1694386336061,
+      "tag": "0003_flat_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1694482337312,
+      "tag": "0004_volatile_zaladane",
+      "breakpoints": true
     }
   ]
 }
