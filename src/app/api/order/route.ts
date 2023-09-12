@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
             .select({
                 id: accounts.userId,
                 employee: employees.name,
-                comission: employeeRoles.comission
+                comission: employeeRoles.comission,
+                store: employees.storeId
             })
             .from(accounts)
             .where(eq(accounts.access_token, session.user.discord))
@@ -137,7 +138,8 @@ export async function POST(request: NextRequest) {
                     quantity: item.quantity,
                     unitPrice: item.unitPrice
                 }))
-            }
+            },
+            storeId: user.store
         })
 
         const result = await sendOrderMessage(

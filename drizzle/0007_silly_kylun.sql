@@ -1,0 +1,1 @@
+ALTER TABLE `orders` ADD `store_id` varchar(255) NOT NULL;
