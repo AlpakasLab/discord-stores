@@ -120,8 +120,10 @@ export async function POST(request: NextRequest) {
             employeeValue = Math.floor((total / 100) * user.comission)
         }
 
+        const orderId = crypto.randomUUID()
+
         await db.insert(orders).values({
-            id: crypto.randomUUID(),
+            id: orderId,
             clientName: parsedBody.data.client,
             employeeName: user.employee,
             comission: employeeValue,
@@ -138,24 +140,29 @@ export async function POST(request: NextRequest) {
             }
         })
 
-        const result = await sendOrderMessage(sellHook.url, sellHook.template, {
-            'client-name': parsedBody.data.client,
-            'discount-percentage': parsedBody.data.discount
-                ? `${parsedBody.data.discount}%`
-                : undefined,
-            'employee-name': user.employee,
-            comission: numberToMoney(storeValue),
-            items: productsList,
-            total:
-                parsedBody.data.discount && discountTotal
-                    ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
-                          discountTotal
-                      )}`
-                    : numberToMoney(total),
-            delivery: parsedBody.data.delivery
-                ? numberToMoney(parsedBody.data.delivery)
-                : undefined
-        })
+        const result = await sendOrderMessage(
+            sellHook.url,
+            sellHook.template,
+            {
+                'client-name': parsedBody.data.client,
+                'discount-percentage': parsedBody.data.discount
+                    ? `${parsedBody.data.discount}%`
+                    : undefined,
+                'employee-name': user.employee,
+                comission: numberToMoney(storeValue),
+                items: productsList,
+                total:
+                    parsedBody.data.discount && discountTotal
+                        ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
+                              discountTotal
+                          )}`
+                        : numberToMoney(total),
+                delivery: parsedBody.data.delivery
+                    ? numberToMoney(parsedBody.data.delivery)
+                    : undefined
+            },
+            orderId
+        )
 
         if (!result)
             return NextResponse.json(

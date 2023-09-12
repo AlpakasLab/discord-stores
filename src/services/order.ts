@@ -21,13 +21,14 @@ export const sendOrderMessage = async (
             }[]
         } | null
     },
-    orderData: OrderData
+    orderData: OrderData,
+    orderId: string
 ) => {
     const embed = new EmbedBuilder()
         .setTitle(templeate.title ?? 'Registro de Venda')
         .setColor(templeate.color ?? 0x52525b)
         .setFooter({
-            text: getDateHourString(new Date())
+            text: orderId
         })
 
     if (templeate.image) {
