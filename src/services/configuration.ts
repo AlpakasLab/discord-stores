@@ -6,7 +6,7 @@ import {
     tags,
     webhooksTemplates
 } from '@/providers/database/schema'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 
 export async function getProductCategories(store: string) {
@@ -23,10 +23,12 @@ export async function getProductCategories(store: string) {
         const categoriesRegistred = await db
             .select({
                 name: productCategories.name,
-                id: productCategories.id
+                id: productCategories.id,
+                order: productCategories.order
             })
             .from(productCategories)
             .where(eq(productCategories.storeId, store))
+            .orderBy(desc(productCategories.order))
 
         return categoriesRegistred
     } catch (error) {

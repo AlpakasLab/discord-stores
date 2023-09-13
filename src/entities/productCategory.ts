@@ -1,12 +1,24 @@
 import { z } from 'zod'
 
-export const InsertProductCategorySchema = z.object({
+export const ProductCategorySchema = z.object({
+    id: z
+        .string({
+            invalid_type_error: 'ID inválido'
+        })
+        .optional(),
     name: z
         .string({
             required_error: 'Campo obrigatório',
             invalid_type_error: 'Digite um nome válido'
         })
         .nonempty('Campo obrigatório'),
+    order: z.coerce
+        .number({
+            required_error: 'Campo obrigatório',
+            invalid_type_error: 'Digite um valor válido'
+        })
+        .min(0)
+        .optional(),
     storeId: z
         .string({
             required_error: 'Campo obrigatório',
@@ -15,6 +27,4 @@ export const InsertProductCategorySchema = z.object({
         .nonempty('Campo obrigatório')
 })
 
-export type InsertProductCategoryData = z.infer<
-    typeof InsertProductCategorySchema
->
+export type ProductCategoryData = z.infer<typeof ProductCategorySchema>

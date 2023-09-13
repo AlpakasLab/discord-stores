@@ -123,9 +123,19 @@ export async function POST(request: NextRequest) {
 
         const orderId = crypto.randomUUID()
 
+        const clientNameWorlds = parsedBody.data.client.split(' ')
+        const name = clientNameWorlds
+            .map(
+                word =>
+                    `${word[0].toLocaleUpperCase()}${word
+                        .substring(1)
+                        .toLocaleLowerCase()}`
+            )
+            .join(' ')
+
         await db.insert(orders).values({
             id: orderId,
-            clientName: parsedBody.data.client,
+            clientName: name,
             employeeName: user.employee,
             comission: employeeValue,
             storeValue: storeValue,
@@ -146,7 +156,7 @@ export async function POST(request: NextRequest) {
             sellHook.url,
             sellHook.template,
             {
-                'client-name': parsedBody.data.client,
+                'client-name': name,
                 'discount-percentage': parsedBody.data.discount
                     ? `${parsedBody.data.discount}%`
                     : undefined,

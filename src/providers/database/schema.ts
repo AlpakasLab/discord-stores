@@ -89,6 +89,7 @@ export const products = mysqlTable('products', {
 export const productCategories = mysqlTable('product_categories', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     name: varchar('name', { length: 255 }).notNull(),
+    order: int('order').notNull().default(0),
     storeId: varchar('store_id', { length: 255 }).notNull()
 })
 

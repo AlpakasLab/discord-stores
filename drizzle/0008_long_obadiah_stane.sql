@@ -1,0 +1,1 @@
+ALTER TABLE `product_categories` ADD `order` int DEFAULT 0;

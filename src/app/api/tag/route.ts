@@ -1,11 +1,41 @@
 import { db } from '@/providers/database/client'
-import { tags } from '@/providers/database/schema'
+import { productsToTags, tags } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { InsertTagSchema } from '@/entities/tag'
 import { eq } from 'drizzle-orm'
+
+export async function DELETE(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.email ||
+        !session.user.role ||
+        session.user.role !== 'ADMIN'
+    )
+        return NextResponse.json(
+            { error: 'User not authenticated or not authorized' },
+            { status: 401 }
+        )
+
+    const requestUrl = new URL(request.url)
+    const tagId = requestUrl.searchParams.get('id')
+
+    if (!tagId)
+        return NextResponse.json(
+            { error: 'Tag id is not provided' },
+            { status: 400 }
+        )
+
+    await db.delete(tags).where(eq(tags.id, tagId))
+    await db.delete(productsToTags).where(eq(productsToTags.tagId, tagId))
+
+    return NextResponse.json({ deleted: true }, { status: 200 })
+}
 
 export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)

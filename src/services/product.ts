@@ -6,7 +6,7 @@ import {
     productsToTags,
     tags
 } from '@/providers/database/schema'
-import { eq, sql } from 'drizzle-orm'
+import { asc, desc, eq, sql } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 
 export async function getProducts(store: string) {
@@ -29,12 +29,13 @@ export async function getProducts(store: string) {
                 image: products.image,
                 active: products.active,
                 category: productCategories.name,
+                categoryOrder: productCategories.order,
                 tags: sql<string>`group_concat(${tags.name})`,
                 store: products.storeId
             })
             .from(products)
             .where(eq(products.storeId, store))
-            .orderBy(products.name)
+            .orderBy(asc(products.name))
             .innerJoin(
                 productCategories,
                 eq(productCategories.id, products.categoryId)
@@ -44,12 +45,12 @@ export async function getProducts(store: string) {
             .groupBy(sql`${products.id}`)
 
         productsRegistred.sort((a, b) => {
-            if (a.category > b.category) {
-                return 1
+            if (a.categoryOrder > b.categoryOrder) {
+                return -1
             }
 
-            if (b.category > a.category) {
-                return -1
+            if (b.categoryOrder > a.categoryOrder) {
+                return 1
             }
 
             return 0
