@@ -46,11 +46,11 @@ export async function getProducts(store: string) {
 
         productsRegistred.sort((a, b) => {
             if (a.categoryOrder > b.categoryOrder) {
-                return -1
+                return 1
             }
 
             if (b.categoryOrder > a.categoryOrder) {
-                return 1
+                return -1
             }
 
             return 0

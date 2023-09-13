@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
             await sendLogsMessage(
                 logsHook.url,
                 '**Solicitação de entrada**',
-                `\`${session.user.name}\` solicitou a entrada como funcionário \`${parsedBody.data.name}\``
+                `\`${session.user.name}\` solicitou a entrada como funcionário(a) \`${parsedBody.data.name}\``
             )
         }
 

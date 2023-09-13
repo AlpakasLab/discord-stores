@@ -6,7 +6,7 @@ import {
     tags,
     webhooksTemplates
 } from '@/providers/database/schema'
-import { desc, eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 
 export async function getProductCategories(store: string) {
@@ -28,7 +28,7 @@ export async function getProductCategories(store: string) {
             })
             .from(productCategories)
             .where(eq(productCategories.storeId, store))
-            .orderBy(desc(productCategories.order))
+            .orderBy(asc(productCategories.order))
 
         return categoriesRegistred
     } catch (error) {
