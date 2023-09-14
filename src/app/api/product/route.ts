@@ -4,7 +4,7 @@ import { authOptions } from '../auth/[...nextauth]/route'
 import { InsertProductSchema } from '@/entities/product'
 import { db } from '@/providers/database/client'
 import { products, productsToTags, tags } from '@/providers/database/schema'
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)

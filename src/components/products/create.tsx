@@ -12,6 +12,7 @@ import Button from '../inputs/button'
 import SelectInput from '../inputs/select'
 import { FaSpinner } from 'react-icons/fa'
 import MessageInput from '../inputs/mensagem'
+import { useStoreContext } from '../store/context'
 
 export type CreateProductDialogHandles = {
     open: (storeId: string) => void
@@ -30,6 +31,7 @@ export type CreateProductDialogHandles = {
 
 const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
     (_, ref) => {
+        const { themed } = useStoreContext()
         const router = useRouter()
 
         const {
@@ -344,7 +346,11 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                             creating ? 'Salvando...' : 'Salvar'
                                         }
                                         size="sm"
-                                        color="secondary"
+                                        color={
+                                            themed
+                                                ? 'custom-primary'
+                                                : 'primary'
+                                        }
                                     />
                                 </div>
                                 {result && (

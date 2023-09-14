@@ -6,6 +6,7 @@ import { Dialog } from '@headlessui/react'
 import Button from '../inputs/button'
 import { numberToMoney } from '@/utils/formatter'
 import { FaPencilAlt } from 'react-icons/fa'
+import { useStoreContext } from '../store/context'
 
 export type ProductDetailDialogHandles = {
     open: (product: {
@@ -27,6 +28,8 @@ const ProductDetailDialog = React.forwardRef<
     ProductDetailDialogHandles,
     ProductDetailDialogProps
 >(({ isAdmin, onEditClick }, ref) => {
+    const { themed } = useStoreContext()
+
     const [dialogData, setDialogData] = useState<{
         opened: boolean
         product: null | {
@@ -124,6 +127,7 @@ const ProductDetailDialog = React.forwardRef<
                                 product: null
                             })
                         }}
+                        color={themed ? 'custom-secondary' : 'secondary'}
                         type="button"
                         text="OK"
                     />

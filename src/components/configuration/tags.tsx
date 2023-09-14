@@ -10,9 +10,11 @@ import { InsertTagData, InsertTagSchema } from '@/entities/tag'
 import { FaSpinner, FaTimes } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 import { Dialog } from '@headlessui/react'
+import { useStoreContext } from '../store/context'
+import tinycolor from 'tinycolor2'
 
 type TagsConfigurationProps = {
-    tags: { id: string; name: string }[]
+    tags: { id: string; name: string; color: string | null }[]
     store: string
 }
 
@@ -20,6 +22,7 @@ export default function TagsConfiguration({
     tags,
     store
 }: TagsConfigurationProps) {
+    const { themed } = useStoreContext()
     const router = useRouter()
 
     const {
@@ -95,7 +98,19 @@ export default function TagsConfiguration({
             <div className="mt-2 flex w-full flex-wrap items-start justify-start gap-2">
                 {React.Children.toArray(
                     tags.map(tag => (
-                        <div className="flex w-fit items-center gap-x-1 rounded-md bg-slate-500 px-2 py-1 text-sm text-slate-200 odd:bg-slate-700">
+                        <div
+                            style={
+                                tag.color
+                                    ? {
+                                          backgroundColor: tag.color,
+                                          color: tinycolor(tag.color).isDark()
+                                              ? '#FFF'
+                                              : '#18181b'
+                                      }
+                                    : undefined
+                            }
+                            className="flex w-fit items-center gap-x-1 rounded-md bg-zinc-500 px-2 py-1 text-sm text-slate-200 odd:bg-zinc-700"
+                        >
                             <p>{tag.name}</p>
                             <button
                                 onClick={() => {
@@ -103,7 +118,7 @@ export default function TagsConfiguration({
                                     setIdToDelete(tag.id)
                                 }}
                                 type="button"
-                                className="ml-1 text-sm text-red-400"
+                                className="ml-1 text-sm"
                             >
                                 <FaTimes />
                             </button>
@@ -123,13 +138,22 @@ export default function TagsConfiguration({
                     error={errors.name?.message}
                     placeholder="Esgotado, Especial, Mais Vendido..."
                 />
-
+                <div className="w-28">
+                    <TextInput
+                        {...register('color')}
+                        label="Cor:"
+                        type="color"
+                        autoComplete="none"
+                        placeholder=""
+                        error={errors.color?.message}
+                    />
+                </div>
                 <div className="mt-7 max-w-[10rem]">
                     <Button
                         disabled={isSubmitting || creating}
                         component="button"
                         type="submit"
-                        color="secondary"
+                        color={themed ? 'custom-secondary' : 'secondary'}
                         size="sm"
                         text={creating ? 'Salvando' : 'Criar'}
                     />

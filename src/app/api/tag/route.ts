@@ -92,6 +92,7 @@ export async function POST(request: NextRequest) {
             await db.insert(tags).values({
                 id: crypto.randomUUID(),
                 name: parsedBody.data.name,
+                color: parsedBody.data.color,
                 storeId: parsedBody.data.storeId
             })
 

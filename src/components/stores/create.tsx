@@ -6,7 +6,7 @@ import React, { useImperativeHandle } from 'react'
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import TextInput from '../inputs/text'
-import { InsertStoreData, InsertStoreSchema } from '@/entities/store'
+import { StoreData, StoreSchema } from '@/entities/store'
 import { useRouter } from 'next/navigation'
 import Button from '../inputs/button'
 export type CreateStoreDialogHandles = {
@@ -23,8 +23,8 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
             reset,
             setValue,
             formState: { errors, isSubmitting }
-        } = useForm<InsertStoreData>({
-            resolver: zodResolver(InsertStoreSchema)
+        } = useForm<StoreData>({
+            resolver: zodResolver(StoreSchema)
         })
 
         const [creating, setCreating] = useState(false)
@@ -36,7 +36,7 @@ const CreateStoreDialog = React.forwardRef<CreateStoreDialogHandles>(
             opened: false
         })
 
-        const createStore = async (data: InsertStoreData) => {
+        const createStore = async (data: StoreData) => {
             setResult(null)
             setCreating(true)
 

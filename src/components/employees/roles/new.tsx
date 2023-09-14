@@ -6,8 +6,10 @@ import Button from '@/components/inputs/button'
 import CreateEmployeeRoleDialog, {
     CreateEmployeeRoleDialogHandles
 } from './create'
+import { useStoreContext } from '@/components/store/context'
 
 export default function NewEmployeeRole() {
+    const { themed } = useStoreContext()
     const params = useParams()
     const createEmployeeRoleDialogRef =
         useRef<CreateEmployeeRoleDialogHandles>(null)
@@ -19,7 +21,7 @@ export default function NewEmployeeRole() {
                 type="button"
                 text="Cadastrar"
                 size="sm"
-                color="secondary"
+                color={themed ? 'custom-secondary' : 'secondary'}
                 onClick={() =>
                     createEmployeeRoleDialogRef.current?.open(
                         params.id.toString()

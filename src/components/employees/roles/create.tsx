@@ -10,6 +10,7 @@ import TextInput from '@/components/inputs/text'
 import Button from '@/components/inputs/button'
 import { EmployeeRoleData, EmployeeRoleSchema } from '@/entities/employeeRole'
 import CheckboxInput from '@/components/inputs/checkbox'
+import { useStoreContext } from '@/components/store/context'
 
 export type CreateEmployeeRoleDialogHandles = {
     open: (storeId: string) => void
@@ -24,6 +25,7 @@ export type CreateEmployeeRoleDialogHandles = {
 
 const CreateEmployeeRoleDialog =
     React.forwardRef<CreateEmployeeRoleDialogHandles>((_, ref) => {
+        const { themed } = useStoreContext()
         const router = useRouter()
 
         const {
@@ -150,6 +152,9 @@ const CreateEmployeeRoleDialog =
                                 error={errors.comission?.message}
                             />
                             <CheckboxInput
+                                className={
+                                    themed ? 'text-custom-primary' : undefined
+                                }
                                 disabled={isAdminRole}
                                 {...register('manager')}
                                 error={errors.manager?.message}
@@ -163,7 +168,9 @@ const CreateEmployeeRoleDialog =
                                     type="submit"
                                     text={creating ? 'Salvando...' : 'Salvar'}
                                     size="sm"
-                                    color="secondary"
+                                    color={
+                                        themed ? 'custom-primary' : 'primary'
+                                    }
                                 />
                             </div>
                             {result && (

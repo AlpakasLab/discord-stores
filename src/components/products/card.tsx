@@ -15,11 +15,13 @@ type ProductCardProps = {
         category: string
         tags: string
     }
+    tags: React.ReactNode[]
     onProductClick: () => void
 }
 
 export default function ProductCard({
     product,
+    tags,
     onProductClick
 }: ProductCardProps) {
     const { items, dispatchSell } = useSellContext()
@@ -61,16 +63,7 @@ export default function ProductCard({
                 </p>
             </button>
             <div className="mb-2 mt-2 flex h-full flex-wrap items-start justify-start gap-1">
-                {product.tags &&
-                    React.Children.toArray(
-                        product.tags
-                            .split(',')
-                            .map(tag => (
-                                <span className="whitespace-nowrap rounded-md bg-red-500/40 px-1 py-0.5 text-xs odd:bg-cyan-500/40">
-                                    {tag}
-                                </span>
-                            ))
-                    )}
+                {tags}
             </div>
             <input
                 className="w-full rounded-md border border-zinc-600 bg-zinc-700 p-2 text-sm font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500"
