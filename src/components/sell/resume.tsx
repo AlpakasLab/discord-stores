@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { OrderCreateData, OrderCreateSchema } from '@/entities/order'
 import toast from 'react-hot-toast'
 import CheckboxInput from '../inputs/checkbox'
+import { useStoreContext } from '../store/context'
 
 type OrderResumeProps = {
     enableOrder: boolean
@@ -21,6 +22,8 @@ export default function OrderResume({
     enableOrder,
     storeId
 }: OrderResumeProps) {
+    const { themed } = useStoreContext()
+
     const { items, dispatchSell } = useSellContext()
 
     const total = useMemo(() => {
@@ -226,6 +229,9 @@ export default function OrderResume({
                             error={errors.discount?.message}
                         />
                         <CheckboxInput
+                            className={
+                                themed ? 'text-custom-primary' : undefined
+                            }
                             checked={isDelivery}
                             onChange={e => {
                                 setIsDelivery(e.target.checked)
@@ -249,7 +255,7 @@ export default function OrderResume({
                             component="button"
                             type="submit"
                             size="sm"
-                            color="success"
+                            color={themed ? 'custom-primary' : 'primary'}
                             text="Finalizar Venda"
                         />
                         {result && (

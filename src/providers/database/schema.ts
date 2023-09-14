@@ -72,7 +72,9 @@ export const stores = mysqlTable('stores', {
     name: varchar('name', { length: 255 }).notNull(),
     serverId: varchar('server_id', { length: 255 }).notNull().unique(),
     ownerId: varchar('owner_id', { length: 255 }).notNull(),
-    active: boolean('active').default(true)
+    active: boolean('active').default(true),
+    primaryColor: varchar('primary_color', { length: 8 }),
+    secondaryColor: varchar('secondary_color', { length: 8 })
 })
 
 export const products = mysqlTable('products', {
@@ -96,7 +98,8 @@ export const productCategories = mysqlTable('product_categories', {
 export const tags = mysqlTable('tags', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     name: varchar('name', { length: 255 }).notNull(),
-    storeId: varchar('store_id', { length: 255 }).notNull()
+    storeId: varchar('store_id', { length: 255 }).notNull(),
+    color: varchar('color', { length: 8 })
 })
 
 export const productsToTags = mysqlTable(

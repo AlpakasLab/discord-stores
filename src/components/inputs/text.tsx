@@ -17,7 +17,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                     <input
                         ref={ref}
                         data-error={error !== undefined}
-                        className="h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 disabled:cursor-not-allowed disabled:opacity-50 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700"
+                        className="h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-base font-normal text-white focus:border-zinc-600 focus:shadow-none focus:ring-transparent disabled:cursor-not-allowed disabled:opacity-50 data-[error=true]:bg-red-700/10"
                         {...rest}
                     />
                 </div>

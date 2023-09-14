@@ -4,6 +4,7 @@ import React, { useRef } from 'react'
 import ProductCard from './card'
 import ProductDetailDialog, { ProductDetailDialogHandles } from './detail'
 import CreateProductDialog, { CreateProductDialogHandles } from './create'
+import tinycolor from 'tinycolor2'
 
 type ProductsShowProps = {
     products: {
@@ -17,10 +18,19 @@ type ProductsShowProps = {
         tags: string
         store: string
     }[]
+    tagsColors: {
+        name: string
+        id: string
+        color: string | null
+    }[]
     isAdmin: boolean
 }
 
-export default function ProductsShow({ products, isAdmin }: ProductsShowProps) {
+export default function ProductsShow({
+    products,
+    tagsColors,
+    isAdmin
+}: ProductsShowProps) {
     const productDetailDialogRef = useRef<ProductDetailDialogHandles>(null)
     const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
 
@@ -58,6 +68,36 @@ export default function ProductsShow({ products, isAdmin }: ProductsShowProps) {
             rows.push(
                 <ProductCard
                     product={product}
+                    tags={
+                        React.Children.toArray(
+                            product.tags?.split(',').map(tag => {
+                                const tagData = tagsColors.find(
+                                    tagColor => tagColor.name === tag
+                                )
+
+                                return (
+                                    <span
+                                        style={
+                                            tagData && tagData.color
+                                                ? {
+                                                      backgroundColor:
+                                                          tagData.color,
+                                                      color: tinycolor(
+                                                          tagData.color
+                                                      ).isDark()
+                                                          ? '#FFF'
+                                                          : '#18181b'
+                                                  }
+                                                : undefined
+                                        }
+                                        className="rounded-md bg-red-500/40 px-1 py-0.5 text-xs odd:bg-cyan-500/40"
+                                    >
+                                        {tag}
+                                    </span>
+                                )
+                            })
+                        ) ?? []
+                    }
                     onProductClick={() =>
                         productDetailDialogRef.current?.open({
                             name: product.name,

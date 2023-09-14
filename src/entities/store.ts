@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const InsertStoreSchema = z.object({
+export const StoreSchema = z.object({
     name: z
         .string({
             required_error: 'Campo obrigatório',
@@ -43,5 +43,21 @@ export const RequestEntrySchema = z.object({
         .nonempty('Campo obrigatório')
 })
 
-export type InsertStoreData = z.infer<typeof InsertStoreSchema>
+export const StoreColorsSchema = z.object({
+    id: z.string({
+        required_error: 'Campo obrigatório',
+        invalid_type_error: 'ID inválido'
+    }),
+    primaryColor: z
+        .string({ invalid_type_error: 'Digite uma cor válida' })
+        .regex(/#[0-9a-fA-F]{6}/, 'A cor precisa ser em hexadecimal')
+        .optional(),
+    secondaryColor: z
+        .string({ invalid_type_error: 'Digite uma cor válida' })
+        .regex(/#[0-9a-fA-F]{6}/, 'A cor precisa ser em hexadecimal')
+        .optional()
+})
+
+export type StoreData = z.infer<typeof StoreSchema>
+export type StoreColorsData = z.infer<typeof StoreColorsSchema>
 export type RequestEntryData = z.infer<typeof RequestEntrySchema>

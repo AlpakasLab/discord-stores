@@ -16,6 +16,22 @@ const config: Config = {
         },
         fontFamily: {
             inter: ['var(--font-inter)', ...DefaultTheme.fontFamily.sans]
+        },
+        extend: {
+            colors: {
+                custom: {
+                    primary: 'rgb(var(--color-primary) / <alpha-value>)',
+                    primaryHover:
+                        'rgb(var(--color-primary-hover) / <alpha-value>)',
+                    primaryText:
+                        'rgb(var(--color-primary-text) / <alpha-value>)',
+                    secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+                    secondaryHover:
+                        'rgb(var(--color-secondary-hover) / <alpha-value>)',
+                    secondaryText:
+                        'rgb(var(--color-secondary-text) / <alpha-value>)'
+                }
+            }
         }
     },
     plugins: [HeadlessUi, TailwindForms]

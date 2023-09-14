@@ -3,6 +3,7 @@ import { db } from '@/providers/database/client'
 import {
     discordWebhooks,
     productCategories,
+    stores,
     tags,
     webhooksTemplates
 } from '@/providers/database/schema'
@@ -50,7 +51,8 @@ export async function getTags(store: string) {
         const tagsRegistred = await db
             .select({
                 name: tags.name,
-                id: tags.id
+                id: tags.id,
+                color: tags.color
             })
             .from(tags)
             .where(eq(tags.storeId, store))
@@ -89,6 +91,31 @@ export async function getWebhooks(store: string) {
         return hooksRegistred
     } catch (error) {
         throw new Error('Cannot get webhooks')
+    }
+}
+
+export async function getColors(store: string) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.role
+    )
+        throw new Error('User not authenticated')
+
+    try {
+        const colorsRegistred = await db
+            .select({
+                primaryColor: stores.primaryColor,
+                secondaryColor: stores.secondaryColor
+            })
+            .from(stores)
+            .where(eq(stores.id, store))
+
+        return colorsRegistred.at(0)
+    } catch (error) {
+        throw new Error('Cannot get colors')
     }
 }
 

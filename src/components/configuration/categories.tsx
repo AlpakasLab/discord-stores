@@ -13,6 +13,7 @@ import React, { useState } from 'react'
 import { FaSpinner, FaTimes } from 'react-icons/fa'
 import { Dialog } from '@headlessui/react'
 import toast from 'react-hot-toast'
+import { useStoreContext } from '../store/context'
 
 type CategoriesConfigurationProps = {
     categories: { id: string; name: string; order: number }[]
@@ -23,6 +24,7 @@ export default function CategoriesConfiguration({
     categories,
     store
 }: CategoriesConfigurationProps) {
+    const { themed } = useStoreContext()
     const router = useRouter()
 
     const {
@@ -101,7 +103,7 @@ export default function CategoriesConfiguration({
             <div className="mt-2 flex w-full flex-wrap items-start justify-start gap-2">
                 {React.Children.toArray(
                     categories.map(category => (
-                        <div className="flex w-fit items-center gap-x-1 rounded-md bg-slate-500 px-2 py-1 text-sm text-slate-200 odd:bg-slate-700">
+                        <div className="flex w-fit items-center gap-x-1 rounded-md bg-zinc-500 px-2 py-1 text-sm text-slate-200 odd:bg-zinc-700">
                             <p>
                                 {category.order > 0 && (
                                     <span>{category.order} |</span>
@@ -149,7 +151,7 @@ export default function CategoriesConfiguration({
                         disabled={isSubmitting || creating}
                         component="button"
                         type="submit"
-                        color="secondary"
+                        color={themed ? 'custom-primary' : 'secondary'}
                         size="sm"
                         text={creating ? 'Salvando' : 'Criar'}
                     />

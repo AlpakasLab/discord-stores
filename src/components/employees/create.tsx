@@ -242,7 +242,7 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
                                             creating ? 'Salvando...' : 'Salvar'
                                         }
                                         size="sm"
-                                        color="secondary"
+                                        color="primary"
                                     />
                                 </div>
                                 {result && (

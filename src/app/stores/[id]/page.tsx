@@ -5,6 +5,7 @@ import { SellContextProvider } from '@/components/sell/context'
 import OrderResume from '@/components/sell/resume'
 import { verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
+import { getTagsColors } from '@/services/tags'
 import { getServerSession } from 'next-auth'
 import React from 'react'
 
@@ -15,6 +16,7 @@ export default async function StoreDetail({
 }) {
     const session = await getServerSession(authOptions)
     const products = await getProducts(params.id)
+    const tagsColors = await getTagsColors(params.id)
     const enableOrder = await verifyOrderEnabled(params.id)
 
     return (
@@ -35,6 +37,7 @@ export default async function StoreDetail({
                     </header>
                     <ProductsShow
                         products={products}
+                        tagsColors={tagsColors}
                         isAdmin={session?.user.role === 'ADMIN'}
                     />
                 </div>

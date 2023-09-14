@@ -4,6 +4,7 @@ import Button from '@/components/inputs/button'
 import CheckboxInput from '@/components/inputs/checkbox'
 import SelectInput from '@/components/inputs/select'
 import TextInput from '@/components/inputs/text'
+import { useStoreContext } from '@/components/store/context'
 import {
     TempleateWebHookSchema,
     TempleateWebhookData
@@ -45,6 +46,7 @@ type SellWebhookTempleateProps = {
 export default function SellWebhookTempleate({
     webhook
 }: SellWebhookTempleateProps) {
+    const { themed } = useStoreContext()
     const router = useRouter()
 
     const [opened, setOpened] = useState(false)
@@ -127,7 +129,7 @@ export default function SellWebhookTempleate({
                 onClick={() => {
                     setOpened(true)
                 }}
-                color="secondary"
+                color={themed ? 'custom-secondary' : 'secondary'}
                 size="sm"
                 text="Customizar"
             />
@@ -239,6 +241,11 @@ export default function SellWebhookTempleate({
                                                 />
                                                 <div className="mt-7 flex h-full items-start">
                                                     <CheckboxInput
+                                                        className={
+                                                            themed
+                                                                ? 'text-custom-primary'
+                                                                : undefined
+                                                        }
                                                         {...register(
                                                             `fields.${index}.inline`
                                                         )}
@@ -292,7 +299,11 @@ export default function SellWebhookTempleate({
                                         type="submit"
                                         text={'Salvar'}
                                         size="sm"
-                                        color="secondary"
+                                        color={
+                                            themed
+                                                ? 'custom-primary'
+                                                : 'primary'
+                                        }
                                     />
                                 </div>
                             </form>

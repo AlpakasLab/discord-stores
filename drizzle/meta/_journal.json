@@ -57,6 +57,20 @@
       "when": 1694566523804,
       "tag": "0009_ambitious_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1694626699260,
+      "tag": "0010_minor_meteorite",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1694718552822,
+      "tag": "0011_square_thena",
+      "breakpoints": true
     }
   ]
 }

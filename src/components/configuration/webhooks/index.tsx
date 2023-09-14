@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useEffect, useState } from 'react'
 import { InsertWebHookData, InsertWebHookSchema } from '@/entities/webhook'
+import { useStoreContext } from '@/components/store/context'
 
 type WebHooksConfigurationProps = {
     webhooks: {
@@ -21,6 +22,7 @@ export default function WebHooksConfiguration({
     webhooks,
     store
 }: WebHooksConfigurationProps) {
+    const { themed } = useStoreContext()
     const router = useRouter()
 
     const {
@@ -105,7 +107,7 @@ export default function WebHooksConfiguration({
                 disabled={isSubmitting || creating}
                 component="button"
                 type="submit"
-                color="primary"
+                color={themed ? 'custom-primary' : 'primary'}
                 size="sm"
                 text={creating ? 'Salvando' : 'Salvar'}
             />

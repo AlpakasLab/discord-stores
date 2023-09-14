@@ -93,7 +93,7 @@ export default function SelectInput({
             >
                 <Listbox.Button
                     data-error={error !== undefined}
-                    className="form-select h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-left text-base font-normal text-white ring-transparent focus:border-zinc-600 focus:ring focus:ring-cyan-500 data-[error=true]:bg-red-700/10 data-[error=true]:ring-red-700 ui-disabled:cursor-not-allowed ui-disabled:opacity-50"
+                    className="form-select h-10 w-full rounded-md border border-zinc-600 bg-zinc-700 px-2.5 py-2 text-left text-base font-normal text-white focus:border-zinc-600 focus:shadow-none focus:ring-transparent data-[error=true]:bg-red-700/10 ui-disabled:cursor-not-allowed ui-disabled:opacity-50"
                 >
                     {selectedOption !== null &&
                         'label' in selectedOption &&
@@ -106,7 +106,7 @@ export default function SelectInput({
                     {React.Children.toArray(
                         options.map(option => (
                             <Listbox.Option
-                                className="flex cursor-pointer items-center gap-x-3 px-4 py-2 text-sm text-white transition-all duration-200 hover:bg-cyan-500 ui-disabled:cursor-not-allowed ui-disabled:bg-zinc-700 ui-disabled:opacity-50"
+                                className="flex cursor-pointer items-center gap-x-3 px-4 py-2 text-sm text-white transition-all duration-200 hover:bg-zinc-400 ui-disabled:cursor-not-allowed ui-disabled:bg-zinc-700 ui-disabled:opacity-50"
                                 value={option}
                                 disabled={option.disabled === true}
                             >
