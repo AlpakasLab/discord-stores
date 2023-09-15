@@ -111,7 +111,8 @@ const ProductDetailDialog = React.forwardRef<
                                     </p>
                                     {numberToMoney(dialogData.product.price)}
                                 </div>
-                                {dialogData.product.promotionalPrice && (
+                                {dialogData.product.promotionalPrice !==
+                                    null && (
                                     <div className=" w-full text-left text-zinc-200">
                                         <p className="font-semibold text-zinc-600">
                                             Preço Promocional

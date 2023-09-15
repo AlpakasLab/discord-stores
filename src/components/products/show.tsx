@@ -69,32 +69,35 @@ export default function ProductsShow({
                     product={product}
                     tags={
                         React.Children.toArray(
-                            product.tags?.split(',').map(tag => {
-                                const tagData = tagsColors.find(
-                                    tagColor => tagColor.name === tag
-                                )
+                            product.tags
+                                ?.split(',')
+                                .sort()
+                                .map(tag => {
+                                    const tagData = tagsColors.find(
+                                        tagColor => tagColor.name === tag
+                                    )
 
-                                return (
-                                    <span
-                                        style={
-                                            tagData && tagData.color
-                                                ? {
-                                                      backgroundColor:
-                                                          tagData.color,
-                                                      color: tinycolor(
-                                                          tagData.color
-                                                      ).isDark()
-                                                          ? '#FFF'
-                                                          : '#18181b'
-                                                  }
-                                                : undefined
-                                        }
-                                        className="rounded-md bg-red-500/40 px-1 py-0.5 text-xs odd:bg-cyan-500/40"
-                                    >
-                                        {tag}
-                                    </span>
-                                )
-                            })
+                                    return (
+                                        <span
+                                            style={
+                                                tagData && tagData.color
+                                                    ? {
+                                                          backgroundColor:
+                                                              tagData.color,
+                                                          color: tinycolor(
+                                                              tagData.color
+                                                          ).isDark()
+                                                              ? '#FFF'
+                                                              : '#18181b'
+                                                      }
+                                                    : undefined
+                                            }
+                                            className="rounded-md bg-red-500/40 px-1 py-0.5 text-xs odd:bg-cyan-500/40"
+                                        >
+                                            {tag}
+                                        </span>
+                                    )
+                                })
                         ) ?? []
                     }
                     onProductClick={() =>

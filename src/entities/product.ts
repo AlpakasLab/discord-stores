@@ -45,7 +45,7 @@ export const ProductSchema = z
             val => {
                 if (typeof val === 'string') {
                     if (val.trim().length <= 0) {
-                        return undefined
+                        return null
                     }
                     return Number(val)
                 }
@@ -57,7 +57,7 @@ export const ProductSchema = z
                     invalid_type_error: 'Digite um preço válido'
                 })
                 .min(0)
-                .optional()
+                .nullable()
         ),
         image: z.preprocess(
             val => (String(val).length <= 0 ? undefined : val),

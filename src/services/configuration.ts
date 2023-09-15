@@ -56,6 +56,7 @@ export async function getTags(store: string) {
             })
             .from(tags)
             .where(eq(tags.storeId, store))
+            .orderBy(asc(tags.name))
 
         return tagsRegistred
     } catch (error) {

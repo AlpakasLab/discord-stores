@@ -77,7 +77,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
             opened: false
         })
 
-        const createProduct = async (data: ProductData) => {
+        const saveProduct = async (data: ProductData) => {
             setResult(null)
             setCreating(true)
 
@@ -134,7 +134,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setValue('id', product.id)
                     setProductId(product.id)
                     setValue('price', product.price)
-                    if (product.promotionalPrice)
+                    if (product.promotionalPrice !== null)
                         setValue('promotionalPrice', product.promotionalPrice)
                     setLoadedProductInitialData(false)
                 }
@@ -265,7 +265,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                             </div>
                         ) : (
                             <form
-                                onSubmit={handleSubmit(createProduct)}
+                                onSubmit={handleSubmit(saveProduct)}
                                 className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5"
                             >
                                 <TextInput

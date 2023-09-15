@@ -68,7 +68,7 @@ export default function ProductCard({
                     {product.name}
                 </p>
                 <p className="flex w-full flex-col text-left text-sm font-semibold text-green-600 sm:text-base">
-                    {product.promotionalPrice ? (
+                    {product.promotionalPrice !== null ? (
                         <>
                             <span className="text-xs text-zinc-500 line-through">
                                 {numberToMoney(product.price)}
