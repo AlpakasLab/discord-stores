@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../auth/[...nextauth]/route'
-import { InsertProductSchema } from '@/entities/product'
+import { ProductSchema } from '@/entities/product'
 import { db } from '@/providers/database/client'
 import { products, productsToTags, tags } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
@@ -69,7 +69,7 @@ export async function PUT(request: NextRequest) {
         )
 
     const data = await request.json()
-    const parsedBody = InsertProductSchema.safeParse(data)
+    const parsedBody = ProductSchema.safeParse(data)
 
     if (parsedBody.success && parsedBody.data.id) {
         const productId = parsedBody.data.id
@@ -77,11 +77,13 @@ export async function PUT(request: NextRequest) {
         await db
             .update(products)
             .set({
+                active: parsedBody.data.active,
                 name: parsedBody.data.name,
                 description: parsedBody.data.description,
                 categoryId: parsedBody.data.category,
                 image: parsedBody.data.image,
-                price: parsedBody.data.price
+                price: parsedBody.data.price,
+                promotionalPrice: parsedBody.data.promotionalPrice
             })
             .where(eq(products.id, productId))
 
@@ -123,7 +125,7 @@ export async function POST(request: NextRequest) {
         )
 
     const data = await request.json()
-    const parsedBody = InsertProductSchema.safeParse(data)
+    const parsedBody = ProductSchema.safeParse(data)
 
     if (parsedBody.success) {
         const newProductId = crypto.randomUUID()
@@ -131,7 +133,9 @@ export async function POST(request: NextRequest) {
         await db.insert(products).values({
             id: newProductId,
             name: parsedBody.data.name,
+            active: parsedBody.data.active,
             price: parsedBody.data.price,
+            promotionalPrice: parsedBody.data.promotionalPrice,
             description: parsedBody.data.description,
             image: parsedBody.data.image,
             storeId: parsedBody.data.store,

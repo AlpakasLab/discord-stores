@@ -6,13 +6,14 @@ import React, { useEffect, useImperativeHandle } from 'react'
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import TextInput from '../inputs/text'
-import { InsertProductData, InsertProductSchema } from '@/entities/product'
+import { ProductData, ProductSchema } from '@/entities/product'
 import { useRouter } from 'next/navigation'
 import Button from '../inputs/button'
 import SelectInput from '../inputs/select'
 import { FaSpinner } from 'react-icons/fa'
 import MessageInput from '../inputs/mensagem'
 import { useStoreContext } from '../store/context'
+import CheckboxInput from '../inputs/checkbox'
 
 export type CreateProductDialogHandles = {
     open: (storeId: string) => void
@@ -21,6 +22,7 @@ export type CreateProductDialogHandles = {
         name: string
         description: string | null
         price: number
+        promotionalPrice: number | null
         image: string | null
         active: boolean
         category: string
@@ -41,8 +43,11 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
             setValue,
             resetField,
             formState: { errors, isSubmitting }
-        } = useForm<InsertProductData>({
-            resolver: zodResolver(InsertProductSchema)
+        } = useForm<ProductData>({
+            resolver: zodResolver(ProductSchema),
+            defaultValues: {
+                active: true
+            }
         })
 
         const [categories, setCategories] = useState<
@@ -72,7 +77,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
             opened: false
         })
 
-        const createProduct = async (data: InsertProductData) => {
+        const createProduct = async (data: ProductData) => {
             setResult(null)
             setCreating(true)
 
@@ -121,6 +126,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setIsEditing(true)
                     setStoreId(product.store)
                     setValue('store', product.store)
+                    setValue('active', product.active)
                     setValue('name', product.name)
                     if (product.description)
                         setValue('description', product.description)
@@ -128,6 +134,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setValue('id', product.id)
                     setProductId(product.id)
                     setValue('price', product.price)
+                    if (product.promotionalPrice)
+                        setValue('promotionalPrice', product.promotionalPrice)
                     setLoadedProductInitialData(false)
                 }
             }
@@ -290,17 +298,19 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                     {...register('price')}
                                     label="Preço:"
                                     type="number"
+                                    min={0}
                                     autoComplete="none"
                                     placeholder="250"
                                     error={errors.price?.message}
                                 />
                                 <TextInput
-                                    {...register('image')}
-                                    label="Imagem:"
-                                    type="url"
+                                    {...register('promotionalPrice')}
+                                    label="Preço Promocional:"
+                                    type="number"
                                     autoComplete="none"
-                                    placeholder="https://i.imgur.com/......jpeg"
-                                    error={errors.image?.message}
+                                    placeholder="150"
+                                    min={0}
+                                    error={errors.promotionalPrice?.message}
                                 />
                                 <div className="col-span-full">
                                     <MessageInput
@@ -310,32 +320,48 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                         error={errors.description?.message}
                                     />
                                 </div>
-
-                                <div className="col-span-full">
-                                    <SelectInput
-                                        label="Tags:"
-                                        mode="multi"
-                                        defaultOption={tagsDefaultValue}
-                                        options={tags}
-                                        onSelectOption={options => {
-                                            if (options) {
-                                                setValue(
-                                                    'tags',
-                                                    options.map(
-                                                        item => item.value
-                                                    ),
-                                                    {
-                                                        shouldValidate: true
-                                                    }
-                                                )
-                                            } else {
-                                                resetField('tags', {
-                                                    keepError: false
-                                                })
-                                            }
-                                        }}
-                                        error={errors.tags?.message}
-                                    />
+                                <TextInput
+                                    {...register('image')}
+                                    label="Imagem:"
+                                    type="url"
+                                    autoComplete="none"
+                                    placeholder="https://i.imgur.com/......jpeg"
+                                    error={errors.image?.message}
+                                />
+                                <SelectInput
+                                    label="Tags:"
+                                    mode="multi"
+                                    defaultOption={tagsDefaultValue}
+                                    options={tags}
+                                    onSelectOption={options => {
+                                        if (options) {
+                                            setValue(
+                                                'tags',
+                                                options.map(item => item.value),
+                                                {
+                                                    shouldValidate: true
+                                                }
+                                            )
+                                        } else {
+                                            resetField('tags', {
+                                                keepError: false
+                                            })
+                                        }
+                                    }}
+                                    error={errors.tags?.message}
+                                />
+                                <div className="flex h-full w-full items-center">
+                                    <CheckboxInput
+                                        className={
+                                            themed
+                                                ? 'text-custom-primary'
+                                                : undefined
+                                        }
+                                        {...register('active')}
+                                        error={errors.active?.message}
+                                    >
+                                        Habilitar produto para vendas
+                                    </CheckboxInput>
                                 </div>
                                 <div className="col-span-full flex items-center justify-center">
                                     <Button

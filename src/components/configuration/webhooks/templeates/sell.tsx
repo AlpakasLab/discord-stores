@@ -23,6 +23,7 @@ export const SELL_TEMPLEATE_FIELDS = {
     items: 'Lista de Items',
     'discount-percentage': '% Desconto',
     total: 'Valor Total',
+    'total-client': 'Valor Cliente',
     delivery: 'Valor do Delivery',
     comission: 'Comissão da Loja'
 }

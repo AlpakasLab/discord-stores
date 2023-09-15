@@ -12,6 +12,7 @@ type ProductsShowProps = {
         name: string
         description: string | null
         price: number
+        promotionalPrice: number | null
         image: string | null
         active: boolean
         category: string
@@ -102,6 +103,7 @@ export default function ProductsShow({
                             category: product.category,
                             description: product.description,
                             price: product.price,
+                            promotionalPrice: product.promotionalPrice,
                             tags: product.tags,
                             id: product.id
                         })

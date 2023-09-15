@@ -12,6 +12,7 @@ import { OrderCreateData, OrderCreateSchema } from '@/entities/order'
 import toast from 'react-hot-toast'
 import CheckboxInput from '../inputs/checkbox'
 import { useStoreContext } from '../store/context'
+import { useRouter } from 'next/navigation'
 
 type OrderResumeProps = {
     enableOrder: boolean
@@ -23,6 +24,7 @@ export default function OrderResume({
     storeId
 }: OrderResumeProps) {
     const { themed } = useStoreContext()
+    const router = useRouter()
 
     const { items, dispatchSell } = useSellContext()
 
@@ -78,6 +80,7 @@ export default function OrderResume({
                 dispatchSell('RESET')
                 toast.success('Venda Registrada!')
                 setIsDelivery(false)
+                router.refresh()
             }
         } catch (e) {
             setResult('Não foi possível realizar o pedido :(')

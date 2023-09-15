@@ -85,6 +85,7 @@ export const products = mysqlTable('products', {
     image: varchar('image', { length: 255 }),
     categoryId: varchar('category_id', { length: 255 }).notNull(),
     active: boolean('active').default(true).notNull(),
+    promotionalPrice: int('promotional_price'),
     storeId: varchar('store_id', { length: 255 }).notNull()
 })
 

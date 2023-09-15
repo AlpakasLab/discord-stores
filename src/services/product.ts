@@ -6,7 +6,7 @@ import {
     productsToTags,
     tags
 } from '@/providers/database/schema'
-import { asc, desc, eq, sql } from 'drizzle-orm'
+import { asc, eq, sql } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 
 export async function getProducts(store: string) {
@@ -26,6 +26,7 @@ export async function getProducts(store: string) {
                 name: products.name,
                 description: products.description,
                 price: products.price,
+                promotionalPrice: products.promotionalPrice,
                 image: products.image,
                 active: products.active,
                 category: productCategories.name,

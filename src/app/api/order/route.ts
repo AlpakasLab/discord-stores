@@ -171,7 +171,13 @@ export async function POST(request: NextRequest) {
                         : numberToMoney(total),
                 delivery: parsedBody.data.delivery
                     ? numberToMoney(parsedBody.data.delivery)
-                    : undefined
+                    : undefined,
+                'total-client':
+                    parsedBody.data.discount && discountTotal
+                        ? numberToMoney(
+                              discountTotal + (parsedBody.data.delivery ?? 0)
+                          )
+                        : numberToMoney(total + (parsedBody.data.delivery ?? 0))
             },
             orderId
         )

@@ -13,6 +13,7 @@ export type ProductDetailDialogHandles = {
         name: string
         description: string | null
         price: number
+        promotionalPrice: number | null
         category: string
         tags: string
         id: string
@@ -35,6 +36,7 @@ const ProductDetailDialog = React.forwardRef<
             name: string
             description: string | null
             price: number
+            promotionalPrice: number | null
             category: string
             tags: string
             id: string
@@ -69,7 +71,7 @@ const ProductDetailDialog = React.forwardRef<
             <div className="fixed inset-0 bg-black/75" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <Dialog.Panel className="relative flex w-full max-w-md flex-col items-center rounded bg-zinc-800 p-5 text-white">
+                <Dialog.Panel className="relative flex w-full max-w-lg flex-col items-center rounded bg-zinc-800 p-5 text-white">
                     {dialogData.product && (
                         <>
                             {isManager && (
@@ -93,7 +95,7 @@ const ProductDetailDialog = React.forwardRef<
                                 {dialogData.product.name}
                             </Dialog.Title>
 
-                            <div className="mb-5 grid w-full grid-cols-2 gap-2">
+                            <div className="mb-5 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                                 {
                                     <div className="col-span-full w-full text-left text-zinc-200">
                                         <p className="font-semibold text-zinc-600">
@@ -109,6 +111,16 @@ const ProductDetailDialog = React.forwardRef<
                                     </p>
                                     {numberToMoney(dialogData.product.price)}
                                 </div>
+                                {dialogData.product.promotionalPrice && (
+                                    <div className=" w-full text-left text-zinc-200">
+                                        <p className="font-semibold text-zinc-600">
+                                            Preço Promocional
+                                        </p>
+                                        {numberToMoney(
+                                            dialogData.product.promotionalPrice
+                                        )}
+                                    </div>
+                                )}
                                 <div className=" w-full text-left text-zinc-200">
                                     <p className="font-semibold text-zinc-600">
                                         Categoria
