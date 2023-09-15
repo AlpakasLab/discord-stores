@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
             .select({
                 id: accounts.userId,
                 employee: employees.name,
+                employeeId: employees.id,
                 comission: employeeRoles.comission,
                 store: employees.storeId
             })
@@ -149,7 +150,8 @@ export async function POST(request: NextRequest) {
                     unitPrice: item.unitPrice
                 }))
             },
-            storeId: user.store
+            storeId: user.store,
+            employeeId: user.employeeId
         })
 
         const result = await sendOrderMessage(
