@@ -11,6 +11,7 @@ import Button from '@/components/inputs/button'
 import { EmployeeData, EmployeeSchema } from '@/entities/employee'
 import SelectInput from '../inputs/select'
 import { FaSpinner } from 'react-icons/fa'
+import { useStoreContext } from '../store/context'
 
 export type CreateEmployeeDialogHandles = {
     edit: (employee: {
@@ -25,6 +26,7 @@ export type CreateEmployeeDialogHandles = {
 
 const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
     (_, ref) => {
+        const { themed } = useStoreContext()
         const router = useRouter()
 
         const {
@@ -219,7 +221,16 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
                                     mode="single"
                                     label="Cargo:"
                                     defaultOption={roleDefaultValue}
-                                    options={roles}
+                                    options={roles.map(role => {
+                                        if (role.label === 'Proprietário') {
+                                            return {
+                                                ...role,
+                                                disabled: true
+                                            }
+                                        } else {
+                                            return role
+                                        }
+                                    })}
                                     onSelectOption={option => {
                                         if (option) {
                                             setValue('role', option.value, {
@@ -242,7 +253,11 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
                                             creating ? 'Salvando...' : 'Salvar'
                                         }
                                         size="sm"
-                                        color="primary"
+                                        color={
+                                            themed
+                                                ? 'custom-primary'
+                                                : 'primary'
+                                        }
                                     />
                                 </div>
                                 {result && (

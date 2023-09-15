@@ -23,13 +23,11 @@ type ProductsShowProps = {
         id: string
         color: string | null
     }[]
-    isAdmin: boolean
 }
 
 export default function ProductsShow({
     products,
-    tagsColors,
-    isAdmin
+    tagsColors
 }: ProductsShowProps) {
     const productDetailDialogRef = useRef<ProductDetailDialogHandles>(null)
     const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
@@ -122,7 +120,6 @@ export default function ProductsShow({
             </div>
             <ProductDetailDialog
                 ref={productDetailDialogRef}
-                isAdmin={isAdmin}
                 onEditClick={id => {
                     const product = products.find(item => item.id === id)
                     if (product) createProductDialogRef.current?.edit(product)

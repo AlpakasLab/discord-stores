@@ -20,15 +20,14 @@ export type ProductDetailDialogHandles = {
 }
 
 type ProductDetailDialogProps = {
-    isAdmin: boolean
     onEditClick: (id: string) => void
 }
 
 const ProductDetailDialog = React.forwardRef<
     ProductDetailDialogHandles,
     ProductDetailDialogProps
->(({ isAdmin, onEditClick }, ref) => {
-    const { themed } = useStoreContext()
+>(({ onEditClick }, ref) => {
+    const { themed, isManager } = useStoreContext()
 
     const [dialogData, setDialogData] = useState<{
         opened: boolean
@@ -73,7 +72,7 @@ const ProductDetailDialog = React.forwardRef<
                 <Dialog.Panel className="relative flex w-full max-w-md flex-col items-center rounded bg-zinc-800 p-5 text-white">
                     {dialogData.product && (
                         <>
-                            {isAdmin && (
+                            {isManager && (
                                 <button
                                     onClick={() => {
                                         if (dialogData.product)

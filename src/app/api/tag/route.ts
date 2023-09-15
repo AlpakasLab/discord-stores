@@ -44,8 +44,7 @@ export async function GET(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },

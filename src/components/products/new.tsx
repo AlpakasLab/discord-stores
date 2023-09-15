@@ -9,7 +9,9 @@ import { useStoreContext } from '../store/context'
 export default function NewProduct() {
     const params = useParams()
     const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
-    const { themed } = useStoreContext()
+    const { themed, isManager } = useStoreContext()
+
+    if (!isManager) return null
 
     return (
         <>

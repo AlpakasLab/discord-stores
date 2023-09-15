@@ -13,8 +13,7 @@ export async function GET(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
@@ -45,8 +44,7 @@ export async function POST(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
@@ -57,6 +55,13 @@ export async function POST(request: NextRequest) {
     const parsedBody = EmployeeRoleSchema.safeParse(data)
 
     if (parsedBody.success) {
+        if (parsedBody.data.name === 'Proprietário') {
+            return NextResponse.json(
+                { error: 'Operation not authorized' },
+                { status: 401 }
+            )
+        }
+
         await db.insert(employeeRoles).values({
             id: crypto.randomUUID(),
             name: parsedBody.data.name,
@@ -78,8 +83,7 @@ export async function PUT(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
@@ -90,6 +94,13 @@ export async function PUT(request: NextRequest) {
     const parsedBody = EmployeeRoleSchema.safeParse(data)
 
     if (parsedBody.success && parsedBody.data.id) {
+        if (parsedBody.data.name === 'Proprietário') {
+            return NextResponse.json(
+                { error: 'Operation not authorized' },
+                { status: 401 }
+            )
+        }
+
         await db
             .update(employeeRoles)
             .set({

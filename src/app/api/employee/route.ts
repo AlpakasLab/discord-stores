@@ -5,6 +5,7 @@ import { db } from '@/providers/database/client'
 import {
     accounts,
     discordWebhooks,
+    employeeRoles,
     employees
 } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
@@ -18,8 +19,7 @@ export async function PUT(request: NextRequest) {
         !session.user ||
         !session.user.discord ||
         !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
+        !session.user.role
     )
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
@@ -31,9 +31,18 @@ export async function PUT(request: NextRequest) {
 
     if (parsedBody.success && parsedBody.data.id) {
         const lastUpdateEmployees = await db
-            .select({ status: employees.status, store: employees.storeId })
+            .select({
+                status: employees.status,
+                name: employees.name,
+                role: employeeRoles.name,
+                store: employees.storeId
+            })
             .from(employees)
             .where(eq(employees.id, parsedBody.data.id))
+            .innerJoin(
+                employeeRoles,
+                eq(employeeRoles.id, employees.employeeRoleId)
+            )
         const lastUpdateEmployee = lastUpdateEmployees.at(0)
 
         if (lastUpdateEmployee) {
@@ -57,18 +66,32 @@ export async function PUT(request: NextRequest) {
                     )
                 )
 
+            const roleToUpdate = await db
+                .select({ name: employeeRoles.name })
+                .from(employeeRoles)
+                .where(eq(employeeRoles.id, parsedBody.data.role))
+
+            const role = roleToUpdate.at(0)
             const logsHook = hooksRegistred.at(0)
             const user = userRegisters.at(0)
 
-            if (logsHook && user) {
+            if (logsHook && user && role) {
                 await sendLogsMessage(
                     logsHook.url,
                     '**Funcionário atualizado**',
-                    `Funcionário(a) \`${parsedBody.data.name}\` foi ${
+                    `Funcionário(a) \`${lastUpdateEmployee.name} - ${
+                        lastUpdateEmployee.role
+                    } (${
+                        lastUpdateEmployee.status === 'ACTIVE'
+                            ? 'Ativo'
+                            : 'Desativado'
+                    })\` foi alterado para \`${parsedBody.data.name} - ${
+                        role.name
+                    } (${
                         parsedBody.data.status === 'ACTIVE'
-                            ? 'ativado'
-                            : 'bloqueado'
-                    } por \`${user.employee}\``
+                            ? 'Ativo'
+                            : 'Desativado'
+                    })\` por \`${user.employee}\``
                 )
             }
         }

@@ -3,6 +3,7 @@
 import React, { useRef } from 'react'
 import { FaPencilAlt } from 'react-icons/fa'
 import CreateEmployeeDialog, { CreateEmployeeDialogHandles } from './create'
+import { useStoreContext } from '../store/context'
 
 type ShowEmployeesProps = {
     employees: {
@@ -16,6 +17,8 @@ type ShowEmployeesProps = {
 }
 
 export default function ShowEmployees({ employees }: ShowEmployeesProps) {
+    const { isManager } = useStoreContext()
+
     const createEmployeeDialogRef = useRef<CreateEmployeeDialogHandles>(null)
 
     return (
@@ -59,6 +62,7 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
                                 </td>
                                 <td className="py-2 pl-1 pr-2 text-end text-sm text-zinc-300">
                                     <button
+                                        disabled={!isManager}
                                         type="button"
                                         onClick={() =>
                                             createEmployeeDialogRef.current?.edit(

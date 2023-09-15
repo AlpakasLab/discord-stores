@@ -14,12 +14,10 @@ export const EmployeeSchema = z.object({
     status: z.enum(['ACTIVE', 'DISABLED', 'PENDING'], {
         required_error: 'Campo obrigatório'
     }),
-    role: z
-        .string({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Escolha um cargo válido'
-        })
-        .optional()
+    role: z.string({
+        required_error: 'Campo obrigatório',
+        invalid_type_error: 'Escolha um cargo válido'
+    })
 })
 
 export type EmployeeData = z.infer<typeof EmployeeSchema>

@@ -38,7 +38,7 @@ export default function StoresShow({ stores }: StoresShowProps) {
                                     } else {
                                         if (store.employee === 'ACTIVE') {
                                             router.push(`/stores/${store.id}/`)
-                                        } else {
+                                        } else if (store.employee === null) {
                                             requestEntryDialogRef.current?.open(
                                                 store.id
                                             )

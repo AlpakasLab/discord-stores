@@ -1,10 +1,9 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { StoreContextProvider } from '@/components/store/context'
-import { MenuItem } from '@/components/store/menu'
+import Menu from '@/components/store/menu'
 import { getStoreName } from '@/services/stores'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
-import { FaCog, FaHamburger, FaUsers } from 'react-icons/fa'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -32,35 +31,10 @@ export default async function StoreLayout({
                             {storeName}
                         </Link>
                         <span>/</span>
-                        <ul className="flex h-full items-center justify-start">
-                            <li>
-                                <MenuItem
-                                    title="Produtos"
-                                    route={`/stores/${params.id}/`}
-                                    icon={<FaHamburger className="text-lg" />}
-                                />
-                            </li>
-                            {session && session.user.role === 'ADMIN' && (
-                                <>
-                                    <li>
-                                        <MenuItem
-                                            title="Funcionarios"
-                                            route={`/stores/${params.id}/employees/`}
-                                            icon={
-                                                <FaUsers className="text-lg" />
-                                            }
-                                        />
-                                    </li>
-                                    <li>
-                                        <MenuItem
-                                            title="Configurações"
-                                            route={`/stores/${params.id}/configuration/`}
-                                            icon={<FaCog className="text-lg" />}
-                                        />
-                                    </li>
-                                </>
-                            )}
-                        </ul>
+                        <Menu
+                            isAdmin={session?.user.role === 'ADMIN'}
+                            storeId={params.id}
+                        />
                     </div>
                 </header>
                 {children}

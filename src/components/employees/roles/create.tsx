@@ -60,7 +60,7 @@ const CreateEmployeeRoleDialog =
             reset()
         }
 
-        const createProduct = async (data: EmployeeRoleData) => {
+        const createRole = async (data: EmployeeRoleData) => {
             setResult(null)
             setCreating(true)
 
@@ -129,7 +129,7 @@ const CreateEmployeeRoleDialog =
                         </Dialog.Title>
 
                         <form
-                            onSubmit={handleSubmit(createProduct)}
+                            onSubmit={handleSubmit(createRole)}
                             className="grid w-full grid-cols-2 gap-5"
                         >
                             <TextInput

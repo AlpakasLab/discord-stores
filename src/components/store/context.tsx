@@ -18,6 +18,7 @@ type StoreThemeColors = {
 
 type StoreContextData = {
     themed: boolean
+    isManager: boolean
 }
 
 const StoreContext = createContext<null | StoreContextData>(null)
@@ -36,6 +37,7 @@ export const StoreContextProvider = ({
         primary: null,
         secondary: null
     })
+    const [isManager, setIsManager] = useState(false)
 
     const getStoreConfiguration = async (id: string) => {
         const request = await fetch(
@@ -71,8 +73,19 @@ export const StoreContextProvider = ({
                 }
             })
         }
+    }
 
-        setLoaded(true)
+    const getEmployeeRole = async () => {
+        const request = await fetch(
+            `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/me`
+        )
+        if (!request.ok)
+            throw new Error('Cannot user information, retry later.')
+        const data = await request.json()
+
+        if (data.manager) {
+            setIsManager(true)
+        }
     }
 
     const removeCSSVariables = () => {
@@ -138,11 +151,15 @@ export const StoreContextProvider = ({
     useEffect(() => {
         if (!loaded) {
             getStoreConfiguration(storeId)
+            getEmployeeRole()
+            setLoaded(true)
         }
     }, [loaded, storeId])
 
     return (
-        <StoreContext.Provider value={{ themed: colors.primary !== null }}>
+        <StoreContext.Provider
+            value={{ themed: colors.primary !== null, isManager }}
+        >
             {children}
         </StoreContext.Provider>
     )

@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import NewProduct from '@/components/products/new'
 import ProductsShow from '@/components/products/show'
 import { SellContextProvider } from '@/components/sell/context'
@@ -6,7 +5,6 @@ import OrderResume from '@/components/sell/resume'
 import { verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
 import { getTagsColors } from '@/services/tags'
-import { getServerSession } from 'next-auth'
 import React from 'react'
 
 export default async function StoreDetail({
@@ -14,7 +12,6 @@ export default async function StoreDetail({
 }: {
     params: { id: string }
 }) {
-    const session = await getServerSession(authOptions)
     const products = await getProducts(params.id)
     const tagsColors = await getTagsColors(params.id)
     const enableOrder = await verifyOrderEnabled(params.id)
@@ -28,18 +25,12 @@ export default async function StoreDetail({
                             Produtos ({products.length})
                         </p>
                         <div className="flex items-center gap-x-5">
-                            {session && session.user.role === 'ADMIN' && (
-                                <div className="max-w-[10rem]">
-                                    <NewProduct />
-                                </div>
-                            )}
+                            <div className="max-w-[10rem]">
+                                <NewProduct />
+                            </div>
                         </div>
                     </header>
-                    <ProductsShow
-                        products={products}
-                        tagsColors={tagsColors}
-                        isAdmin={session?.user.role === 'ADMIN'}
-                    />
+                    <ProductsShow products={products} tagsColors={tagsColors} />
                 </div>
                 <OrderResume enableOrder={enableOrder} storeId={params.id} />
             </SellContextProvider>
