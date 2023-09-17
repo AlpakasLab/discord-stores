@@ -1,10 +1,15 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ProductCard from './card'
 import ProductDetailDialog, { ProductDetailDialogHandles } from './detail'
 import CreateProductDialog, { CreateProductDialogHandles } from './create'
 import tinycolor from 'tinycolor2'
+import Button from '../inputs/button'
+import { useStoreContext } from '../store/context'
+import TextInput from '../inputs/text'
+import SelectInput from '../inputs/select'
+import { FaRegTimesCircle } from 'react-icons/fa'
 
 type ProductsShowProps = {
     products: {
@@ -24,19 +29,42 @@ type ProductsShowProps = {
         id: string
         color: string | null
     }[]
+    storeId: string
 }
 
 export default function ProductsShow({
     products,
-    tagsColors
+    tagsColors,
+    storeId
 }: ProductsShowProps) {
+    const { themed, isManager } = useStoreContext()
     const productDetailDialogRef = useRef<ProductDetailDialogHandles>(null)
     const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
 
-    const getProductsWithCategories = () => {
+    const [filters, setFilters] = useState({
+        name: '',
+        category: 'all'
+    })
+
+    const getProductsWithCategories = useCallback(() => {
         if (products.length <= 0) return []
 
-        let lastCategory = products[0].category
+        const filteredProducts = products.filter(product =>
+            product.name
+                .toLocaleLowerCase()
+                .includes(filters.name.toLocaleLowerCase())
+        )
+
+        if (filteredProducts.length <= 0) {
+            return (
+                <div className="col-span-full flex w-full items-center justify-center gap-x-2 py-10 text-left text-xl font-semibold text-zinc-600">
+                    <FaRegTimesCircle />
+                    <p>Sem Resultados</p>
+                </div>
+            )
+        }
+
+        let lastCategory = filteredProducts[0].category
 
         const rows: React.ReactNode[] = [
             <div
@@ -48,7 +76,7 @@ export default function ProductsShow({
             </div>
         ]
 
-        products.forEach(product => {
+        filteredProducts.forEach(product => {
             if (lastCategory !== product.category) {
                 lastCategory = product.category
                 rows.push(
@@ -116,10 +144,54 @@ export default function ProductsShow({
         })
 
         return rows
-    }
+    }, [filters])
 
     return (
         <>
+            <header className="z-10 flex w-full items-center justify-between bg-zinc-900 pb-5">
+                <p className="text-lg font-bold sm:text-xl">
+                    Produtos ({products.length})
+                </p>
+                <div className="flex items-center gap-x-5">
+                    {/* <SelectInput
+                        mode="single"
+                        defaultOption={'all'}
+                        options={[
+                            {
+                                label: 'Todas Categorias',
+                                value: 'all'
+                            }
+                        ]}
+                    /> */}
+                    <TextInput
+                        onChange={e =>
+                            setFilters(old => ({
+                                ...old,
+                                name: e.target.value.trim()
+                            }))
+                        }
+                        placeholder="Nome do Produto"
+                    />
+                    {isManager && (
+                        <div className="max-w-[10rem]">
+                            <Button
+                                component="button"
+                                type="button"
+                                text="Cadastrar"
+                                size="sm"
+                                color={
+                                    themed ? 'custom-secondary' : 'secondary'
+                                }
+                                onClick={() =>
+                                    createProductDialogRef.current?.open(
+                                        storeId
+                                    )
+                                }
+                            />
+                        </div>
+                    )}
+                </div>
+            </header>
             <div className="grid h-full flex-grow grid-cols-2 place-items-stretch gap-3 pb-10 sm:grid-cols-3 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {React.Children.toArray(getProductsWithCategories())}
             </div>

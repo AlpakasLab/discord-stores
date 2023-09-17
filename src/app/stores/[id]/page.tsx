@@ -1,4 +1,3 @@
-import NewProduct from '@/components/products/new'
 import ProductsShow from '@/components/products/show'
 import { SellContextProvider } from '@/components/sell/context'
 import OrderResume from '@/components/sell/resume'
@@ -20,17 +19,11 @@ export default async function StoreDetail({
         <div className="container relative flex h-full w-full flex-grow flex-row items-stretch justify-stretch">
             <SellContextProvider>
                 <div className="h-full w-full flex-grow pb-10 pr-2 pt-5 lg:pr-5">
-                    <header className="z-10 flex w-full items-center justify-between bg-zinc-900 pb-5">
-                        <p className="text-lg font-bold sm:text-xl">
-                            Produtos ({products.length})
-                        </p>
-                        <div className="flex items-center gap-x-5">
-                            <div className="max-w-[10rem]">
-                                <NewProduct />
-                            </div>
-                        </div>
-                    </header>
-                    <ProductsShow products={products} tagsColors={tagsColors} />
+                    <ProductsShow
+                        products={products}
+                        tagsColors={tagsColors}
+                        storeId={params.id}
+                    />
                 </div>
                 <OrderResume enableOrder={enableOrder} storeId={params.id} />
             </SellContextProvider>
