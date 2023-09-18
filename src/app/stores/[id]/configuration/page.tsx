@@ -10,11 +10,16 @@ import {
     getTags,
     getWebhooks
 } from '@/services/configuration'
+import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+export const metadata: Metadata = {
+    title: 'Configurações'
+}
 
 export default async function Configuration({
     params

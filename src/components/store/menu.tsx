@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import { useStoreContext } from './context'
-import { FaCog, FaHamburger, FaUsers } from 'react-icons/fa'
+import { FaCog, FaHamburger, FaShoppingBasket, FaUsers } from 'react-icons/fa'
 
 type MenuProps = {
     isAdmin: boolean
@@ -29,14 +29,23 @@ export default function Menu({ isAdmin, storeId }: MenuProps) {
                     icon={<FaHamburger className="text-lg" />}
                 />
             </li>
-            {(isAdmin || isManager) && (
-                <li>
-                    <MenuItem
-                        title="Funcionarios"
-                        route={`/stores/${storeId}/employees/`}
-                        icon={<FaUsers className="text-lg" />}
-                    />
-                </li>
+            {isManager && (
+                <>
+                    <li>
+                        <MenuItem
+                            title="Funcionarios"
+                            route={`/stores/${storeId}/employees/`}
+                            icon={<FaUsers className="text-lg" />}
+                        />
+                    </li>
+                    <li>
+                        <MenuItem
+                            title="Vendas"
+                            route={`/stores/${storeId}/orders/`}
+                            icon={<FaShoppingBasket className="text-lg" />}
+                        />
+                    </li>
+                </>
             )}
             {isAdmin && (
                 <li>

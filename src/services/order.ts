@@ -1,7 +1,11 @@
-import { getDateHourString } from '@/utils/date'
 import { EmbedBuilder } from '@discordjs/builders'
 import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/sell'
 import { sendMessageByWebhook } from '@/providers/discord/webhooks'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { db } from '@/providers/database/client'
+import { employees, orders } from '@/providers/database/schema'
+import { desc, eq } from 'drizzle-orm'
 
 type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
 type OrderData = Record<SellFields, string | undefined>
@@ -63,4 +67,40 @@ export const sendOrderMessage = async (
     }
 
     return sendMessageByWebhook(webhookUrl, dataWebhook)
+}
+
+export async function getOrders(store: string) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.role
+    )
+        throw new Error('User not authenticated')
+
+    try {
+        const ordersRegisters = await db
+            .select({
+                id: orders.id,
+                employeeName: orders.employeeName,
+                employee: employees,
+                client: orders.clientName,
+                total: orders.total,
+                employeeComission: orders.comission,
+                storeComission: orders.storeValue,
+                delivery: orders.delivery,
+                discount: orders.discount,
+                createdAt: orders.createdAt,
+                items: orders.items
+            })
+            .from(orders)
+            .where(eq(orders.storeId, store))
+            .orderBy(desc(orders.createdAt))
+            .leftJoin(employees, eq(employees.id, orders.employeeId))
+
+        return ordersRegisters
+    } catch (error) {
+        throw new Error('Cannot get roles')
+    }
 }

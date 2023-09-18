@@ -171,7 +171,9 @@ export const orders = mysqlTable('orders', {
             values: { name: string; quantity: number; unitPrice: number }[]
         }>()
         .notNull(),
-    createdAt: timestamp('created_at', { mode: 'date', fsp: 6 }).defaultNow(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 6 })
+        .defaultNow()
+        .notNull(),
     storeId: varchar('store_id', { length: 255 }).notNull(),
     employeeId: varchar('employee_id', { length: 255 })
 })

@@ -4,7 +4,12 @@ import OrderResume from '@/components/sell/resume'
 import { verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
 import { getTagsColors } from '@/services/tags'
+import { Metadata } from 'next'
 import React from 'react'
+
+export const metadata: Metadata = {
+    title: 'Produtos'
+}
 
 export default async function StoreDetail({
     params

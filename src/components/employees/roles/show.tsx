@@ -14,13 +14,9 @@ type ShowEmployeeRolesProps = {
         id: string
         store: string
     }[]
-    isAdmin: boolean
 }
 
-export default function ShowEmployeeRoles({
-    roles,
-    isAdmin
-}: ShowEmployeeRolesProps) {
+export default function ShowEmployeeRoles({ roles }: ShowEmployeeRolesProps) {
     const createEmployeeRoleDialogRef =
         useRef<CreateEmployeeRoleDialogHandles>(null)
 

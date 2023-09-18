@@ -1,19 +1,21 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import NewEmployeeRole from '@/components/employees/roles/new'
 import ShowEmployeeRoles from '@/components/employees/roles/show'
 import ShowEmployees from '@/components/employees/show'
 import { getEmployee, getEmployeeRoles } from '@/services/employees'
-import { getServerSession } from 'next-auth'
+import { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+export const metadata: Metadata = {
+    title: 'Funcionários'
+}
 
 export default async function Employees({
     params
 }: {
     params: { id: string }
 }) {
-    const session = await getServerSession(authOptions)
     const roles = await getEmployeeRoles(params.id)
     const employees = await getEmployee(params.id)
 
@@ -26,10 +28,7 @@ export default async function Employees({
                         <NewEmployeeRole />
                     </div>
                 </div>
-                <ShowEmployeeRoles
-                    roles={roles}
-                    isAdmin={session?.user.role === 'ADMIN'}
-                />
+                <ShowEmployeeRoles roles={roles} />
             </div>
             <div className="h-fit rounded-md border border-zinc-700 p-4 lg:col-span-2">
                 <div className="flex w-full items-center justify-between">
