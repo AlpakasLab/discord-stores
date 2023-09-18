@@ -11,8 +11,22 @@ export const metadata: Metadata = {
     title: 'Vendas'
 }
 
-export default async function Orders({ params }: { params: { id: string } }) {
-    const orders = await getOrders(params.id)
+export default async function Orders({
+    params,
+    searchParams
+}: {
+    params: { id: string }
+    searchParams: { [key: string]: string | string[] | undefined }
+}) {
+    const {
+        data: orders,
+        start,
+        end
+    } = await getOrders(
+        params.id,
+        searchParams.start?.toString(),
+        searchParams.end?.toString()
+    )
 
     return (
         <div className="container relative my-5 grid h-full w-full flex-grow grid-cols-1 place-content-start gap-5 lg:grid-cols-3">
@@ -22,6 +36,12 @@ export default async function Orders({ params }: { params: { id: string } }) {
             <div className="h-fit rounded-md border border-zinc-700 p-4 lg:col-span-2">
                 <div className="flex w-full items-center justify-between">
                     <p className="font-semibold">Vendas ({orders.length})</p>
+                    <p className="text-sm text-zinc-300">
+                        Período de vendas:{' '}
+                        <span className="font-semibold">
+                            {start} até {end}
+                        </span>
+                    </p>
                 </div>
                 <ShowOrders orders={orders} />
             </div>

@@ -6,38 +6,39 @@ import { z } from 'zod'
 import TextInput from '../inputs/text'
 import Button from '../inputs/button'
 import { useStoreContext } from '../store/context'
+import { useRouter } from 'next/navigation'
+import moment from 'moment'
 
 const FiltersSchema = z.object({
-    startDate: z.coerce
-        .date({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Entre com uma data válida'
-        })
-        .nullable(),
-    endDate: z.coerce
-        .date({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Entre com uma data válida'
-        })
-        .nullable()
+    startDate: z.coerce.date({
+        required_error: 'Campo obrigatório',
+        invalid_type_error: 'Entre com uma data válida'
+    }),
+    endDate: z.coerce.date({
+        required_error: 'Campo obrigatório',
+        invalid_type_error: 'Entre com uma data válida'
+    })
 })
 
 type FiltersData = z.infer<typeof FiltersSchema>
 
 export default function OrdersFilters() {
+    const router = useRouter()
     const { themed } = useStoreContext()
 
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors, isSubmitting }
     } = useForm<FiltersData>({
         resolver: zodResolver(FiltersSchema)
     })
 
     const filterOrders = (data: FiltersData) => {
-        console.log(data)
+        const startDate = moment(data.startDate).utc(false).toISOString()
+        const endDate = moment(data.endDate).utc(false).toISOString()
+
+        router.replace(`?start=${startDate}&end=${endDate}`)
     }
 
     return (

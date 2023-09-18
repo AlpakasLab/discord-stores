@@ -2,6 +2,7 @@
 
 import { getDateHourString } from '@/utils/date'
 import { numberToMoney } from '@/utils/formatter'
+import moment from 'moment'
 import React from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 
@@ -105,7 +106,10 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                                     )}
                                 </td>
                                 <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
-                                    {getDateHourString(order.createdAt)}
+                                    {moment
+                                        .utc(order.createdAt)
+                                        .local()
+                                        .format(`DD/MM/YYYY - HH:mm`)}
                                 </td>
                                 <td className="py-2 pr-6 text-end text-sm text-zinc-300 group-last:pb-0">
                                     <button type="button" onClick={() => {}}>

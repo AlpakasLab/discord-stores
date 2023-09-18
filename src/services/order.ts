@@ -5,7 +5,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import { employees, orders } from '@/providers/database/schema'
-import { desc, eq } from 'drizzle-orm'
+import { and, between, desc, eq, gte, lte } from 'drizzle-orm'
+import moment from 'moment'
 
 type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
 type OrderData = Record<SellFields, string | undefined>
@@ -69,7 +70,7 @@ export const sendOrderMessage = async (
     return sendMessageByWebhook(webhookUrl, dataWebhook)
 }
 
-export async function getOrders(store: string) {
+export async function getOrders(store: string, start?: string, end?: string) {
     const session = await getServerSession(authOptions)
     if (
         !session ||
@@ -78,6 +79,9 @@ export async function getOrders(store: string) {
         !session.user.role
     )
         throw new Error('User not authenticated')
+
+    const startDate = moment.utc(start).local(true).startOf('day').local(false)
+    const endDate = moment.utc(end).local(true).endOf('day').local(false)
 
     try {
         const ordersRegisters = await db
@@ -95,11 +99,24 @@ export async function getOrders(store: string) {
                 items: orders.items
             })
             .from(orders)
-            .where(eq(orders.storeId, store))
+            .where(
+                and(
+                    eq(orders.storeId, store),
+                    between(
+                        orders.createdAt,
+                        startDate.toDate(),
+                        endDate.toDate()
+                    )
+                )
+            )
             .orderBy(desc(orders.createdAt))
             .leftJoin(employees, eq(employees.id, orders.employeeId))
 
-        return ordersRegisters
+        return {
+            data: ordersRegisters,
+            start: startDate.format('DD/MM'),
+            end: endDate.format('DD/MM')
+        }
     } catch (error) {
         throw new Error('Cannot get roles')
     }
