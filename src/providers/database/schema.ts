@@ -159,6 +159,7 @@ export const webhooksTemplates = mysqlTable('webhooks_templates', {
 
 export const orders = mysqlTable('orders', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    discordMessage: varchar('discord_message', { length: 255 }).notNull(),
     employeeName: varchar('employee_name', { length: 255 }).notNull(),
     clientName: varchar('client_name', { length: 255 }).notNull(),
     discount: int('discount'),
@@ -171,7 +172,7 @@ export const orders = mysqlTable('orders', {
             values: { name: string; quantity: number; unitPrice: number }[]
         }>()
         .notNull(),
-    createdAt: timestamp('created_at', { mode: 'date', fsp: 6 })
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 })
         .defaultNow()
         .notNull(),
     storeId: varchar('store_id', { length: 255 }).notNull(),

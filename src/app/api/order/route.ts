@@ -15,6 +15,7 @@ import {
 import { and, eq } from 'drizzle-orm'
 import { numberToMoney } from '@/utils/formatter'
 import { sendOrderMessage } from '@/services/order'
+import { deleteMessageByWebhook } from '@/providers/discord/webhooks'
 
 export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -39,7 +40,48 @@ export async function DELETE(request: NextRequest) {
             { status: 400 }
         )
 
+    const ordersRegister = await db
+        .select({ message: orders.discordMessage, store: orders.storeId })
+        .from(orders)
+        .where(eq(orders.id, orderId))
+    const order = ordersRegister.at(0)
+
+    if (!order) {
+        return NextResponse.json(
+            { error: 'Order not founded' },
+            { status: 404 }
+        )
+    }
+
+    const hooksRegistred = await db
+        .select({
+            url: discordWebhooks.url,
+            template: webhooksTemplates
+        })
+        .from(discordWebhooks)
+        .where(
+            and(
+                eq(discordWebhooks.storeId, order.store),
+                eq(discordWebhooks.category, 'SELL')
+            )
+        )
+        .innerJoin(
+            webhooksTemplates,
+            eq(webhooksTemplates.id, discordWebhooks.webhooksTemplateId)
+        )
+
+    const sellHook = hooksRegistred.at(0)
+
+    if (!sellHook) {
+        return NextResponse.json(
+            { error: 'Cannot get discord webhooks' },
+            { status: 400 }
+        )
+    }
+
     await db.delete(orders).where(eq(orders.id, orderId))
+    await deleteMessageByWebhook(sellHook.url, order.message)
+
     return NextResponse.json({ deleted: true }, { status: 200 })
 }
 
@@ -161,10 +203,42 @@ export async function POST(request: NextRequest) {
             )
             .join(' ')
 
+        const result = await sendOrderMessage(sellHook.url, sellHook.template, {
+            'client-name': name,
+            'discount-percentage': parsedBody.data.discount
+                ? `${parsedBody.data.discount}%`
+                : undefined,
+            'employee-name': user.employee,
+            comission: numberToMoney(storeValue),
+            items: productsList,
+            total:
+                parsedBody.data.discount && discountTotal
+                    ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
+                          discountTotal
+                      )}`
+                    : numberToMoney(total),
+            delivery: parsedBody.data.delivery
+                ? numberToMoney(parsedBody.data.delivery)
+                : undefined,
+            'total-client':
+                parsedBody.data.discount && discountTotal
+                    ? numberToMoney(
+                          discountTotal + (parsedBody.data.delivery ?? 0)
+                      )
+                    : numberToMoney(total + (parsedBody.data.delivery ?? 0))
+        })
+
+        if (!result)
+            return NextResponse.json(
+                { error: 'Cannot send a new request' },
+                { status: 400 }
+            )
+
         await db.insert(orders).values({
             id: orderId,
             clientName: name,
             employeeName: user.employee,
+            discordMessage: result.id,
             comission: employeeValue,
             storeValue: storeValue,
             total: total,
@@ -180,42 +254,6 @@ export async function POST(request: NextRequest) {
             storeId: user.store,
             employeeId: user.employeeId
         })
-
-        const result = await sendOrderMessage(
-            sellHook.url,
-            sellHook.template,
-            {
-                'client-name': name,
-                'discount-percentage': parsedBody.data.discount
-                    ? `${parsedBody.data.discount}%`
-                    : undefined,
-                'employee-name': user.employee,
-                comission: numberToMoney(storeValue),
-                items: productsList,
-                total:
-                    parsedBody.data.discount && discountTotal
-                        ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
-                              discountTotal
-                          )}`
-                        : numberToMoney(total),
-                delivery: parsedBody.data.delivery
-                    ? numberToMoney(parsedBody.data.delivery)
-                    : undefined,
-                'total-client':
-                    parsedBody.data.discount && discountTotal
-                        ? numberToMoney(
-                              discountTotal + (parsedBody.data.delivery ?? 0)
-                          )
-                        : numberToMoney(total + (parsedBody.data.delivery ?? 0))
-            },
-            orderId
-        )
-
-        if (!result)
-            return NextResponse.json(
-                { error: 'Cannot send a new request' },
-                { status: 400 }
-            )
 
         return NextResponse.json({ success: true }, { status: 201 })
     } else {

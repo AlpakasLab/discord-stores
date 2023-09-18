@@ -177,13 +177,9 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                             Deletar Venda
                         </Dialog.Title>
                         <Dialog.Description className="text-center text-base text-zinc-400">
-                            Ao remover uma venda do sistema ela não remove a
-                            mensagem do Discord. Este processo precisa ser feito
-                            manualmente encontrando a mensagem com o seguinte
-                            identificador:{' '}
-                            <code className="mx-auto mt-2 block w-fit bg-black text-white">
-                                {idToDelete ?? ''}
-                            </code>
+                            Ao remover uma venda do sistema ela também remove a
+                            mensagem do Discord. Este processo não pode ser
+                            desfeito!
                         </Dialog.Description>
                         {deleting ? (
                             <p className="mt-8 w-full text-center text-zinc-200">

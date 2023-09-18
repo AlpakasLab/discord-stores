@@ -26,8 +26,7 @@ export const sendOrderMessage = async (
             }[]
         } | null
     },
-    orderData: OrderData,
-    orderId: string
+    orderData: OrderData
 ) => {
     const embed = new EmbedBuilder()
         .setTitle(
@@ -40,9 +39,6 @@ export const sendOrderMessage = async (
                 ? templeate.color
                 : 0x52525b
         )
-        .setFooter({
-            text: orderId
-        })
 
     if (templeate.image) {
         embed.setThumbnail(templeate.image)
