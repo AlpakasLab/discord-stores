@@ -35,19 +35,11 @@ type ShowOrdersProps = {
 }
 
 export default function ShowOrders({ orders }: ShowOrdersProps) {
-    const getClientTotal = (
-        total: number,
-        delivery: number | null,
-        discount: number | null
-    ) => {
+    const getClientTotal = (total: number, discount: number | null) => {
         if (discount) {
-            const originalTotal = total + (delivery ?? 0)
-
-            return `${numberToMoney(
-                originalTotal - (discount * originalTotal) / 100
-            )}`
+            return `${numberToMoney(total - (discount * total) / 100)}`
         } else {
-            return `${numberToMoney(total + (delivery ?? 0))}`
+            return `${numberToMoney(total)}`
         }
     }
 
@@ -63,13 +55,13 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                             Cliente
                         </th>
                         <th className="py-2 text-base font-semibold text-zinc-400">
-                            Total Bruto
-                        </th>
-                        <th className="py-2 text-base font-semibold text-zinc-400">
-                            % Desconto
+                            Total Items
                         </th>
                         <th className="py-2 text-base font-semibold text-zinc-400">
                             Delivery
+                        </th>
+                        <th className="py-2 text-base font-semibold text-zinc-400">
+                            % Desconto
                         </th>
                         <th className="py-2 text-base font-semibold text-zinc-400">
                             Total Líquido
@@ -95,27 +87,27 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                                 <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
                                     {numberToMoney(order.total)}
                                 </td>
-                                <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
-                                    {order.discount !== null
-                                        ? `${order.discount}%`
-                                        : '---'}
-                                </td>
+
                                 <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
                                     {order.delivery !== null
                                         ? numberToMoney(order.delivery)
                                         : '---'}
                                 </td>
                                 <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
+                                    {order.discount !== null
+                                        ? `${order.discount}%`
+                                        : '---'}
+                                </td>
+                                <td className="py-2 text-center text-sm text-green-500 group-last:pb-0">
                                     {getClientTotal(
                                         order.total,
-                                        order.delivery,
                                         order.discount
                                     )}
                                 </td>
                                 <td className="py-2 text-center text-sm text-zinc-300 group-last:pb-0">
                                     {getDateHourString(order.createdAt)}
                                 </td>
-                                <td className="py-2 pr-4 text-end text-sm text-zinc-300 group-last:pb-0">
+                                <td className="py-2 pr-6 text-end text-sm text-zinc-300 group-last:pb-0">
                                     <button type="button" onClick={() => {}}>
                                         <FaTrashAlt />
                                     </button>

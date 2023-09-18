@@ -1,6 +1,6 @@
 import ProductsShow from '@/components/products/show'
-import { SellContextProvider } from '@/components/sell/context'
-import OrderResume from '@/components/sell/resume'
+import { SellContextProvider } from '@/components/orders/context'
+import OrderResume from '@/components/orders/resume'
 import { verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
 import { getTagsColors } from '@/services/tags'

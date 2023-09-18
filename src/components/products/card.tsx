@@ -2,7 +2,7 @@ import { numberToMoney } from '@/utils/formatter'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FaCameraRetro } from 'react-icons/fa'
-import { useSellContext } from '../sell/context'
+import { useSellContext } from '../orders/context'
 
 type ProductCardProps = {
     product: {
