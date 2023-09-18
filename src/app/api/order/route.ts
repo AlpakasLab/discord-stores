@@ -16,6 +16,33 @@ import { and, eq } from 'drizzle-orm'
 import { numberToMoney } from '@/utils/formatter'
 import { sendOrderMessage } from '@/services/order'
 
+export async function DELETE(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.email ||
+        !session.user.role
+    )
+        return NextResponse.json(
+            { error: 'User not authenticated or not authorized' },
+            { status: 401 }
+        )
+
+    const requestUrl = new URL(request.url)
+    const orderId = requestUrl.searchParams.get('id')
+
+    if (!orderId)
+        return NextResponse.json(
+            { error: 'Order id is not provided' },
+            { status: 400 }
+        )
+
+    await db.delete(orders).where(eq(orders.id, orderId))
+    return NextResponse.json({ deleted: true }, { status: 200 })
+}
+
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (

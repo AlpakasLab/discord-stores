@@ -2,9 +2,13 @@
 
 import { getDateHourString } from '@/utils/date'
 import { numberToMoney } from '@/utils/formatter'
+import { Dialog } from '@headlessui/react'
 import moment from 'moment'
-import React from 'react'
-import { FaTrashAlt } from 'react-icons/fa'
+import React, { useState } from 'react'
+import { FaSpinner, FaTrashAlt } from 'react-icons/fa'
+import Button from '../inputs/button'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 type ShowOrdersProps = {
     orders: {
@@ -36,11 +40,42 @@ type ShowOrdersProps = {
 }
 
 export default function ShowOrders({ orders }: ShowOrdersProps) {
+    const router = useRouter()
+    const [deleting, setDeleting] = useState(false)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+    const [idToDelete, setIdToDelete] = useState<string | null>(null)
+
     const getClientTotal = (total: number, discount: number | null) => {
         if (discount) {
             return `${numberToMoney(total - (discount * total) / 100)}`
         } else {
             return `${numberToMoney(total)}`
+        }
+    }
+
+    const deleteOrder = async () => {
+        setDeleting(true)
+
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/order?id=${idToDelete}`,
+                {
+                    method: 'DELETE'
+                }
+            )
+
+            if (!response.ok) {
+                setDeleting(false)
+                toast.error('Não foi possível deletar a venda :(')
+            } else {
+                toast.success('Venda deletada com sucesso!')
+                setDeleting(false)
+                setOpenDeleteDialog(false)
+                setIdToDelete(null)
+                router.refresh()
+            }
+        } catch (e) {
+            toast.error('Não foi possível deletar a venda :(')
         }
     }
 
@@ -112,7 +147,13 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                                         .format(`DD/MM/YYYY - HH:mm`)}
                                 </td>
                                 <td className="py-2 pr-6 text-end text-sm text-zinc-300 group-last:pb-0">
-                                    <button type="button" onClick={() => {}}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOpenDeleteDialog(true)
+                                            setIdToDelete(order.id)
+                                        }}
+                                    >
                                         <FaTrashAlt />
                                     </button>
                                 </td>
@@ -121,6 +162,61 @@ export default function ShowOrders({ orders }: ShowOrdersProps) {
                     )}
                 </tbody>
             </table>
+            <Dialog
+                open={openDeleteDialog}
+                onClose={() => {
+                    setOpenDeleteDialog(false)
+                }}
+                className="relative z-50"
+            >
+                <div className="fixed inset-0 bg-black/75" aria-hidden="true" />
+
+                <div className="fixed inset-0 flex items-center justify-center p-4">
+                    <Dialog.Panel className="flex w-full max-w-xl flex-col items-center rounded bg-zinc-800 p-5 text-white">
+                        <Dialog.Title className="mb-5 text-xl font-semibold">
+                            Deletar Venda
+                        </Dialog.Title>
+                        <Dialog.Description className="text-center text-base text-zinc-400">
+                            Ao remover uma venda do sistema ela não remove a
+                            mensagem do Discord. Este processo precisa ser feito
+                            manualmente encontrando a mensagem com o seguinte
+                            identificador:{' '}
+                            <code className="mx-auto mt-2 block w-fit bg-black text-white">
+                                {idToDelete ?? ''}
+                            </code>
+                        </Dialog.Description>
+                        {deleting ? (
+                            <p className="mt-8 w-full text-center text-zinc-200">
+                                <FaSpinner className="mr-2 inline animate-spin" />{' '}
+                                Removendo Venda...
+                            </p>
+                        ) : (
+                            <div className="mt-8 flex w-full items-center gap-x-4">
+                                <Button
+                                    component="button"
+                                    type="button"
+                                    text="Cancelar"
+                                    color="success"
+                                    size="sm"
+                                    onClick={() => {
+                                        setOpenDeleteDialog(false)
+                                    }}
+                                />
+                                <Button
+                                    component="button"
+                                    type="button"
+                                    text="Prosseguir"
+                                    color="neutral"
+                                    size="sm"
+                                    onClick={() => {
+                                        deleteOrder()
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </Dialog.Panel>
+                </div>
+            </Dialog>
         </>
     )
 }
