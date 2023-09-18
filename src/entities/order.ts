@@ -40,6 +40,11 @@ export const OrderCreateSchema = z.object({
                 }
                 return Number(val)
             }
+
+            if (val === undefined) {
+                return null
+            }
+
             return val
         },
         z
