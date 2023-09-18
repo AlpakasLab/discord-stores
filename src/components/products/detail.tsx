@@ -22,12 +22,13 @@ export type ProductDetailDialogHandles = {
 
 type ProductDetailDialogProps = {
     onEditClick: (id: string) => void
+    onDeleteClick: (id: string) => void
 }
 
 const ProductDetailDialog = React.forwardRef<
     ProductDetailDialogHandles,
     ProductDetailDialogProps
->(({ onEditClick }, ref) => {
+>(({ onEditClick, onDeleteClick }, ref) => {
     const { themed, isManager } = useStoreContext()
 
     const [dialogData, setDialogData] = useState<{
@@ -131,18 +132,34 @@ const ProductDetailDialog = React.forwardRef<
                             </div>
                         </>
                     )}
-                    <Button
-                        component="button"
-                        onClick={() => {
-                            setDialogData({
-                                opened: false,
-                                product: null
-                            })
-                        }}
-                        color={themed ? 'custom-secondary' : 'secondary'}
-                        type="button"
-                        text="OK"
-                    />
+                    <div className="flex w-full items-center gap-5">
+                        <Button
+                            component="button"
+                            onClick={() => {
+                                if (dialogData.product)
+                                    onDeleteClick(dialogData.product.id)
+                                setDialogData({
+                                    opened: false,
+                                    product: null
+                                })
+                            }}
+                            color="neutral"
+                            type="button"
+                            text="Remover"
+                        />
+                        <Button
+                            component="button"
+                            onClick={() => {
+                                setDialogData({
+                                    opened: false,
+                                    product: null
+                                })
+                            }}
+                            color={themed ? 'custom-secondary' : 'secondary'}
+                            type="button"
+                            text="OK"
+                        />
+                    </div>
                 </Dialog.Panel>
             </div>
         </Dialog>

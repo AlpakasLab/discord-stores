@@ -6,6 +6,37 @@ import { db } from '@/providers/database/client'
 import { products, productsToTags, tags } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 
+export async function DELETE(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (
+        !session ||
+        !session.user ||
+        !session.user.discord ||
+        !session.user.email ||
+        !session.user.role
+    )
+        return NextResponse.json(
+            { error: 'User not authenticated or not authorized' },
+            { status: 401 }
+        )
+
+    const requestUrl = new URL(request.url)
+    const productId = requestUrl.searchParams.get('id')
+
+    if (!productId)
+        return NextResponse.json(
+            { error: 'Product id is not provided' },
+            { status: 400 }
+        )
+
+    await db.delete(products).where(eq(products.id, productId))
+    await db
+        .delete(productsToTags)
+        .where(eq(productsToTags.productId, productId))
+
+    return NextResponse.json({ deleted: true }, { status: 200 })
+}
+
 export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (

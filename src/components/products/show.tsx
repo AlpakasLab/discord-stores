@@ -10,6 +10,7 @@ import { useStoreContext } from '../store/context'
 import TextInput from '../inputs/text'
 import SelectInput from '../inputs/select'
 import { FaRegTimesCircle } from 'react-icons/fa'
+import DeleteProductDialog, { DeleteProductDialogHandles } from './delete'
 
 type ProductsShowProps = {
     products: {
@@ -40,6 +41,7 @@ export default function ProductsShow({
     const { themed, isManager } = useStoreContext()
     const productDetailDialogRef = useRef<ProductDetailDialogHandles>(null)
     const createProductDialogRef = useRef<CreateProductDialogHandles>(null)
+    const deleteProductDialogRef = useRef<DeleteProductDialogHandles>(null)
 
     const [filters, setFilters] = useState({
         name: '',
@@ -144,7 +146,7 @@ export default function ProductsShow({
         })
 
         return rows
-    }, [filters])
+    }, [filters.name, products, tagsColors])
 
     return (
         <>
@@ -153,16 +155,6 @@ export default function ProductsShow({
                     Produtos ({products.length})
                 </p>
                 <div className="flex items-center gap-x-5">
-                    {/* <SelectInput
-                        mode="single"
-                        defaultOption={'all'}
-                        options={[
-                            {
-                                label: 'Todas Categorias',
-                                value: 'all'
-                            }
-                        ]}
-                    /> */}
                     <TextInput
                         onChange={e =>
                             setFilters(old => ({
@@ -201,8 +193,17 @@ export default function ProductsShow({
                     const product = products.find(item => item.id === id)
                     if (product) createProductDialogRef.current?.edit(product)
                 }}
+                onDeleteClick={id => {
+                    const product = products.find(item => item.id === id)
+                    if (product)
+                        deleteProductDialogRef.current?.open({
+                            id: id,
+                            name: product.name
+                        })
+                }}
             />
             <CreateProductDialog ref={createProductDialogRef} />
+            <DeleteProductDialog ref={deleteProductDialogRef} />
         </>
     )
 }
