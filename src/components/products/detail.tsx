@@ -133,20 +133,22 @@ const ProductDetailDialog = React.forwardRef<
                         </>
                     )}
                     <div className="flex w-full items-center gap-5">
-                        <Button
-                            component="button"
-                            onClick={() => {
-                                if (dialogData.product)
-                                    onDeleteClick(dialogData.product.id)
-                                setDialogData({
-                                    opened: false,
-                                    product: null
-                                })
-                            }}
-                            color="neutral"
-                            type="button"
-                            text="Remover"
-                        />
+                        {isManager && (
+                            <Button
+                                component="button"
+                                onClick={() => {
+                                    if (dialogData.product)
+                                        onDeleteClick(dialogData.product.id)
+                                    setDialogData({
+                                        opened: false,
+                                        product: null
+                                    })
+                                }}
+                                color="neutral"
+                                type="button"
+                                text="Remover"
+                            />
+                        )}
                         <Button
                             component="button"
                             onClick={() => {
