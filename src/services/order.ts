@@ -76,8 +76,12 @@ export async function getOrders(store: string, start?: string, end?: string) {
     )
         throw new Error('User not authenticated')
 
-    const startDate = moment.utc(start).local(true).startOf('day').local(false)
-    const endDate = moment.utc(end).local(true).endOf('day').local(false)
+    const startDate = start
+        ? moment.utc(start).local(true).startOf('day').local(false)
+        : moment().local(true).startOf('day').local(false)
+    const endDate = end
+        ? moment.utc(end).local(true).endOf('day').local(false)
+        : moment().local(true).endOf('day').local(false)
 
     try {
         const ordersRegisters = await db
