@@ -3,9 +3,18 @@ import { authOptions } from '../auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { db } from '@/providers/database/client'
 import { accounts, employeeRoles, employees } from '@/providers/database/schema'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
+    const requestUrl = new URL(request.url)
+    const storeId = requestUrl.searchParams.get('store')
+
+    if (!storeId)
+        return NextResponse.json(
+            { error: 'Store id is not provided' },
+            { status: 400 }
+        )
+
     const session = await getServerSession(authOptions)
     if (
         !session ||
@@ -25,7 +34,13 @@ export async function GET(request: NextRequest) {
         })
         .from(accounts)
         .where(eq(accounts.access_token, session.user.discord))
-        .innerJoin(employees, eq(employees.userId, accounts.userId))
+        .innerJoin(
+            employees,
+            and(
+                eq(employees.userId, accounts.userId),
+                eq(employees.storeId, storeId)
+            )
+        )
         .innerJoin(
             employeeRoles,
             eq(employeeRoles.id, employees.employeeRoleId)

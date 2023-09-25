@@ -75,9 +75,9 @@ export const StoreContextProvider = ({
         }
     }
 
-    const getEmployeeRole = async () => {
+    const getEmployeeRole = async (store: string) => {
         const request = await fetch(
-            `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/me`
+            `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/me?store=${store}`
         )
         if (!request.ok)
             throw new Error('Cannot user information, retry later.')
@@ -151,7 +151,7 @@ export const StoreContextProvider = ({
     useEffect(() => {
         if (!loaded) {
             getStoreConfiguration(storeId)
-            getEmployeeRole()
+            getEmployeeRole(storeId)
             setLoaded(true)
         }
     }, [loaded, storeId])
