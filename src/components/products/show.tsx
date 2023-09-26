@@ -8,7 +8,6 @@ import tinycolor from 'tinycolor2'
 import Button from '../inputs/button'
 import { useStoreContext } from '../store/context'
 import TextInput from '../inputs/text'
-import SelectInput from '../inputs/select'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import DeleteProductDialog, { DeleteProductDialogHandles } from './delete'
 
@@ -19,6 +18,7 @@ type ProductsShowProps = {
         description: string | null
         price: number
         promotionalPrice: number | null
+        employeeComission: number | null
         image: string | null
         active: boolean
         category: string

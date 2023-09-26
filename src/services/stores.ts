@@ -96,11 +96,13 @@ export async function getUserStores() {
     }
 }
 
-export async function getStoreName(id: string) {
+export async function getStoreData(id: string) {
     try {
         const storesRegistred = await db
             .select({
-                name: stores.name
+                name: stores.name,
+                primaryColor: stores.primaryColor,
+                secondaryColor: stores.secondaryColor
             })
             .from(stores)
             .where(eq(stores.id, id))
@@ -108,7 +110,7 @@ export async function getStoreName(id: string) {
         const store = storesRegistred.at(0)
 
         if (store) {
-            return store.name
+            return store
         } else {
             throw new Error('Cannot get store name')
         }

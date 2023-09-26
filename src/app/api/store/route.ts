@@ -12,46 +12,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { authOptions } from '../auth/[...nextauth]/route'
 
-export async function GET(request: NextRequest) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
-        return NextResponse.json(
-            { error: 'User not authenticated or not authorized' },
-            { status: 401 }
-        )
-
-    const requestUrl = new URL(request.url)
-    const storeId = requestUrl.searchParams.get('id')
-
-    if (!storeId)
-        return NextResponse.json(
-            { error: 'Store id is not provided' },
-            { status: 400 }
-        )
-
-    const storeRegisters = await db
-        .select({
-            id: stores.id,
-            primaryColor: stores.primaryColor,
-            secondaryColor: stores.secondaryColor
-        })
-        .from(stores)
-        .where(eq(stores.id, storeId))
-
-    const store = storeRegisters.at(0)
-
-    if (!store)
-        return NextResponse.json({ error: 'Store not found' }, { status: 404 })
-
-    return NextResponse.json({ data: store }, { status: 200 })
-}
-
 export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions)
     if (

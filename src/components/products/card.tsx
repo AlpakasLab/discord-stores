@@ -11,6 +11,7 @@ type ProductCardProps = {
         description: string | null
         price: number
         promotionalPrice: number | null
+        employeeComission: number | null
         image: string | null
         active: boolean
         category: string
@@ -98,7 +99,9 @@ export default function ProductCard({
                         id: product.id,
                         name: product.name,
                         quantity: valueInNumber ?? 0,
-                        unitPrice: product.promotionalPrice ?? product.price
+                        unitPrice: product.promotionalPrice ?? product.price,
+                        employeeComission:
+                            product.employeeComission ?? undefined
                     })
                 }}
             />

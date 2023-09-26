@@ -59,6 +59,26 @@ export const ProductSchema = z
                 .min(0)
                 .nullable()
         ),
+        employeeComission: z.preprocess(
+            val => {
+                if (typeof val === 'string') {
+                    if (val.trim().length <= 0) {
+                        return null
+                    }
+                    return Number(val)
+                }
+                return val
+            },
+            z
+                .number({
+                    required_error: 'Campo obrigatório',
+                    invalid_type_error: 'Digite uma comissão válida'
+                })
+                .min(0)
+                .max(100)
+                .nullable()
+        ),
+
         image: z.preprocess(
             val => (String(val).length <= 0 ? undefined : val),
             z

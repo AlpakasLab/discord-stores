@@ -26,11 +26,15 @@ const StoreContext = createContext<null | StoreContextData>(null)
 type StoreContextProviderProps = {
     children: React.ReactNode
     storeId: string
+    primaryColor: string | null
+    secondaryColor: string | null
 }
 
 export const StoreContextProvider = ({
     children,
-    storeId
+    storeId,
+    primaryColor,
+    secondaryColor
 }: StoreContextProviderProps) => {
     const [loaded, setLoaded] = useState(false)
     const [colors, setColors] = useState<StoreThemeColors>({
@@ -38,42 +42,6 @@ export const StoreContextProvider = ({
         secondary: null
     })
     const [isManager, setIsManager] = useState(false)
-
-    const getStoreConfiguration = async (id: string) => {
-        const request = await fetch(
-            `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/store?id=${id}`
-        )
-        if (!request.ok)
-            throw new Error('Cannot get store information, retry later.')
-        const { data } = await request.json()
-
-        if (data.primaryColor && data.secondaryColor) {
-            const primaryHover = tinycolor(data.primaryColor).darken(10).toRgb()
-            const primaryText = tinycolor(data.primaryColor).isDark()
-                ? '#ffffff'
-                : '#18181b'
-
-            const secondaryHover = tinycolor(data.secondaryColor)
-                .darken(10)
-                .toRgb()
-            const secondaryText = tinycolor(data.secondaryColor).isDark()
-                ? '#ffffff'
-                : '#18181b'
-
-            setColors({
-                primary: {
-                    default: tinycolor(data.primaryColor).toRgb(),
-                    hover: primaryHover,
-                    text: tinycolor(primaryText).toRgb()
-                },
-                secondary: {
-                    default: tinycolor(data.secondaryColor).toRgb(),
-                    hover: secondaryHover,
-                    text: tinycolor(secondaryText).toRgb()
-                }
-            })
-        }
-    }
 
     const getEmployeeRole = async (store: string) => {
         const request = await fetch(
@@ -93,50 +61,44 @@ export const StoreContextProvider = ({
     }
 
     const setCSSVariables = (colors: StoreThemeColors) => {
+        const documentStyles = document.documentElement.style
+
         if (colors.primary !== null) {
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-primary`,
                 `${colors.primary.default.r} ${colors.primary.default.g} ${colors.primary.default.b}`
             )
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-primary-hover`,
                 `${colors.primary.hover.r} ${colors.primary.hover.g} ${colors.primary.hover.b}`
             )
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-primary-text`,
                 `${colors.primary.text.r} ${colors.primary.text.g} ${colors.primary.text.b}`
             )
         } else {
-            document.documentElement.style.removeProperty(`--color-primary`)
-            document.documentElement.style.removeProperty(
-                `--color-primary-hover`
-            )
-            document.documentElement.style.removeProperty(
-                `--color-primary-text`
-            )
+            documentStyles.removeProperty(`--color-primary`)
+            documentStyles.removeProperty(`--color-primary-hover`)
+            documentStyles.removeProperty(`--color-primary-text`)
         }
 
         if (colors.secondary !== null) {
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-secondary`,
                 `${colors.secondary.default.r} ${colors.secondary.default.g} ${colors.secondary.default.b}`
             )
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-secondary-hover`,
                 `${colors.secondary.hover.r} ${colors.secondary.hover.g} ${colors.secondary.hover.b}`
             )
-            document.documentElement.style.setProperty(
+            documentStyles.setProperty(
                 `--color-secondary-text`,
                 `${colors.secondary.text.r} ${colors.secondary.text.g} ${colors.secondary.text.b}`
             )
         } else {
-            document.documentElement.style.removeProperty(`--color-secondary`)
-            document.documentElement.style.removeProperty(
-                `--color-secondary-hover`
-            )
-            document.documentElement.style.removeProperty(
-                `--color-secondary-text`
-            )
+            documentStyles.removeProperty(`--color-secondary`)
+            documentStyles.removeProperty(`--color-secondary-hover`)
+            documentStyles.removeProperty(`--color-secondary-text`)
         }
     }
 
@@ -150,11 +112,40 @@ export const StoreContextProvider = ({
 
     useEffect(() => {
         if (!loaded) {
-            getStoreConfiguration(storeId)
             getEmployeeRole(storeId)
             setLoaded(true)
         }
     }, [loaded, storeId])
+
+    useEffect(() => {
+        if (primaryColor && secondaryColor) {
+            const lighterColor = '#ffffff'
+            const darkerColor = '#18181b'
+
+            const primaryHover = tinycolor(primaryColor).darken(10).toRgb()
+            const primaryText = tinycolor(primaryColor).isDark()
+                ? lighterColor
+                : darkerColor
+
+            const secondaryHover = tinycolor(secondaryColor).darken(10).toRgb()
+            const secondaryText = tinycolor(secondaryColor).isDark()
+                ? lighterColor
+                : darkerColor
+
+            setColors({
+                primary: {
+                    default: tinycolor(primaryColor).toRgb(),
+                    hover: primaryHover,
+                    text: tinycolor(primaryText).toRgb()
+                },
+                secondary: {
+                    default: tinycolor(secondaryColor).toRgb(),
+                    hover: secondaryHover,
+                    text: tinycolor(secondaryText).toRgb()
+                }
+            })
+        }
+    }, [primaryColor, secondaryColor])
 
     return (
         <StoreContext.Provider

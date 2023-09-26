@@ -23,6 +23,7 @@ export type CreateProductDialogHandles = {
         description: string | null
         price: number
         promotionalPrice: number | null
+        employeeComission: number | null
         image: string | null
         active: boolean
         category: string
@@ -136,6 +137,8 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setValue('price', product.price)
                     if (product.promotionalPrice !== null)
                         setValue('promotionalPrice', product.promotionalPrice)
+                    if (product.employeeComission !== null)
+                        setValue('employeeComission', product.employeeComission)
                     setLoadedProductInitialData(false)
                 }
             }
@@ -350,7 +353,17 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                     }}
                                     error={errors.tags?.message}
                                 />
-                                <div className="flex h-full w-full items-center">
+                                <TextInput
+                                    {...register('employeeComission')}
+                                    label="Porcentagem de Comissão Vendedor:"
+                                    type="number"
+                                    autoComplete="none"
+                                    placeholder="50"
+                                    max={100}
+                                    min={0}
+                                    error={errors.employeeComission?.message}
+                                />
+                                <div className="flex h-full w-full items-start">
                                     <CheckboxInput
                                         className={
                                             themed

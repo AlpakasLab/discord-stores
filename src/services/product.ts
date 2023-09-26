@@ -27,6 +27,7 @@ export async function getProducts(store: string) {
                 description: products.description,
                 price: products.price,
                 promotionalPrice: products.promotionalPrice,
+                employeeComission: products.employeeComission,
                 image: products.image,
                 active: products.active,
                 category: productCategories.name,

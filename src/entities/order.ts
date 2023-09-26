@@ -62,6 +62,7 @@ export type OrderItem = {
     name: string
     unitPrice: number
     quantity: number
+    employeeComission?: number
 }
 
 export type OrderCreateData = z.infer<typeof OrderCreateSchema>

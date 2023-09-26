@@ -114,7 +114,8 @@ export async function PUT(request: NextRequest) {
                 categoryId: parsedBody.data.category,
                 image: parsedBody.data.image,
                 price: parsedBody.data.price,
-                promotionalPrice: parsedBody.data.promotionalPrice
+                promotionalPrice: parsedBody.data.promotionalPrice,
+                employeeComission: parsedBody.data.employeeComission
             })
             .where(eq(products.id, productId))
 
@@ -167,6 +168,7 @@ export async function POST(request: NextRequest) {
             active: parsedBody.data.active,
             price: parsedBody.data.price,
             promotionalPrice: parsedBody.data.promotionalPrice,
+            employeeComission: parsedBody.data.employeeComission,
             description: parsedBody.data.description,
             image: parsedBody.data.image,
             storeId: parsedBody.data.store,

@@ -1,7 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { StoreContextProvider } from '@/components/store/context'
 import Menu from '@/components/store/menu'
-import { getStoreName } from '@/services/stores'
+import { getStoreData } from '@/services/stores'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 
@@ -16,10 +16,18 @@ export default async function StoreLayout({
     params: { id: string }
 }) {
     const session = await getServerSession(authOptions)
-    const storeName = await getStoreName(params.id)
+    const {
+        name: storeName,
+        primaryColor,
+        secondaryColor
+    } = await getStoreData(params.id)
 
     return (
-        <StoreContextProvider storeId={params.id}>
+        <StoreContextProvider
+            storeId={params.id}
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+        >
             <div className="flex w-full flex-grow flex-col">
                 <header className="w-full border-b border-zinc-700">
                     <div className="container hidden items-center gap-x-4 md:flex md:gap-x-8">
