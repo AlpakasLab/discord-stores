@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../auth/[...nextauth]/route'
-import { OrderCreateSchema } from '@/entities/order'
+import { OrderCreateSchema, OrderItem } from '@/entities/order'
 import { db } from '@/providers/database/client'
 import crypto from 'node:crypto'
 import {
@@ -16,6 +16,7 @@ import { and, eq } from 'drizzle-orm'
 import { numberToMoney } from '@/utils/formatter'
 import { sendOrderMessage } from '@/services/order'
 import { deleteMessageByWebhook } from '@/providers/discord/webhooks'
+import { getItemsPriceAndComissions } from '@/utils/calculate'
 
 export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -153,43 +154,21 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        const items = data.items as {
-            id: string
-            name: string
-            unitPrice: number
-            quantity: number
-        }[]
+        const items = data.items as OrderItem[]
 
         let productsList = ''
-        let total = 0
-
         items.forEach(item => {
             productsList += `${item.quantity}x ${item.name} - ${numberToMoney(
                 item.unitPrice * item.quantity
             )}\n`
-
-            total += item.unitPrice * item.quantity
         })
 
-        let discountTotal = undefined
-
-        if (parsedBody.data.discount) {
-            const discountValue = (total / 100) * parsedBody.data.discount
-            discountTotal = total - Math.round(discountValue)
-        }
-
-        let storeValue = 0
-        let employeeValue = 0
-
-        if (discountTotal) {
-            storeValue = Math.floor(
-                (discountTotal / 100) * (100 - user.comission)
+        const { total, discountedTotal, storeComission, employeeComission } =
+            getItemsPriceAndComissions(
+                items,
+                parsedBody.data.discount,
+                user.comission
             )
-            employeeValue = Math.floor((discountTotal / 100) * user.comission)
-        } else {
-            storeValue = Math.floor((total / 100) * (100 - user.comission))
-            employeeValue = Math.floor((total / 100) * user.comission)
-        }
 
         const orderId = crypto.randomUUID()
 
@@ -209,21 +188,21 @@ export async function POST(request: NextRequest) {
                 ? `${parsedBody.data.discount}%`
                 : undefined,
             'employee-name': user.employee,
-            comission: numberToMoney(storeValue),
+            comission: numberToMoney(storeComission),
             items: productsList,
             total:
-                parsedBody.data.discount && discountTotal
+                parsedBody.data.discount && discountedTotal
                     ? `~~${numberToMoney(total)}~~ -> ${numberToMoney(
-                          discountTotal
+                          discountedTotal
                       )}`
                     : numberToMoney(total),
             delivery: parsedBody.data.delivery
                 ? numberToMoney(parsedBody.data.delivery)
                 : undefined,
             'total-client':
-                parsedBody.data.discount && discountTotal
+                parsedBody.data.discount && discountedTotal
                     ? numberToMoney(
-                          discountTotal + (parsedBody.data.delivery ?? 0)
+                          discountedTotal + (parsedBody.data.delivery ?? 0)
                       )
                     : numberToMoney(total + (parsedBody.data.delivery ?? 0))
         })
@@ -239,8 +218,8 @@ export async function POST(request: NextRequest) {
             clientName: name,
             employeeName: user.employee,
             discordMessage: result.id,
-            comission: employeeValue,
-            storeValue: storeValue,
+            comission: employeeComission,
+            storeValue: storeComission,
             total: total,
             discount: parsedBody.data.discount,
             delivery: parsedBody.data.delivery,

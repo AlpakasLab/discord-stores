@@ -1,0 +1,853 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "account": {
+      "name": "account",
+      "columns": {
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "autoincrement": false,
+          "name": "type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "autoincrement": false,
+          "name": "provider",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "providerAccountId": {
+          "autoincrement": false,
+          "name": "providerAccountId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token": {
+          "autoincrement": false,
+          "name": "refresh_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "autoincrement": false,
+          "name": "access_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "autoincrement": false,
+          "name": "expires_at",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token_type": {
+          "autoincrement": false,
+          "name": "token_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "autoincrement": false,
+          "name": "scope",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "autoincrement": false,
+          "name": "id_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "session_state": {
+          "autoincrement": false,
+          "name": "session_state",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "account_provider_providerAccountId": {
+          "name": "account_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "discord_webhooks": {
+      "name": "discord_webhooks",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "autoincrement": false,
+          "name": "url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "autoincrement": false,
+          "name": "category",
+          "type": "varchar(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "webhook_id": {
+          "autoincrement": false,
+          "name": "webhook_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "discord_webhooks_provider_providerAccountId": {
+          "name": "discord_webhooks_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "discord_webhooks_webhook_id_unique": {
+          "name": "discord_webhooks_webhook_id_unique",
+          "columns": [
+            "webhook_id"
+          ]
+        }
+      }
+    },
+    "employee_roles": {
+      "name": "employee_roles",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "comission": {
+          "autoincrement": false,
+          "name": "comission",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manager": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "manager",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "employee_roles_provider_providerAccountId": {
+          "name": "employee_roles_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "employees": {
+      "name": "employees",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "employee_role_id": {
+          "autoincrement": false,
+          "name": "employee_role_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "employees_provider_providerAccountId": {
+          "name": "employees_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "orders": {
+      "name": "orders",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discord_message": {
+          "autoincrement": false,
+          "name": "discord_message",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "employee_name": {
+          "autoincrement": false,
+          "name": "employee_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "client_name": {
+          "autoincrement": false,
+          "name": "client_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount": {
+          "autoincrement": false,
+          "name": "discount",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total": {
+          "autoincrement": false,
+          "name": "total",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery": {
+          "autoincrement": false,
+          "name": "delivery",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "comission": {
+          "autoincrement": false,
+          "name": "comission",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_value": {
+          "autoincrement": false,
+          "name": "store_value",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "items": {
+          "autoincrement": false,
+          "name": "items",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "default": "now()",
+          "autoincrement": false,
+          "name": "created_at",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "employee_id": {
+          "autoincrement": false,
+          "name": "employee_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "orders_provider_providerAccountId": {
+          "name": "orders_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "product_categories": {
+      "name": "product_categories",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "order": {
+          "autoincrement": false,
+          "name": "order",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "product_categories_provider_providerAccountId": {
+          "name": "product_categories_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "products": {
+      "name": "products",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "autoincrement": false,
+          "name": "price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image": {
+          "autoincrement": false,
+          "name": "image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category_id": {
+          "autoincrement": false,
+          "name": "category_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "active",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "promotional_price": {
+          "autoincrement": false,
+          "name": "promotional_price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "products_provider_providerAccountId": {
+          "name": "products_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "products_to_tags": {
+      "name": "products_to_tags",
+      "columns": {
+        "product_id": {
+          "autoincrement": false,
+          "name": "product_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tag_id": {
+          "autoincrement": false,
+          "name": "tag_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "products_to_tags_provider_providerAccountId": {
+          "name": "products_to_tags_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "session": {
+      "name": "session",
+      "columns": {
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sessionToken": {
+          "autoincrement": false,
+          "name": "sessionToken",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "autoincrement": false,
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "session_provider_providerAccountId": {
+          "name": "session_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "stores": {
+      "name": "stores",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_id": {
+          "autoincrement": false,
+          "name": "server_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "owner_id": {
+          "autoincrement": false,
+          "name": "owner_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "active",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "primary_color": {
+          "autoincrement": false,
+          "name": "primary_color",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "secondary_color": {
+          "autoincrement": false,
+          "name": "secondary_color",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "stores_provider_providerAccountId": {
+          "name": "stores_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {
+        "stores_server_id_unique": {
+          "name": "stores_server_id_unique",
+          "columns": [
+            "server_id"
+          ]
+        }
+      }
+    },
+    "tags": {
+      "name": "tags",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "autoincrement": false,
+          "name": "color",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "tags_provider_providerAccountId": {
+          "name": "tags_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "user": {
+      "name": "user",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailVerified": {
+          "default": "now()",
+          "autoincrement": false,
+          "name": "emailVerified",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "autoincrement": false,
+          "name": "image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "default": "'SELLER'",
+          "autoincrement": false,
+          "name": "role",
+          "type": "varchar(6)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_provider_providerAccountId": {
+          "name": "user_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "verificationToken": {
+      "name": "verificationToken",
+      "columns": {
+        "identifier": {
+          "autoincrement": false,
+          "name": "identifier",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "autoincrement": false,
+          "name": "token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "autoincrement": false,
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "verificationToken_provider_providerAccountId": {
+          "name": "verificationToken_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "webhooks_templates": {
+      "name": "webhooks_templates",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "color": {
+          "autoincrement": false,
+          "name": "color",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "autoincrement": false,
+          "name": "image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fields": {
+          "autoincrement": false,
+          "name": "fields",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "webhooks_templates_provider_providerAccountId": {
+          "name": "webhooks_templates_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

@@ -1,0 +1,143 @@
+-- -- Current sql file was generated after introspecting the database
+-- -- If you want to run this migration please uncomment this code before executing migrations
+
+-- CREATE TABLE `account` (
+-- 	`userId` varchar(255) NOT NULL,
+-- 	`type` varchar(255) NOT NULL,
+-- 	`provider` varchar(255) NOT NULL,
+-- 	`providerAccountId` varchar(255) NOT NULL,
+-- 	`refresh_token` varchar(255),
+-- 	`access_token` varchar(255),
+-- 	`expires_at` int,
+-- 	`token_type` varchar(255),
+-- 	`scope` varchar(255),
+-- 	`id_token` varchar(255),
+-- 	`session_state` varchar(255),
+-- 	CONSTRAINT `account_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `discord_webhooks` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`url` varchar(255) NOT NULL,
+-- 	`category` varchar(6) NOT NULL,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`webhook_id` varchar(255) NOT NULL,
+-- 	CONSTRAINT `discord_webhooks_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`),
+-- 	CONSTRAINT `discord_webhooks_webhook_id_unique` UNIQUE(`webhook_id`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `employee_roles` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`comission` int NOT NULL,
+-- 	`manager` tinyint NOT NULL DEFAULT 0,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	CONSTRAINT `employee_roles_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `employees` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`status` varchar(8) NOT NULL,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`user_id` varchar(255) NOT NULL,
+-- 	`employee_role_id` varchar(255),
+-- 	CONSTRAINT `employees_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `orders` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`discord_message` varchar(255) NOT NULL,
+-- 	`employee_name` varchar(255) NOT NULL,
+-- 	`client_name` varchar(255) NOT NULL,
+-- 	`discount` int,
+-- 	`total` int NOT NULL,
+-- 	`delivery` int,
+-- 	`comission` int NOT NULL,
+-- 	`store_value` int NOT NULL,
+-- 	`items` json NOT NULL,
+-- 	`created_at` timestamp(3) NOT NULL DEFAULT now(),
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`employee_id` varchar(255),
+-- 	CONSTRAINT `orders_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `product_categories` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`order` int NOT NULL,
+-- 	CONSTRAINT `product_categories_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `products` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`description` text,
+-- 	`price` int NOT NULL,
+-- 	`image` varchar(255),
+-- 	`category_id` varchar(255) NOT NULL,
+-- 	`active` tinyint NOT NULL DEFAULT 1,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`promotional_price` int,
+-- 	CONSTRAINT `products_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `products_to_tags` (
+-- 	`product_id` varchar(255) NOT NULL,
+-- 	`tag_id` varchar(255) NOT NULL,
+-- 	CONSTRAINT `products_to_tags_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `session` (
+-- 	`userId` varchar(255) NOT NULL,
+-- 	`sessionToken` varchar(255) NOT NULL,
+-- 	`expires` timestamp NOT NULL,
+-- 	CONSTRAINT `session_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `stores` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`server_id` varchar(255) NOT NULL,
+-- 	`owner_id` varchar(255) NOT NULL,
+-- 	`active` tinyint DEFAULT 1,
+-- 	`primary_color` varchar(8),
+-- 	`secondary_color` varchar(8),
+-- 	CONSTRAINT `stores_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`),
+-- 	CONSTRAINT `stores_server_id_unique` UNIQUE(`server_id`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `tags` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255) NOT NULL,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	`color` varchar(8),
+-- 	CONSTRAINT `tags_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `user` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`name` varchar(255),
+-- 	`email` varchar(255) NOT NULL,
+-- 	`emailVerified` timestamp(3) DEFAULT now(),
+-- 	`image` varchar(255),
+-- 	`role` varchar(6) NOT NULL DEFAULT 'SELLER',
+-- 	CONSTRAINT `user_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `verificationToken` (
+-- 	`identifier` varchar(255) NOT NULL,
+-- 	`token` varchar(255) NOT NULL,
+-- 	`expires` timestamp NOT NULL,
+-- 	CONSTRAINT `verificationToken_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `webhooks_templates` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`title` varchar(255),
+-- 	`color` int,
+-- 	`image` varchar(255),
+-- 	`fields` json,
+-- 	CONSTRAINT `webhooks_templates_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );

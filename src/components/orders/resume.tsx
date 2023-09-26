@@ -38,6 +38,16 @@ export default function OrderResume({
         return total
     }, [items])
 
+    // const totalComission = useMemo(() => {
+    //     let total = 0
+
+    //     items.forEach(item => {
+    //         total += item.quantity * item.unitPrice
+    //     })
+
+    //     return total
+    // }, [items])
+
     const {
         register,
         handleSubmit,
@@ -183,7 +193,7 @@ export default function OrderResume({
                     {items.length > 0 && (
                         <div
                             data-opened={opened}
-                            className="mb-4 hidden w-full flex-col items-stretch gap-y-5 border-y border-zinc-700 py-2 data-[opened=true]:flex md:flex md:data-[opened=true]:flex"
+                            className="mb-4 hidden w-full flex-col items-stretch gap-y-2 border-y border-zinc-700 py-2 data-[opened=true]:flex md:flex md:data-[opened=true]:flex"
                         >
                             <div className="flex w-full items-center justify-between">
                                 <p className="text-lg font-semibold">Total</p>
@@ -206,6 +216,14 @@ export default function OrderResume({
                                     )}
                                 </p>
                             </div>
+                            {/* <div className="flex w-full items-center justify-between">
+                                <p className="text-base text-zinc-400">
+                                    Comissão da Loja
+                                </p>
+                                <p className="text-green-700">
+                                    {numberToMoney(storeComission)}
+                                </p>
+                            </div> */}
                         </div>
                     )}
                     <div

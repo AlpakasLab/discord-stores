@@ -1,17 +1,13 @@
 'use client'
 
+import { OrderItem } from '@/entities/order'
 import React, { createContext, useContext, useState } from 'react'
 
 type SellContextData = {
-    items: { id: string; name: string; unitPrice: number; quantity: number }[]
+    items: OrderItem[]
     dispatchSell: (
         action: 'RESET' | 'CHANGE' | 'REMOVE',
-        value?: {
-            id: string
-            name: string
-            unitPrice: number
-            quantity: number
-        }
+        value?: OrderItem
     ) => void
 }
 
@@ -22,34 +18,14 @@ type SellContextProviderProps = {
 }
 
 export const SellContextProvider = ({ children }: SellContextProviderProps) => {
-    const [items, setItems] = useState(
-        new Map<
-            string,
-            { id: string; name: string; unitPrice: number; quantity: number }
-        >()
-    )
+    const [items, setItems] = useState(new Map<string, OrderItem>())
 
     const dispatchSell = (
         action: 'RESET' | 'CHANGE' | 'REMOVE',
-        value?: {
-            id: string
-            name: string
-            unitPrice: number
-            quantity: number
-        }
+        value?: OrderItem
     ) => {
         if (action === 'RESET') {
-            setItems(
-                new Map<
-                    string,
-                    {
-                        id: string
-                        name: string
-                        unitPrice: number
-                        quantity: number
-                    }
-                >()
-            )
+            setItems(new Map<string, OrderItem>())
         } else if (action === 'CHANGE' && value) {
             setItems(old => {
                 old.set(value.id, value)
