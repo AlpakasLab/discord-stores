@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { FaDiscord } from 'react-icons/fa'
 import Signout from '@/components/auth/signout'
 import Image from 'next/image'
+import Notifications from '@/components/stores/notifications'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -31,6 +32,7 @@ export default async function DashboardLayout({
                     </div>
 
                     <div className="flex items-center sm:gap-x-3">
+                        <Notifications />
                         {session.user.image && (
                             <div className="relative h-8 w-8 overflow-hidden rounded-full">
                                 <Image

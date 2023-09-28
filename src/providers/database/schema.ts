@@ -189,7 +189,7 @@ export const notifications = mysqlTable('notifications', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     title: varchar('title', { length: 255 }).notNull(),
     description: varchar('description', { length: 255 }).notNull(),
-    author: varchar('title', { length: 255 }).notNull(),
+    author: varchar('author', { length: 255 }).notNull(),
     icon: varchar('icon', { length: 255 }).notNull(),
     userId: varchar('user_id', { length: 255 }).notNull(),
     createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
