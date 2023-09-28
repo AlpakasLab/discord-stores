@@ -94,7 +94,18 @@ export async function PUT(request: NextRequest) {
     const parsedBody = EmployeeRoleSchema.safeParse(data)
 
     if (parsedBody.success && parsedBody.data.id) {
-        if (parsedBody.data.name === 'Proprietário') {
+        const actualRoleRegisters = await db
+            .select({ name: employeeRoles.name })
+            .from(employeeRoles)
+            .where(eq(employeeRoles.id, parsedBody.data.id))
+
+        const actualRole = actualRoleRegisters.at(0)
+
+        if (
+            !actualRole ||
+            (actualRole.name !== 'Proprietário' &&
+                parsedBody.data.name === 'Proprietário')
+        ) {
             return NextResponse.json(
                 { error: 'Operation not authorized' },
                 { status: 401 }

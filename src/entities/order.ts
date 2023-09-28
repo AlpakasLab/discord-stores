@@ -34,11 +34,8 @@ export const OrderCreateSchema = z.object({
     ),
     delivery: z.preprocess(
         val => {
-            if (typeof val === 'string') {
-                if (val.trim().length <= 0) {
-                    return null
-                }
-                return Number(val)
+            if (typeof val === 'number' && val <= -1) {
+                return null
             }
 
             if (val === undefined) {

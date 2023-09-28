@@ -1,6 +1,5 @@
 -- -- Current sql file was generated after introspecting the database
 -- -- If you want to run this migration please uncomment this code before executing migrations
-
 -- CREATE TABLE `account` (
 -- 	`userId` varchar(255) NOT NULL,
 -- 	`type` varchar(255) NOT NULL,
@@ -16,13 +15,20 @@
 -- 	CONSTRAINT `account_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
 -- );
 -- --> statement-breakpoint
+-- CREATE TABLE `delivery_values` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`description` varchar(255) NOT NULL,
+-- 	`value` int NOT NULL,
+-- 	`store_id` varchar(255) NOT NULL,
+-- 	CONSTRAINT `delivery_values_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- );
+-- --> statement-breakpoint
 -- CREATE TABLE `discord_webhooks` (
 -- 	`id` varchar(255) NOT NULL,
 -- 	`url` varchar(255) NOT NULL,
 -- 	`category` varchar(6) NOT NULL,
 -- 	`store_id` varchar(255) NOT NULL,
 -- 	`webhook_id` varchar(255) NOT NULL,
--- 	CONSTRAINT `discord_webhooks_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`),
 -- 	CONSTRAINT `discord_webhooks_webhook_id_unique` UNIQUE(`webhook_id`)
 -- );
 -- --> statement-breakpoint
@@ -31,8 +37,7 @@
 -- 	`name` varchar(255) NOT NULL,
 -- 	`comission` int NOT NULL,
 -- 	`manager` tinyint NOT NULL DEFAULT 0,
--- 	`store_id` varchar(255) NOT NULL,
--- 	CONSTRAINT `employee_roles_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- 	`store_id` varchar(255) NOT NULL
 -- );
 -- --> statement-breakpoint
 -- CREATE TABLE `employees` (
@@ -41,8 +46,17 @@
 -- 	`status` varchar(8) NOT NULL,
 -- 	`store_id` varchar(255) NOT NULL,
 -- 	`user_id` varchar(255) NOT NULL,
--- 	`employee_role_id` varchar(255),
--- 	CONSTRAINT `employees_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
+-- 	`employee_role_id` varchar(255)
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE `notifications` (
+-- 	`id` varchar(255) NOT NULL,
+-- 	`title` varchar(255) NOT NULL,
+-- 	`description` varchar(255) NOT NULL,
+-- 	`icon` varchar(255) NOT NULL,
+-- 	`user_id` varchar(255) NOT NULL,
+-- 	`created_at` timestamp(3) DEFAULT now(),
+-- 	CONSTRAINT `notifications_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
 -- );
 -- --> statement-breakpoint
 -- CREATE TABLE `orders` (
@@ -56,7 +70,7 @@
 -- 	`comission` int NOT NULL,
 -- 	`store_value` int NOT NULL,
 -- 	`items` json NOT NULL,
--- 	`created_at` timestamp(3) NOT NULL DEFAULT now(),
+-- 	`created_at` timestamp(3) DEFAULT now(),
 -- 	`store_id` varchar(255) NOT NULL,
 -- 	`employee_id` varchar(255),
 -- 	CONSTRAINT `orders_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
@@ -66,7 +80,7 @@
 -- 	`id` varchar(255) NOT NULL,
 -- 	`name` varchar(255) NOT NULL,
 -- 	`store_id` varchar(255) NOT NULL,
--- 	`order` int NOT NULL,
+-- 	`order` int NOT NULL DEFAULT 0,
 -- 	CONSTRAINT `product_categories_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
 -- );
 -- --> statement-breakpoint
@@ -80,6 +94,7 @@
 -- 	`active` tinyint NOT NULL DEFAULT 1,
 -- 	`store_id` varchar(255) NOT NULL,
 -- 	`promotional_price` int,
+-- 	`employee_comission` int,
 -- 	CONSTRAINT `products_provider_providerAccountId` PRIMARY KEY(`provider`,`providerAccountId`)
 -- );
 -- --> statement-breakpoint

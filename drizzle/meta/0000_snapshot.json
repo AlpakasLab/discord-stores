@@ -98,6 +98,51 @@
       "foreignKeys": {},
       "uniqueConstraints": {}
     },
+    "delivery_values": {
+      "name": "delivery_values",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "autoincrement": false,
+          "name": "value",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "autoincrement": false,
+          "name": "store_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "delivery_values_provider_providerAccountId": {
+          "name": "delivery_values_provider_providerAccountId",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
     "discord_webhooks": {
       "name": "discord_webhooks",
       "columns": {
@@ -137,15 +182,7 @@
           "notNull": true
         }
       },
-      "compositePrimaryKeys": {
-        "discord_webhooks_provider_providerAccountId": {
-          "name": "discord_webhooks_provider_providerAccountId",
-          "columns": [
-            "provider",
-            "providerAccountId"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "indexes": {},
       "foreignKeys": {},
       "uniqueConstraints": {
@@ -197,15 +234,7 @@
           "notNull": true
         }
       },
-      "compositePrimaryKeys": {
-        "employee_roles_provider_providerAccountId": {
-          "name": "employee_roles_provider_providerAccountId",
-          "columns": [
-            "provider",
-            "providerAccountId"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "indexes": {},
       "foreignKeys": {},
       "uniqueConstraints": {}
@@ -256,9 +285,61 @@
           "notNull": false
         }
       },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "notifications": {
+      "name": "notifications",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "default": "now()",
+          "autoincrement": false,
+          "name": "created_at",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
       "compositePrimaryKeys": {
-        "employees_provider_providerAccountId": {
-          "name": "employees_provider_providerAccountId",
+        "notifications_provider_providerAccountId": {
+          "name": "notifications_provider_providerAccountId",
           "columns": [
             "provider",
             "providerAccountId"
@@ -348,7 +429,7 @@
           "name": "created_at",
           "type": "timestamp(3)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "store_id": {
           "autoincrement": false,
@@ -403,6 +484,7 @@
           "notNull": true
         },
         "order": {
+          "default": 0,
           "autoincrement": false,
           "name": "order",
           "type": "int",
@@ -486,6 +568,13 @@
         "promotional_price": {
           "autoincrement": false,
           "name": "promotional_price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "employee_comission": {
+          "autoincrement": false,
+          "name": "employee_comission",
           "type": "int",
           "primaryKey": false,
           "notNull": false

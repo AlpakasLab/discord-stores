@@ -173,9 +173,24 @@ export const orders = mysqlTable('orders', {
             values: { name: string; quantity: number; unitPrice: number }[]
         }>()
         .notNull(),
-    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 })
-        .defaultNow()
-        .notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow(),
     storeId: varchar('store_id', { length: 255 }).notNull(),
     employeeId: varchar('employee_id', { length: 255 })
+})
+
+export const deliveryValues = mysqlTable('delivery_values', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    description: varchar('description', { length: 255 }).notNull(),
+    value: int('value').notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})
+
+export const notifications = mysqlTable('notifications', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    title: varchar('title', { length: 255 }).notNull(),
+    description: varchar('description', { length: 255 }).notNull(),
+    author: varchar('title', { length: 255 }).notNull(),
+    icon: varchar('icon', { length: 255 }).notNull(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
 })

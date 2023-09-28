@@ -95,7 +95,7 @@ export default function TagsConfiguration({
 
     return (
         <>
-            <div className="mt-2 flex w-full flex-wrap items-start justify-start gap-2">
+            <div className="mt-2 flex w-full flex-grow flex-wrap items-start justify-start gap-2">
                 {React.Children.toArray(
                     tags.map(tag => (
                         <div

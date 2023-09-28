@@ -100,7 +100,7 @@ export default function CategoriesConfiguration({
 
     return (
         <>
-            <div className="mt-2 flex w-full flex-wrap items-start justify-start gap-2">
+            <div className="mt-2 flex w-full flex-grow flex-wrap items-start justify-start gap-2">
                 {React.Children.toArray(
                     categories.map(category => (
                         <div className="flex w-fit items-center gap-x-1 rounded-md bg-zinc-500 px-2 py-1 text-sm text-slate-200 odd:bg-zinc-700">

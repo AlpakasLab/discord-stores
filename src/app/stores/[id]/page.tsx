@@ -1,7 +1,7 @@
 import ProductsShow from '@/components/products/show'
 import { SellContextProvider } from '@/components/orders/context'
 import OrderResume from '@/components/orders/resume'
-import { verifyOrderEnabled } from '@/services/configuration'
+import { getDeliveryValues, verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
 import { getTagsColors } from '@/services/tags'
 import { Metadata } from 'next'
@@ -17,6 +17,7 @@ export default async function StoreDetail({
     params: { id: string }
 }) {
     const products = await getProducts(params.id)
+    const deliveryValues = await getDeliveryValues(params.id)
     const tagsColors = await getTagsColors(params.id)
     const enableOrder = await verifyOrderEnabled(params.id)
 
@@ -30,7 +31,11 @@ export default async function StoreDetail({
                         storeId={params.id}
                     />
                 </div>
-                <OrderResume enableOrder={enableOrder} storeId={params.id} />
+                <OrderResume
+                    deliveryValues={deliveryValues}
+                    enableOrder={enableOrder}
+                    storeId={params.id}
+                />
             </SellContextProvider>
         </div>
     )

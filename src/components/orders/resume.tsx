@@ -13,14 +13,21 @@ import toast from 'react-hot-toast'
 import CheckboxInput from '../inputs/checkbox'
 import { useStoreContext } from '../store/context'
 import { useRouter } from 'next/navigation'
+import SelectInput from '../inputs/select'
 
 type OrderResumeProps = {
+    deliveryValues: {
+        id: string
+        description: string
+        value: number
+    }[]
     enableOrder: boolean
     storeId: string
 }
 
 export default function OrderResume({
     enableOrder,
+    deliveryValues,
     storeId
 }: OrderResumeProps) {
     const { themed } = useStoreContext()
@@ -38,20 +45,12 @@ export default function OrderResume({
         return total
     }, [items])
 
-    // const totalComission = useMemo(() => {
-    //     let total = 0
-
-    //     items.forEach(item => {
-    //         total += item.quantity * item.unitPrice
-    //     })
-
-    //     return total
-    // }, [items])
-
     const {
         register,
         handleSubmit,
         reset,
+        setValue,
+        resetField,
         watch,
         formState: { errors }
     } = useForm<OrderCreateData>({
@@ -100,7 +99,7 @@ export default function OrderResume({
     return (
         <aside
             data-opened={opened}
-            className="fixed bottom-0 left-0 h-fit w-full flex-shrink-0 overflow-y-auto shadow-lg data-[opened=true]:max-h-[80vh] md:sticky md:bottom-auto md:left-auto md:top-0 md:h-fit md:w-80 md:pl-2 md:pt-5 md:shadow-none md:data-[opened=true]:max-h-none lg:w-96 lg:pl-5"
+            className="fixed bottom-0 left-0 h-fit w-full flex-shrink-0 overflow-y-auto shadow-lg data-[opened=true]:max-h-[80vh] md:sticky md:bottom-auto md:left-auto md:top-0 md:h-fit md:w-80 md:overflow-y-visible md:pl-2 md:pt-5 md:shadow-none md:data-[opened=true]:max-h-none lg:w-96 lg:pl-5"
         >
             {!enableOrder ? (
                 <div className="flex w-full flex-col items-center rounded-t-md bg-zinc-800 p-4 md:rounded-b-md">
@@ -261,13 +260,36 @@ export default function OrderResume({
                             Possuí taxa de entrega?
                         </CheckboxInput>
                         {isDelivery && (
-                            <TextInput
-                                {...register('delivery')}
+                            <SelectInput
+                                mode="single"
                                 label="Taxa de entrega:"
-                                type="number"
-                                autoComplete="none"
-                                placeholder="250"
-                                min={0}
+                                defaultOption={-1}
+                                options={[
+                                    {
+                                        label: 'Selecione um Valor',
+                                        value: -1,
+                                        disabled: true
+                                    },
+                                    ...deliveryValues.map(deliveryValue => ({
+                                        label: deliveryValue.description,
+                                        value: deliveryValue.value
+                                    }))
+                                ]}
+                                onSelectOption={option => {
+                                    if (option) {
+                                        setValue(
+                                            'delivery',
+                                            Number(option.value),
+                                            {
+                                                shouldValidate: true
+                                            }
+                                        )
+                                    } else {
+                                        resetField('delivery', {
+                                            keepError: false
+                                        })
+                                    }
+                                }}
                                 error={errors.delivery?.message}
                             />
                         )}

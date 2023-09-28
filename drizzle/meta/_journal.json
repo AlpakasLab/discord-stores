@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1695694715190,
-      "tag": "0000_unknown_agent_brand",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1695694740055,
-      "tag": "0001_giant_tombstone",
+      "when": 1695865000266,
+      "tag": "0000_sudden_sentry",
       "breakpoints": true
     }
   ]

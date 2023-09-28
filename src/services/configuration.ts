@@ -1,6 +1,6 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import {
+    deliveryValues,
     discordWebhooks,
     productCategories,
     stores,
@@ -8,18 +8,8 @@ import {
     webhooksTemplates
 } from '@/providers/database/schema'
 import { asc, eq } from 'drizzle-orm'
-import { getServerSession } from 'next-auth'
 
 export async function getProductCategories(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const categoriesRegistred = await db
             .select({
@@ -38,15 +28,6 @@ export async function getProductCategories(store: string) {
 }
 
 export async function getTags(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const tagsRegistred = await db
             .select({
@@ -64,16 +45,25 @@ export async function getTags(store: string) {
     }
 }
 
-export async function getWebhooks(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
+export async function getDeliveryValues(store: string) {
+    try {
+        const deliveryValuesRegistred = await db
+            .select({
+                id: deliveryValues.id,
+                description: deliveryValues.description,
+                value: deliveryValues.value
+            })
+            .from(deliveryValues)
+            .where(eq(deliveryValues.storeId, store))
+            .orderBy(asc(deliveryValues.value))
 
+        return deliveryValuesRegistred
+    } catch (error) {
+        throw new Error('Cannot get delivery values')
+    }
+}
+
+export async function getWebhooks(store: string) {
     try {
         const hooksRegistred = await db
             .select({
@@ -96,15 +86,6 @@ export async function getWebhooks(store: string) {
 }
 
 export async function getColors(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const colorsRegistred = await db
             .select({
@@ -121,15 +102,6 @@ export async function getColors(store: string) {
 }
 
 export async function verifyOrderEnabled(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const hooksRegistred = await db
             .select({

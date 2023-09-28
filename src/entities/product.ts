@@ -78,7 +78,6 @@ export const ProductSchema = z
                 .max(100)
                 .nullable()
         ),
-
         image: z.preprocess(
             val => (String(val).length <= 0 ? undefined : val),
             z

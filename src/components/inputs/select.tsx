@@ -6,19 +6,27 @@ type BaseProps = {
     label?: string
     error?: string
     disabled?: boolean
-    options: Array<{ label: string; value: string; disabled?: boolean }>
+    options: Array<{
+        label: string
+        value: string | number
+        disabled?: boolean
+    }>
 }
 
 type SingleSelectProps = {
     mode: 'single'
-    defaultOption?: string | null
-    onSelectOption?: (option: { label: string; value: string } | null) => void
+    defaultOption?: string | number | null
+    onSelectOption?: (
+        option: { label: string; value: string | number } | null
+    ) => void
 } & BaseProps
 
 type MultiSelectProps = {
     mode: 'multi'
-    defaultOption?: string[] | null
-    onSelectOption?: (option: { label: string; value: string }[] | null) => void
+    defaultOption?: string[] | number[] | null
+    onSelectOption?: (
+        option: { label: string; value: string | number }[] | null
+    ) => void
 } & BaseProps
 
 type SelectInputProps = SingleSelectProps | MultiSelectProps
@@ -36,11 +44,11 @@ export default function SelectInput({
         | null
         | {
               label: string
-              value: string
+              value: string | number
           }
         | {
               label: string
-              value: string
+              value: string | number
           }[]
     >(null)
 

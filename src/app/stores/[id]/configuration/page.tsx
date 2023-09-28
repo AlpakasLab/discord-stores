@@ -1,11 +1,13 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import CategoriesConfiguration from '@/components/configuration/categories'
 import StoreColors from '@/components/configuration/colors'
+import DeliveryValuesConfiguration from '@/components/configuration/delivery'
 import TagsConfiguration from '@/components/configuration/tags'
 import WebHooksConfiguration from '@/components/configuration/webhooks'
 import SellWebhookTempleate from '@/components/configuration/webhooks/templeates/sell'
 import {
     getColors,
+    getDeliveryValues,
     getProductCategories,
     getTags,
     getWebhooks
@@ -29,6 +31,7 @@ export default async function Configuration({
     const session = await getServerSession(authOptions)
     const categories = await getProductCategories(params.id)
     const tags = await getTags(params.id)
+    const deliveryValues = await getDeliveryValues(params.id)
     const webhooks = await getWebhooks(params.id)
     const colors = await getColors(params.id)
 
@@ -41,8 +44,8 @@ export default async function Configuration({
     }
 
     return (
-        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-1 place-content-start gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <div className="h-fit rounded-md border border-zinc-700 p-4">
+        <div className="container relative mt-5 grid h-full w-full flex-grow grid-cols-1 place-content-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="flex h-full flex-col rounded-md border border-zinc-700 p-4">
                 <p className="font-semibold">
                     Categorias ({categories.length})
                 </p>
@@ -51,7 +54,7 @@ export default async function Configuration({
                     store={params.id}
                 />
             </div>
-            <div className="h-fit rounded-md border border-zinc-700 p-4">
+            <div className="flex h-full flex-col rounded-md border border-zinc-700 p-4">
                 <p className="font-semibold">Tags ({tags.length})</p>
                 <TagsConfiguration tags={tags} store={params.id} />
             </div>
@@ -59,7 +62,6 @@ export default async function Configuration({
                 <p className="font-semibold">Discord Webhooks</p>
                 <WebHooksConfiguration webhooks={webhooks} store={params.id} />
             </div>
-
             {webhooks && sellWebhookTempleateData !== undefined && (
                 <div className="h-fit rounded-md border border-zinc-700 p-4">
                     <p className="mb-2 font-semibold">Customizações</p>
@@ -81,6 +83,12 @@ export default async function Configuration({
                     </div>
                 </div>
             )}
+            <div className="flex h-full flex-col rounded-md border border-zinc-700 p-4">
+                <DeliveryValuesConfiguration
+                    values={deliveryValues}
+                    store={params.id}
+                />
+            </div>
         </div>
     )
 }
