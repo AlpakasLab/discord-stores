@@ -216,7 +216,7 @@ export default function SellWebhookTempleate({
                                                         if (option) {
                                                             setValue(
                                                                 `fields.${index}.value`,
-                                                                option.value,
+                                                                option.value.toString(),
                                                                 {
                                                                     shouldValidate:
                                                                         true

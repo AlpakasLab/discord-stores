@@ -286,9 +286,13 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                     options={categories}
                                     onSelectOption={option => {
                                         if (option) {
-                                            setValue('category', option.value, {
-                                                shouldValidate: true
-                                            })
+                                            setValue(
+                                                'category',
+                                                option.value.toString(),
+                                                {
+                                                    shouldValidate: true
+                                                }
+                                            )
                                         } else {
                                             resetField('category', {
                                                 keepError: false
@@ -340,7 +344,9 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                         if (options) {
                                             setValue(
                                                 'tags',
-                                                options.map(item => item.value),
+                                                options.map(item =>
+                                                    item.value.toString()
+                                                ),
                                                 {
                                                     shouldValidate: true
                                                 }

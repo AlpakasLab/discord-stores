@@ -28,7 +28,7 @@ type ShowOrdersProps = {
         storeComission: number
         delivery: number | null
         discount: number | null
-        createdAt: Date
+        createdAt: Date | null
         items: {
             values: {
                 name: string

@@ -233,9 +233,13 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
                                     })}
                                     onSelectOption={option => {
                                         if (option) {
-                                            setValue('role', option.value, {
-                                                shouldValidate: true
-                                            })
+                                            setValue(
+                                                'role',
+                                                option.value.toString(),
+                                                {
+                                                    shouldValidate: true
+                                                }
+                                            )
                                         } else {
                                             resetField('role', {
                                                 keepError: false

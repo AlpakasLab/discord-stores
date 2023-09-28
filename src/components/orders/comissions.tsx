@@ -1,10 +1,7 @@
 'use client'
 
-import { getDateHourString } from '@/utils/date'
 import { numberToMoney } from '@/utils/formatter'
 import React from 'react'
-import { FaTrashAlt } from 'react-icons/fa'
-import { number } from 'zod'
 
 type ShowComissionsProps = {
     orders: {
@@ -24,7 +21,7 @@ type ShowComissionsProps = {
         storeComission: number
         delivery: number | null
         discount: number | null
-        createdAt: Date
+        createdAt: Date | null
         items: {
             values: {
                 name: string
