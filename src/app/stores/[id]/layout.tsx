@@ -1,6 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { StoreContextProvider } from '@/components/store/context'
 import Menu from '@/components/store/menu'
+import { getEmployeeData } from '@/services/employees'
 import { getStoreData } from '@/services/stores'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
@@ -16,15 +17,21 @@ export default async function StoreLayout({
     params: { id: string }
 }) {
     const session = await getServerSession(authOptions)
+
     const {
         name: storeName,
         primaryColor,
         secondaryColor
     } = await getStoreData(params.id)
+    const { isManager, comission } = await getEmployeeData(
+        params.id,
+        session?.user.discord
+    )
 
     return (
         <StoreContextProvider
-            storeId={params.id}
+            comission={comission}
+            isManager={isManager}
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
         >

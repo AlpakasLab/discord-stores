@@ -19,42 +19,30 @@ type StoreThemeColors = {
 type StoreContextData = {
     themed: boolean
     isManager: boolean
+    comission: number | null
 }
 
 const StoreContext = createContext<null | StoreContextData>(null)
 
 type StoreContextProviderProps = {
     children: React.ReactNode
-    storeId: string
     primaryColor: string | null
     secondaryColor: string | null
+    isManager: boolean
+    comission: number | null
 }
 
 export const StoreContextProvider = ({
     children,
-    storeId,
     primaryColor,
-    secondaryColor
+    secondaryColor,
+    isManager,
+    comission
 }: StoreContextProviderProps) => {
-    const [loaded, setLoaded] = useState(false)
     const [colors, setColors] = useState<StoreThemeColors>({
         primary: null,
         secondary: null
     })
-    const [isManager, setIsManager] = useState(false)
-
-    const getEmployeeRole = async (store: string) => {
-        const request = await fetch(
-            `${process.env.NEXT_PUBLIC_LOCAL_API_URL}/me?store=${store}`
-        )
-        if (!request.ok)
-            throw new Error('Cannot user information, retry later.')
-        const data = await request.json()
-
-        if (data.manager) {
-            setIsManager(true)
-        }
-    }
 
     const removeCSSVariables = () => {
         document.documentElement.removeAttribute('style')
@@ -111,13 +99,6 @@ export const StoreContextProvider = ({
     }, [colors])
 
     useEffect(() => {
-        if (!loaded) {
-            getEmployeeRole(storeId)
-            setLoaded(true)
-        }
-    }, [loaded, storeId])
-
-    useEffect(() => {
         if (primaryColor && secondaryColor) {
             const lighterColor = '#ffffff'
             const darkerColor = '#18181b'
@@ -149,7 +130,7 @@ export const StoreContextProvider = ({
 
     return (
         <StoreContext.Provider
-            value={{ themed: colors.primary !== null, isManager }}
+            value={{ themed: colors.primary !== null, isManager, comission }}
         >
             {children}
         </StoreContext.Provider>

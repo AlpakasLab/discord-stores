@@ -14,6 +14,7 @@ import CheckboxInput from '../inputs/checkbox'
 import { useStoreContext } from '../store/context'
 import { useRouter } from 'next/navigation'
 import SelectInput from '../inputs/select'
+import { getItemsPriceAndComissions } from '@/utils/calculate'
 
 type OrderResumeProps = {
     deliveryValues: {
@@ -30,7 +31,7 @@ export default function OrderResume({
     deliveryValues,
     storeId
 }: OrderResumeProps) {
-    const { themed } = useStoreContext()
+    const { themed, comission } = useStoreContext()
     const router = useRouter()
 
     const { items, dispatchSell } = useSellContext()
@@ -66,6 +67,18 @@ export default function OrderResume({
     const [opened, setOpened] = useState(false)
 
     const discountValue = watch('discount')
+
+    const storeComission = useMemo(() => {
+        if (!comission) return null
+
+        const { storeComission } = getItemsPriceAndComissions(
+            items,
+            discountValue,
+            comission
+        )
+
+        return storeComission
+    }, [comission, discountValue, items])
 
     const saveOrder = async (data: OrderCreateData) => {
         setResult(null)
@@ -215,14 +228,16 @@ export default function OrderResume({
                                     )}
                                 </p>
                             </div>
-                            {/* <div className="flex w-full items-center justify-between">
-                                <p className="text-base text-zinc-400">
-                                    Comissão da Loja
-                                </p>
-                                <p className="text-green-700">
-                                    {numberToMoney(storeComission)}
-                                </p>
-                            </div> */}
+                            {storeComission !== null && (
+                                <div className="flex w-full items-center justify-between">
+                                    <p className="text-base text-zinc-400">
+                                        Comissão da Loja
+                                    </p>
+                                    <p className="text-green-700">
+                                        {numberToMoney(storeComission)}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     )}
                     <div
