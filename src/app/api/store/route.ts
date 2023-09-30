@@ -1,11 +1,6 @@
 import { StoreColorsSchema, StoreSchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
-import {
-    accounts,
-    employeeRoles,
-    employees,
-    stores
-} from '@/providers/database/schema'
+import { employeeRoles, employees, stores } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'

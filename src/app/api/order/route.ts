@@ -5,7 +5,6 @@ import { OrderCreateSchema, OrderItem } from '@/entities/order'
 import { db } from '@/providers/database/client'
 import crypto from 'node:crypto'
 import {
-    accounts,
     discordWebhooks,
     employeeRoles,
     employees,
@@ -94,7 +93,6 @@ export async function POST(request: NextRequest) {
     if (parsedBody.success) {
         const userRegisters = await db
             .select({
-                id: accounts.userId,
                 employee: employees.name,
                 employeeId: employees.id,
                 comission: employeeRoles.comission,

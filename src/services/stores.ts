@@ -2,7 +2,7 @@ import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v10'
 import { db } from '@/providers/database/client'
 import { and, eq, inArray } from 'drizzle-orm'
-import { accounts, employees, stores } from '@/providers/database/schema'
+import { employees, stores } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
