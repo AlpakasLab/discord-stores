@@ -6,7 +6,8 @@ export async function getUserAccount(userId: string) {
     const accountsRegisters = await db
         .select({
             discordToken: accounts.access_token,
-            role: users.role
+            userRole: users.role,
+            userId: users.id
         })
         .from(users)
         .where(eq(users.id, userId))

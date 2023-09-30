@@ -25,7 +25,7 @@ export default async function StoreLayout({
     } = await getStoreData(params.id)
     const { isManager, comission } = await getEmployeeData(
         params.id,
-        session?.user.discord
+        session?.user.accessToken
     )
 
     return (

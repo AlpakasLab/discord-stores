@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../../auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { db } from '@/providers/database/client'
-import { accounts, notifications } from '@/providers/database/schema'
+import { notifications } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 
 export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email
-    )
+    if (!session)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -34,35 +29,16 @@ export async function DELETE(request: NextRequest) {
 
 export async function GET() {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
+    if (!session || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
         )
-
-    const userRegisters = await db
-        .select({ id: accounts.userId })
-        .from(accounts)
-        .where(eq(accounts.access_token, session.user.discord))
-    const user = userRegisters.at(0)
-
-    if (!user) {
-        return NextResponse.json(
-            { error: 'User not authenticated or not authorized' },
-            { status: 401 }
-        )
-    }
 
     const notificationsRegisters = await db
         .select()
         .from(notifications)
-        .where(eq(notifications.userId, user.id))
+        .where(eq(notifications.userId, session.user.id))
 
     return NextResponse.json(
         { notifications: notificationsRegisters },

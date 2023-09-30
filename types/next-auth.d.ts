@@ -3,8 +3,9 @@ import NextAuth, { DefaultSession } from 'next-auth'
 declare module 'next-auth' {
     interface Session {
         user: {
+            id?: string
             role?: 'SELLER' | 'ADMIN'
-            discord?: string
+            accessToken?: string
         } & DefaultSession['user']
     }
 }

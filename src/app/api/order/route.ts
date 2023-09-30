@@ -20,13 +20,7 @@ import { getItemsPriceAndComissions } from '@/utils/calculate'
 
 export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
+    if (!session)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -88,13 +82,7 @@ export async function DELETE(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
+    if (!session || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -112,9 +100,8 @@ export async function POST(request: NextRequest) {
                 comission: employeeRoles.comission,
                 store: employees.storeId
             })
-            .from(accounts)
-            .where(eq(accounts.access_token, session.user.discord))
-            .innerJoin(employees, eq(employees.userId, accounts.userId))
+            .from(employees)
+            .where(eq(employees.userId, session.user.id))
             .innerJoin(
                 employeeRoles,
                 eq(employeeRoles.id, employees.employeeRoleId)

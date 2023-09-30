@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import {
     productCategories,
@@ -7,18 +6,8 @@ import {
     tags
 } from '@/providers/database/schema'
 import { asc, eq, sql } from 'drizzle-orm'
-import { getServerSession } from 'next-auth'
 
 export async function getProducts(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const productsRegistred = await db
             .select({

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import {
-    accounts,
     discordWebhooks,
     employeeRoles,
     employees
@@ -14,13 +13,7 @@ import { sendLogsMessage } from '@/services/logs'
 
 export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
+    if (!session || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -50,9 +43,8 @@ export async function PUT(request: NextRequest) {
                 .select({
                     employee: employees.name
                 })
-                .from(accounts)
-                .where(eq(accounts.access_token, session.user.discord))
-                .innerJoin(employees, eq(employees.userId, accounts.userId))
+                .from(employees)
+                .where(eq(employees.userId, session.user.id))
 
             const hooksRegistred = await db
                 .select({

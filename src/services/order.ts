@@ -1,11 +1,9 @@
 import { EmbedBuilder } from '@discordjs/builders'
 import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/sell'
 import { sendMessageByWebhook } from '@/providers/discord/webhooks'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import { employees, orders } from '@/providers/database/schema'
-import { and, between, desc, eq, gte, lte } from 'drizzle-orm'
+import { and, between, desc, eq } from 'drizzle-orm'
 import moment from 'moment'
 
 type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
@@ -67,15 +65,6 @@ export const sendOrderMessage = async (
 }
 
 export async function getOrders(store: string, start?: string, end?: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     const startDate = start
         ? moment.utc(start).local(true).startOf('day').local(false)
         : moment().local(true).startOf('day').local(false)

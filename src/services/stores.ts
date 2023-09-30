@@ -11,26 +11,16 @@ export async function getUserStores() {
     if (
         !session ||
         !session.user ||
-        !session.user.discord ||
-        !session.user.role
+        !session.user.accessToken ||
+        !session.user.id
     )
         throw new Error('User not authenticated')
 
     const rest = new REST({ version: '10', authPrefix: 'Bearer' }).setToken(
-        session.user.discord
+        session.user.accessToken
     )
 
     try {
-        const userRegisters = await db
-            .select({ id: accounts.userId })
-            .from(accounts)
-            .where(eq(accounts.access_token, session.user.discord))
-        const user = userRegisters.at(0)
-
-        if (!user) {
-            throw new Error('User not authenticated or not authorized')
-        }
-
         const guilds = (await rest.get(Routes.userGuilds())) as {
             id: string
             name: string
@@ -53,7 +43,7 @@ export async function getUserStores() {
                 employees,
                 and(
                     eq(employees.storeId, stores.id),
-                    eq(employees.userId, user.id)
+                    eq(employees.userId, session.user.id)
                 )
             )
 

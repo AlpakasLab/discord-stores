@@ -1,19 +1,8 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { db } from '@/providers/database/client'
 import { accounts, employeeRoles, employees } from '@/providers/database/schema'
 import { and, desc, eq } from 'drizzle-orm'
-import { getServerSession } from 'next-auth'
 
 export async function getEmployeeRoles(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const rolesRegistred = await db
             .select({
@@ -34,15 +23,6 @@ export async function getEmployeeRoles(store: string) {
 }
 
 export async function getEmployee(store: string) {
-    const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.role
-    )
-        throw new Error('User not authenticated')
-
     try {
         const employeesRegistred = await db
             .select({

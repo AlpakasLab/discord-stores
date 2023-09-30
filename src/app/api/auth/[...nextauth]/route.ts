@@ -26,8 +26,9 @@ export const authOptions: NextAuthOptions = {
                 ...session,
                 user: {
                     ...session.user,
-                    role: account.role,
-                    discord: account.discordToken
+                    id: account.userId,
+                    role: account.userRole,
+                    accessToken: account.discordToken
                 }
             }
         }

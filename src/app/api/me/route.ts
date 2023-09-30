@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { db } from '@/providers/database/client'
-import { accounts, employeeRoles, employees } from '@/providers/database/schema'
+import { employeeRoles, employees } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
@@ -16,13 +16,7 @@ export async function GET(request: NextRequest) {
         )
 
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role
-    )
+    if (!session || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -32,12 +26,10 @@ export async function GET(request: NextRequest) {
         .select({
             manager: employeeRoles.manager
         })
-        .from(accounts)
-        .where(eq(accounts.access_token, session.user.discord))
-        .innerJoin(
-            employees,
+        .from(employees)
+        .where(
             and(
-                eq(employees.userId, accounts.userId),
+                eq(employees.userId, session.user.id),
                 eq(employees.storeId, storeId)
             )
         )

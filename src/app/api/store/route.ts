@@ -14,14 +14,7 @@ import { authOptions } from '../auth/[...nextauth]/route'
 
 export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
-    )
+    if (!session || session.user.role !== 'ADMIN')
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -47,14 +40,7 @@ export async function PUT(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (
-        !session ||
-        !session.user ||
-        !session.user.discord ||
-        !session.user.email ||
-        !session.user.role ||
-        session.user.role !== 'ADMIN'
-    )
+    if (!session || session.user.role !== 'ADMIN' || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -64,26 +50,13 @@ export async function POST(request: NextRequest) {
     const parsedBody = StoreSchema.safeParse(data)
 
     if (parsedBody.success) {
-        const userRegisters = await db
-            .select({ id: accounts.userId })
-            .from(accounts)
-            .where(eq(accounts.access_token, session.user.discord))
-        const user = userRegisters.at(0)
-
-        if (!user) {
-            return NextResponse.json(
-                { error: 'User not authenticated or not authorized' },
-                { status: 401 }
-            )
-        }
-
         const storeId = crypto.randomUUID()
 
         await db.insert(stores).values({
             id: storeId,
             name: parsedBody.data.name,
             serverId: parsedBody.data.server,
-            ownerId: user.id
+            ownerId: session.user.id
         })
 
         const roleId = crypto.randomUUID()
@@ -101,7 +74,7 @@ export async function POST(request: NextRequest) {
             name: parsedBody.data.ownerName,
             storeId: storeId,
             status: 'ACTIVE',
-            userId: user.id,
+            userId: session.user.id,
             employeeRoleId: roleId
         })
 
