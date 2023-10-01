@@ -2,7 +2,7 @@ import { db } from '@/providers/database/client'
 import { tags } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'
 
-export async function getTagsColors(store: string) {
+export async function getTags(store: string) {
     try {
         const tagsRegistred = await db
             .select({

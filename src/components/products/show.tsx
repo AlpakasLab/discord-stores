@@ -10,6 +10,7 @@ import { useStoreContext } from '../store/context'
 import TextInput from '../inputs/text'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import DeleteProductDialog, { DeleteProductDialogHandles } from './delete'
+import SelectInput from '../inputs/select'
 
 type ProductsShowProps = {
     products: {
@@ -25,7 +26,7 @@ type ProductsShowProps = {
         tags: string
         store: string
     }[]
-    tagsColors: {
+    tags: {
         name: string
         id: string
         color: string | null
@@ -35,7 +36,7 @@ type ProductsShowProps = {
 
 export default function ProductsShow({
     products,
-    tagsColors,
+    tags,
     storeId
 }: ProductsShowProps) {
     const { themed, isManager } = useStoreContext()
@@ -45,17 +46,24 @@ export default function ProductsShow({
 
     const [filters, setFilters] = useState({
         name: '',
-        category: 'all'
+        category: 'all',
+        tags: 'all'
     })
 
     const getProductsWithCategories = useCallback(() => {
         if (products.length <= 0) return []
 
-        const filteredProducts = products.filter(product =>
-            product.name
-                .toLocaleLowerCase()
-                .includes(filters.name.toLocaleLowerCase())
-        )
+        const filteredProducts = products
+            .filter(product =>
+                product.name
+                    .toLocaleLowerCase()
+                    .includes(filters.name.toLocaleLowerCase())
+            )
+            .filter(product => {
+                if (filters.tags === 'all') return true
+                if (product.tags === null) return false
+                return product.tags.includes(filters.tags)
+            })
 
         if (filteredProducts.length <= 0) {
             return (
@@ -103,7 +111,7 @@ export default function ProductsShow({
                                 ?.split(',')
                                 .sort()
                                 .map(tag => {
-                                    const tagData = tagsColors.find(
+                                    const tagData = tags.find(
                                         tagColor => tagColor.name === tag
                                     )
 
@@ -146,15 +154,42 @@ export default function ProductsShow({
         })
 
         return rows
-    }, [filters.name, products, tagsColors])
+    }, [filters.name, filters.tags, products, tags])
 
     return (
         <>
-            <header className="z-10 flex w-full items-center justify-between bg-zinc-900 pb-5">
-                <p className="text-lg font-bold sm:text-xl">
+            <header className="z-10 flex w-full items-center justify-between gap-x-10 bg-zinc-900 pb-5">
+                <p className="shrink-0 text-lg font-bold sm:text-xl">
                     Produtos ({products.length})
                 </p>
-                <div className="flex items-center gap-x-5">
+                <div className="flex w-full max-w-2xl flex-grow items-center gap-x-5">
+                    <SelectInput
+                        mode="single"
+                        defaultOption={'all'}
+                        options={[
+                            {
+                                label: 'Todas as Tags',
+                                value: 'all'
+                            },
+                            ...tags.map(tag => ({
+                                label: tag.name,
+                                value: tag.name
+                            }))
+                        ]}
+                        onSelectOption={option => {
+                            if (option) {
+                                setFilters(old => ({
+                                    ...old,
+                                    tags: option.value.toString()
+                                }))
+                            } else {
+                                setFilters(old => ({
+                                    ...old,
+                                    tags: 'all'
+                                }))
+                            }
+                        }}
+                    />
                     <TextInput
                         onChange={e =>
                             setFilters(old => ({

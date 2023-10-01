@@ -3,7 +3,7 @@ import { SellContextProvider } from '@/components/orders/context'
 import OrderResume from '@/components/orders/resume'
 import { getDeliveryValues, verifyOrderEnabled } from '@/services/configuration'
 import { getProducts } from '@/services/product'
-import { getTagsColors } from '@/services/tags'
+import { getTags } from '@/services/tags'
 import { Metadata } from 'next'
 import React from 'react'
 
@@ -18,7 +18,7 @@ export default async function StoreDetail({
 }) {
     const products = await getProducts(params.id)
     const deliveryValues = await getDeliveryValues(params.id)
-    const tagsColors = await getTagsColors(params.id)
+    const tags = await getTags(params.id)
     const enableOrder = await verifyOrderEnabled(params.id)
 
     return (
@@ -27,7 +27,7 @@ export default async function StoreDetail({
                 <div className="h-full w-full flex-grow pb-10 pr-2 pt-5 lg:pr-5">
                     <ProductsShow
                         products={products}
-                        tagsColors={tagsColors}
+                        tags={tags}
                         storeId={params.id}
                     />
                 </div>
