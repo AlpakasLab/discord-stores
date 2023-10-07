@@ -36,16 +36,6 @@ export default function OrderResume({
 
     const { items, dispatchSell } = useSellContext()
 
-    const total = useMemo(() => {
-        let total = 0
-
-        items.forEach(item => {
-            total += item.quantity * item.unitPrice
-        })
-
-        return total
-    }, [items])
-
     const {
         register,
         handleSubmit,
@@ -67,6 +57,7 @@ export default function OrderResume({
     const [opened, setOpened] = useState(false)
 
     const discountValue = watch('discount')
+    const deliveryValue = watch('delivery')
 
     const storeComission = useMemo(() => {
         if (!comission) return null
@@ -79,6 +70,29 @@ export default function OrderResume({
 
         return storeComission
     }, [comission, discountValue, items])
+
+    const { itemsTotal, discountTotal, total } = useMemo(() => {
+        let itemsTotal = 0
+
+        items.forEach(item => {
+            itemsTotal += item.quantity * item.unitPrice
+        })
+
+        let discountTotal = undefined
+
+        let total = itemsTotal
+
+        if (discountValue) {
+            discountTotal = Math.round((total / 100) * discountValue)
+            total = total - discountTotal
+        }
+
+        if (deliveryValue !== undefined && deliveryValue !== null) {
+            total += deliveryValue
+        }
+
+        return { itemsTotal, discountTotal, total }
+    }, [deliveryValue, discountValue, items])
 
     const saveOrder = async (data: OrderCreateData) => {
         setResult(null)
@@ -181,7 +195,7 @@ export default function OrderResume({
                                         <td className="py-1 text-left text-sm lg:text-base">
                                             {item.name}
                                         </td>
-                                        <td className="py-1 text-center text-sm text-green-500 lg:text-base">
+                                        <td className="py-1 text-center text-sm text-zinc-200 lg:text-base">
                                             {numberToMoney(
                                                 item.quantity * item.unitPrice
                                             )}
@@ -208,32 +222,42 @@ export default function OrderResume({
                             className="mb-4 hidden w-full flex-col items-stretch gap-y-2 border-y border-zinc-700 py-2 data-[opened=true]:flex md:flex md:data-[opened=true]:flex"
                         >
                             <div className="flex w-full items-center justify-between">
-                                <p className="text-lg font-semibold">Total</p>
+                                <p>Items</p>
+                                <p className="text-zinc-200">
+                                    {numberToMoney(itemsTotal)}
+                                </p>
+                            </div>
+                            {discountTotal !== undefined && (
+                                <div className="flex w-full items-center justify-between">
+                                    <p>Desconto</p>
+                                    <p className="text-red-500">
+                                        - {numberToMoney(discountTotal)}
+                                    </p>
+                                </div>
+                            )}
+                            {deliveryValue !== undefined &&
+                                deliveryValue !== null && (
+                                    <div className="flex w-full items-center justify-between">
+                                        <p>Taxa de Entrega</p>
+                                        <p className="text-green-600">
+                                            + {numberToMoney(deliveryValue)}
+                                        </p>
+                                    </div>
+                                )}
+                            <div className="flex w-full items-center justify-between">
+                                <p className="text-lg font-semibold">
+                                    Total Cliente
+                                </p>
                                 <p className="text-green-500">
-                                    {discountValue ? (
-                                        <>
-                                            <span className="mr-2 text-zinc-400 line-through">
-                                                ({numberToMoney(total)})
-                                            </span>
-                                            {numberToMoney(
-                                                total -
-                                                    Math.round(
-                                                        (total / 100) *
-                                                            discountValue
-                                                    )
-                                            )}
-                                        </>
-                                    ) : (
-                                        numberToMoney(total)
-                                    )}
+                                    {numberToMoney(total)}
                                 </p>
                             </div>
                             {storeComission !== null && (
-                                <div className="flex w-full items-center justify-between">
-                                    <p className="text-base text-zinc-400">
+                                <div className="flex w-full items-center justify-between border-t border-zinc-700 pb-2 pt-4">
+                                    <p className="text-base text-zinc-300">
                                         Comissão da Loja
                                     </p>
-                                    <p className="text-green-700">
+                                    <p className="text-zinc-300">
                                         {numberToMoney(storeComission)}
                                     </p>
                                 </div>

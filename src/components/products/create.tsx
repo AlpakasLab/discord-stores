@@ -361,11 +361,10 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                 />
                                 <TextInput
                                     {...register('employeeComission')}
-                                    label="Porcentagem de Comissão Vendedor:"
+                                    label="Comissão Vendedor:"
                                     type="number"
                                     autoComplete="none"
-                                    placeholder="50"
-                                    max={100}
+                                    placeholder="145"
                                     min={0}
                                     error={errors.employeeComission?.message}
                                 />

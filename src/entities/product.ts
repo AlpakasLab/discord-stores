@@ -75,7 +75,6 @@ export const ProductSchema = z
                     invalid_type_error: 'Digite uma comissão válida'
                 })
                 .min(0)
-                .max(100)
                 .nullable()
         ),
         image: z.preprocess(
@@ -109,13 +108,40 @@ export const ProductSchema = z
     })
     .refine(
         data => {
-            if (data.promotionalPrice === undefined) return true
+            if (
+                data.promotionalPrice === undefined ||
+                data.promotionalPrice === null
+            )
+                return true
             return Number(data.promotionalPrice) < Number(data.price)
         },
         {
             message:
                 'O valor promocional precisa ser menor que o preço original',
             path: ['promotionalPrice']
+        }
+    )
+    .refine(
+        data => {
+            if (
+                data.employeeComission === undefined ||
+                data.employeeComission === null
+            )
+                return true
+            if (
+                data.promotionalPrice !== undefined &&
+                data.promotionalPrice !== null
+            )
+                return (
+                    Number(data.employeeComission) <=
+                    Number(data.promotionalPrice)
+                )
+            return Number(data.employeeComission) <= Number(data.price)
+        },
+        {
+            message:
+                'O valor de comissão precisa ser menor ou igual ao preço do produto',
+            path: ['employeeComission']
         }
     )
 

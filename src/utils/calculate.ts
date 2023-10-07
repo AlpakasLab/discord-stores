@@ -21,14 +21,8 @@ export function getItemsPriceAndComissions(
         if (item.employeeComission) {
             const subtotal = item.unitPrice * item.quantity
 
-            storeComission += getPercentValue(
-                subtotal,
-                100 - item.employeeComission
-            )
-            employeeComission += getPercentValue(
-                subtotal,
-                item.employeeComission
-            )
+            storeComission += subtotal - item.employeeComission
+            employeeComission += item.employeeComission
         } else {
             toComission += item.unitPrice * item.quantity
         }
