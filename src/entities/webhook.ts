@@ -25,6 +25,23 @@ export const InsertWebHookSchema = z.object({
         .nonempty('Campo obrigatório')
 })
 
+export const ConsumptionWebHookSchema = z.object({
+    consumption: z
+        .string({
+            required_error: 'Campo obrigatório',
+            invalid_type_error: 'Digite uma url válida'
+        })
+        .url('Digite uma url válida')
+        .regex(/discord\.com/, 'A url deve conter discord.com')
+        .optional(),
+    storeId: z
+        .string({
+            required_error: 'Campo obrigatório',
+            invalid_type_error: 'Escolha uma loja válida'
+        })
+        .nonempty('Campo obrigatório')
+})
+
 export const TempleateWebHookSchema = z.object({
     id: z.string({
         required_error: 'Campo obrigatório',
@@ -75,3 +92,4 @@ export const TempleateWebHookSchema = z.object({
 
 export type InsertWebHookData = z.infer<typeof InsertWebHookSchema>
 export type TempleateWebhookData = z.infer<typeof TempleateWebHookSchema>
+export type ConsumptionWebHookData = z.infer<typeof ConsumptionWebHookSchema>

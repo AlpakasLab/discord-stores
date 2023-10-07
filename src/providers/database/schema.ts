@@ -120,7 +120,7 @@ export const discordWebhooks = mysqlTable('discord_webhooks', {
     url: varchar('url', { length: 255 }).notNull(),
     category: varchar('category', {
         length: 6,
-        enum: ['SELL', 'LOGS']
+        enum: ['SELL', 'LOGS', 'CONSUM']
     }).notNull(),
     storeId: varchar('store_id', { length: 255 }).notNull(),
     webhooksTemplateId: varchar('webhook_id', { length: 255 })

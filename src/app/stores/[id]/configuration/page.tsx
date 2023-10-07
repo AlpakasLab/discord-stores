@@ -1,9 +1,11 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import CategoriesConfiguration from '@/components/configuration/categories'
 import StoreColors from '@/components/configuration/colors'
+import ConsumptionConfiguration from '@/components/configuration/consumption'
 import DeliveryValuesConfiguration from '@/components/configuration/delivery'
 import TagsConfiguration from '@/components/configuration/tags'
 import WebHooksConfiguration from '@/components/configuration/webhooks'
+import ConsumptionWebhookTempleate from '@/components/configuration/webhooks/templeates/consumption'
 import SellWebhookTempleate from '@/components/configuration/webhooks/templeates/sell'
 import {
     getColors,
@@ -35,6 +37,7 @@ export default async function Configuration({
     const webhooks = await getWebhooks(params.id)
     const colors = await getColors(params.id)
 
+    const consumptionWebhook = webhooks.find(hook => hook.category === 'CONSUM')
     const sellWebhookTempleateData = webhooks.find(
         webhook => webhook.category === 'SELL'
     )
@@ -88,6 +91,20 @@ export default async function Configuration({
                     values={deliveryValues}
                     store={params.id}
                 />
+            </div>
+            <div className="flex h-fit flex-col rounded-md border border-zinc-700 p-4">
+                <p className="font-semibold">Consumo</p>
+                <ConsumptionConfiguration
+                    webhook={consumptionWebhook}
+                    store={params.id}
+                />
+                {consumptionWebhook && (
+                    <div className="mt-4 w-full">
+                        <ConsumptionWebhookTempleate
+                            webhook={consumptionWebhook.template}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     )
