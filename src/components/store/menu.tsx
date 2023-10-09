@@ -35,13 +35,13 @@ export default function Menu({ isAdmin, storeId }: MenuProps) {
                     icon={<FaHamburger className="text-lg" />}
                 />
             </li>
-            <li>
+            {/* <li>
                 <MenuItem
                     title="Consumo"
                     route={`/stores/${storeId}/consumption/`}
                     icon={<FaUtensils className="text-lg" />}
                 />
-            </li>
+            </li> */}
             {isManager && (
                 <>
                     <li>
