@@ -20,9 +20,10 @@ export function getItemsPriceAndComissions(
 
         if (item.employeeComission) {
             const subtotal = item.unitPrice * item.quantity
+            const comissionForQuantity = item.employeeComission * item.quantity
 
-            storeComission += subtotal - item.employeeComission
-            employeeComission += item.employeeComission
+            storeComission += subtotal - comissionForQuantity
+            employeeComission += comissionForQuantity
         } else {
             toComission += item.unitPrice * item.quantity
         }
