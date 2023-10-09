@@ -1,6 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { StoreContextProvider } from '@/components/store/context'
 import Menu from '@/components/store/menu'
+import { verifyConsumptionEnabled } from '@/services/configuration'
 import { getEmployeeData } from '@/services/employees'
 import { getStoreData } from '@/services/stores'
 import { getServerSession } from 'next-auth'
@@ -23,6 +24,9 @@ export default async function StoreLayout({
         primaryColor,
         secondaryColor
     } = await getStoreData(params.id)
+
+    const enabledConsumption = await verifyConsumptionEnabled(params.id)
+
     const { isManager, comission } = await getEmployeeData(
         params.id,
         session?.user.accessToken
@@ -49,6 +53,7 @@ export default async function StoreLayout({
                         <Menu
                             isAdmin={session?.user.role === 'ADMIN'}
                             storeId={params.id}
+                            enabledConsumption={enabledConsumption}
                         />
                     </div>
                 </header>

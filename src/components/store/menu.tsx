@@ -15,6 +15,7 @@ import {
 type MenuProps = {
     isAdmin: boolean
     storeId: string
+    enabledConsumption: boolean
 }
 
 type MenuItemProps = {
@@ -23,7 +24,11 @@ type MenuItemProps = {
     icon: React.ReactNode
 }
 
-export default function Menu({ isAdmin, storeId }: MenuProps) {
+export default function Menu({
+    isAdmin,
+    storeId,
+    enabledConsumption
+}: MenuProps) {
     const { isManager } = useStoreContext()
 
     return (
@@ -35,13 +40,15 @@ export default function Menu({ isAdmin, storeId }: MenuProps) {
                     icon={<FaHamburger className="text-lg" />}
                 />
             </li>
-            {/* <li>
-                <MenuItem
-                    title="Consumo"
-                    route={`/stores/${storeId}/consumption/`}
-                    icon={<FaUtensils className="text-lg" />}
-                />
-            </li> */}
+            {enabledConsumption && (
+                <li>
+                    <MenuItem
+                        title="Consumo"
+                        route={`/stores/${storeId}/consumption/`}
+                        icon={<FaUtensils className="text-lg" />}
+                    />
+                </li>
+            )}
             {isManager && (
                 <>
                     <li>
