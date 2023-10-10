@@ -99,7 +99,12 @@ export async function POST(request: NextRequest) {
                 store: employees.storeId
             })
             .from(employees)
-            .where(eq(employees.userId, session.user.id))
+            .where(
+                and(
+                    eq(employees.userId, session.user.id),
+                    eq(employees.storeId, parsedBody.data.store)
+                )
+            )
             .innerJoin(
                 employeeRoles,
                 eq(employeeRoles.id, employees.employeeRoleId)
