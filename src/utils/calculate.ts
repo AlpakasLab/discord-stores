@@ -11,6 +11,7 @@ export function getItemsPriceAndComissions(
 ) {
     let total = 0
     let discountedTotal = undefined
+
     let storeComission = 0
     let employeeComission = 0
     let toComission = 0
@@ -32,6 +33,7 @@ export function getItemsPriceAndComissions(
     if (discount) {
         const discountValue = (total / 100) * discount
         discountedTotal = total - Math.round(discountValue)
+        toComission = toComission - Math.round(discountValue)
     }
 
     storeComission += getPercentValue(toComission, 100 - comission)
