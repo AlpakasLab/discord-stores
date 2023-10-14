@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
 
         const orderId = crypto.randomUUID()
 
-        const clientNameWorlds = parsedBody.data.client.split(' ')
+        const clientNameWorlds = parsedBody.data.client.trim().split(' ')
         const name = clientNameWorlds
             .map(
                 word =>
