@@ -179,6 +179,7 @@ export async function POST(request: NextRequest) {
                 : undefined,
             'employee-name': user.employee,
             comission: numberToMoney(storeComission),
+            'employee-comission': numberToMoney(employeeComission),
             items: productsList,
             total:
                 parsedBody.data.discount && discountedTotal

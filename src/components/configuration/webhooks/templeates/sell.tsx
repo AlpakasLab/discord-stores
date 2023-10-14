@@ -25,7 +25,8 @@ export const SELL_TEMPLEATE_FIELDS = {
     total: 'Valor Total',
     'total-client': 'Valor Cliente',
     delivery: 'Valor do Delivery',
-    comission: 'Comissão da Loja'
+    comission: 'Comissão da Loja',
+    'employee-comission': 'Comissão do Vendedor'
 }
 
 type SellWebhookTempleateProps = {
