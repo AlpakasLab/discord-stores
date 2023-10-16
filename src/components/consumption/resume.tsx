@@ -139,7 +139,7 @@ export default function OrderResume({ storeId }: OrderResumeProps) {
                     <p className="w-full text-justify text-xs text-zinc-500">
                         O consumo de items do estabelecimento deve seguir as
                         regras já estabelecidas na contratação. Ao clicar em
-                        salvar uma mensagem será encaminhada diretamente para o
+                        salvar, uma mensagem será encaminhada diretamente para o
                         discord da loja.&nbsp;
                         <strong className="font-semibold underline">
                             Para registros de vendas utilizar a página de&nbsp;

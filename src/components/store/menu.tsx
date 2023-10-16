@@ -71,7 +71,7 @@ export default function Menu({
                 <li>
                     <MenuItem
                         title="Configurações"
-                        route={`/stores/${storeId}/configuration/`}
+                        route={`/stores/${storeId}/configuration/products/`}
                         icon={<FaCog className="text-lg" />}
                     />
                 </li>
