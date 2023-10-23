@@ -7,5 +7,6 @@ declare module 'next-auth' {
             role?: 'SELLER' | 'ADMIN'
             accessToken?: string
         } & DefaultSession['user']
+        error?: 'RefreshAccessTokenError'
     }
 }

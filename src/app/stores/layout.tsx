@@ -5,6 +5,7 @@ import { FaDiscord } from 'react-icons/fa'
 import Signout from '@/components/auth/signout'
 import Image from 'next/image'
 import Notifications from '@/components/stores/notifications'
+import VerifySessionError from '@/components/auth/session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -51,6 +52,7 @@ export default async function DashboardLayout({
                 </div>
             </header>
             {children}
+            {/* <VerifySessionError sessionError={session.error} /> */}
         </div>
     )
 }

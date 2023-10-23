@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
 
             return NextResponse.json({ success: true }, { status: 201 })
         } catch (e) {
-            console.log(e)
             return NextResponse.json(
                 { error: 'Cannot save discord webhook' },
                 { status: 400 }
