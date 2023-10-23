@@ -67,15 +67,25 @@ export const authOptions: NextAuthOptions = {
                             response.refresh_token,
                             response.scope
                         )
-                    }
 
-                    return {
-                        ...session,
-                        user: {
-                            ...session.user,
-                            id: account.userId,
-                            role: account.userRole,
-                            accessToken: response.access_token
+                        return {
+                            ...session,
+                            user: {
+                                ...session.user,
+                                id: account.userId,
+                                role: account.userRole,
+                                accessToken: response.access_token
+                            }
+                        }
+                    } else {
+                        return {
+                            ...session,
+                            user: {
+                                ...session.user,
+                                id: account.userId,
+                                role: account.userRole,
+                                accessToken: account.discordToken
+                            }
                         }
                     }
                 } catch (error) {
