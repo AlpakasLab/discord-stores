@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
             clientId: process.env.DISCORD_CLIENT_ID,
             clientSecret: process.env.DISCORD_CLIENT_SECRET,
             authorization:
-                'https://discord.com/api/oauth2/authorize?scope=identify+email+guilds+guilds.members.read'
+                'https://discord.com/api/oauth2/authorize?scope=identify+email+guilds'
         })
     ],
     pages: {

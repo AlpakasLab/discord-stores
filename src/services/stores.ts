@@ -82,6 +82,7 @@ export async function getUserStores() {
             })
         }
     } catch (error) {
+        console.log(error)
         throw new Error('Cannot get user guilds')
     }
 }
