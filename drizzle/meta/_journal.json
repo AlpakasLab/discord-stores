@@ -15,6 +15,13 @@
       "when": 1695872170736,
       "tag": "0001_big_nitro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1698149060704,
+      "tag": "0002_burly_leper_queen",
+      "breakpoints": true
     }
   ]
 }

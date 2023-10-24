@@ -194,3 +194,11 @@ export const notifications = mysqlTable('notifications', {
     userId: varchar('user_id', { length: 255 }).notNull(),
     createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
 })
+
+export const payments = mysqlTable('payments',{
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    value: int('value').notNull(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
+})
