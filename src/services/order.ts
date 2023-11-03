@@ -3,7 +3,7 @@ import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templ
 import { sendMessageByWebhook } from '@/providers/discord/webhooks'
 import { db } from '@/providers/database/client'
 import { employees, orders } from '@/providers/database/schema'
-import { and, between, desc, eq } from 'drizzle-orm'
+import { and, between, desc, eq, like } from 'drizzle-orm'
 import moment from 'moment'
 
 type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
@@ -64,7 +64,12 @@ export const sendOrderMessage = async (
     return sendMessageByWebhook(webhookUrl, dataWebhook)
 }
 
-export async function getOrders(store: string, start?: string, end?: string) {
+export async function getOrders(
+    store: string,
+    start?: string,
+    end?: string,
+    client?: string
+) {
     const startDate = start
         ? moment.utc(start).local(true).startOf('day').local(false)
         : moment().local(true).startOf('day').local(false)
@@ -95,7 +100,8 @@ export async function getOrders(store: string, start?: string, end?: string) {
                         orders.createdAt,
                         startDate.toDate(),
                         endDate.toDate()
-                    )
+                    ),
+                    client ? like(orders.clientName, `%${client}%`) : undefined
                 )
             )
             .orderBy(desc(orders.createdAt))

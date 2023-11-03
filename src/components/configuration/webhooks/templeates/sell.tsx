@@ -133,7 +133,7 @@ export default function SellWebhookTempleate({
                 }}
                 color={themed ? 'custom-secondary' : 'secondary'}
                 size="sm"
-                text="Customizar"
+                text="Customizar Templeate de Vendas"
             />
             <Dialog
                 open={opened}

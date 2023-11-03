@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     if (parsedBody.success) {
         try {
-            const { storeId, logs, sell } = parsedBody.data
+            const { storeId, logs, sell, consumption } = parsedBody.data
 
             const discordWebhooksRegisters = await db
                 .select({
@@ -35,6 +35,9 @@ export async function POST(request: NextRequest) {
             )
             const sellsRegistered = discordWebhooksRegisters.find(
                 item => item.category === 'SELL'
+            )
+            const consumptionRegistered = discordWebhooksRegisters.find(
+                item => item.category === 'CONSUM'
             )
 
             if (logsRegistered !== undefined && logs) {
@@ -79,6 +82,29 @@ export async function POST(request: NextRequest) {
                     storeId: storeId,
                     category: 'SELL',
                     url: sell,
+                    webhooksTemplateId: webhookTempleateId
+                })
+            }
+
+            if (consumptionRegistered !== undefined && consumption) {
+                await db
+                    .update(discordWebhooks)
+                    .set({
+                        url: consumption
+                    })
+                    .where(eq(discordWebhooks.id, consumptionRegistered.id))
+            } else if (consumption) {
+                const webhookTempleateId = crypto.randomUUID()
+
+                await db.insert(webhooksTemplates).values({
+                    id: webhookTempleateId
+                })
+
+                await db.insert(discordWebhooks).values({
+                    id: crypto.randomUUID(),
+                    storeId: storeId,
+                    category: 'CONSUM',
+                    url: consumption,
                     webhooksTemplateId: webhookTempleateId
                 })
             }

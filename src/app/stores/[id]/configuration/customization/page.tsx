@@ -1,4 +1,5 @@
 import StoreColors from '@/components/configuration/colors'
+import ConsumptionWebhookTempleate from '@/components/configuration/webhooks/templeates/consumption'
 import SellWebhookTempleate from '@/components/configuration/webhooks/templeates/sell'
 import { getColors, getWebhooks } from '@/services/configuration'
 import { Metadata } from 'next'
@@ -21,30 +22,33 @@ export default async function Configuration({
     const sellWebhookTempleateData = webhooks.find(
         webhook => webhook.category === 'SELL'
     )
+    const consumptionWebhookTempleateData = webhooks.find(
+        webhook => webhook.category === 'SELL'
+    )
 
     return (
-        <div className="relative grid h-full w-full flex-grow grid-cols-1 place-content-stretch gap-5">
-            {webhooks && sellWebhookTempleateData !== undefined && (
-                <div className="h-fit rounded-md border border-zinc-700 p-4">
-                    <p className="mb-2 font-semibold">Customizações</p>
-                    <div className="flex flex-col items-start gap-4">
-                        <div className="flex w-full items-center gap-2">
-                            <p className="shrink-0 whitespace-nowrap text-sm">
-                                Webhook Vendas:
-                            </p>
-                            <SellWebhookTempleate
-                                webhook={sellWebhookTempleateData.template}
-                            />
-                        </div>
-                        <div className="flex w-full items-center gap-2">
-                            <p className="shrink-0 whitespace-nowrap text-sm">
-                                Cores do Sistema:
-                            </p>
-                            <StoreColors store={params.id} colors={colors} />
-                        </div>
-                    </div>
-                </div>
-            )}
+        <div className="relative flex h-full w-full flex-grow flex-col gap-5">
+            <div className="flex w-full flex-col items-start gap-5 border-b border-zinc-800 pb-4">
+                <p className="shrink-0 whitespace-nowrap text-lg font-semibold">
+                    Cores do Sistema
+                </p>
+                <StoreColors store={params.id} colors={colors} />
+            </div>
+            <div className="grid w-full grid-cols-3 gap-5">
+                <p className="col-span-full shrink-0 whitespace-nowrap text-lg font-semibold">
+                    Webhook Templeates
+                </p>
+                {webhooks && sellWebhookTempleateData !== undefined && (
+                    <SellWebhookTempleate
+                        webhook={sellWebhookTempleateData.template}
+                    />
+                )}
+                {webhooks && consumptionWebhookTempleateData !== undefined && (
+                    <ConsumptionWebhookTempleate
+                        webhook={consumptionWebhookTempleateData.template}
+                    />
+                )}
+            </div>
         </div>
     )
 }

@@ -71,7 +71,17 @@ export default function ShowComissions({ orders }: ShowComissionsProps) {
             }
         })
 
-        return Array.from(employees.values())
+        return Array.from(employees.values()).sort((itemA, itemB) => {
+            if (itemA.name > itemB.name) {
+                return 1
+            }
+
+            if (itemA.name < itemB.name) {
+                return -1
+            }
+
+            return 0
+        })
     }
 
     return (

@@ -2,7 +2,16 @@
 const nextConfig = {
     trailingSlash: true,
     images: {
-        domains: ['cdn.discordapp.com', 'i.imgur.com']
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'cdn.discordapp.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.imgur.com'
+            }
+        ]
     }
 }
 

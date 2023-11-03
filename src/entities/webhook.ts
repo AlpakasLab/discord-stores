@@ -1,45 +1,64 @@
 import { z } from 'zod'
 
 export const InsertWebHookSchema = z.object({
-    sell: z
-        .string({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Digite uma url válida'
-        })
-        .url('Digite uma url válida')
-        .regex(/discord\.com/, 'A url deve conter discord.com')
-        .optional(),
-    logs: z
-        .string({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Digite uma url válida'
-        })
-        .url('Digite uma url válida')
-        .regex(/discord\.com/, 'A url deve conter discord.com')
-        .optional(),
-    storeId: z
-        .string({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Escolha uma loja válida'
-        })
-        .nonempty('Campo obrigatório')
-})
+    sell: z.preprocess(
+        val => {
+            if (typeof val === 'string' && val.length <= 0) {
+                return undefined
+            }
 
-export const ConsumptionWebHookSchema = z.object({
-    consumption: z
-        .string({
-            required_error: 'Campo obrigatório',
-            invalid_type_error: 'Digite uma url válida'
-        })
-        .url('Digite uma url válida')
-        .regex(/discord\.com/, 'A url deve conter discord.com')
-        .optional(),
+            return val
+        },
+        z
+            .string({
+                required_error: 'Campo obrigatório',
+                invalid_type_error: 'Digite uma url válida'
+            })
+            .url('Digite uma url válida')
+            .regex(/discord\.com/, 'A url deve conter discord.com')
+            .optional()
+    ),
+
+    logs: z.preprocess(
+        val => {
+            if (typeof val === 'string' && val.length <= 0) {
+                return undefined
+            }
+
+            return val
+        },
+        z
+            .string({
+                required_error: 'Campo obrigatório',
+                invalid_type_error: 'Digite uma url válida'
+            })
+            .url('Digite uma url válida')
+            .regex(/discord\.com/, 'A url deve conter discord.com')
+            .optional()
+    ),
+    consumption: z.preprocess(
+        val => {
+            if (typeof val === 'string' && val.length <= 0) {
+                return undefined
+            }
+
+            return val
+        },
+        z
+            .string({
+                required_error: 'Campo obrigatório',
+                invalid_type_error: 'Digite uma url válida'
+            })
+            .url('Digite uma url válida')
+            .regex(/discord\.com/, 'A url deve conter discord.com')
+            .optional()
+    ),
     storeId: z
         .string({
             required_error: 'Campo obrigatório',
             invalid_type_error: 'Escolha uma loja válida'
         })
-        .nonempty('Campo obrigatório')
+        .min(1, 'Campo obrigatório')
 })
 
 export const TempleateWebHookSchema = z.object({
@@ -92,4 +111,3 @@ export const TempleateWebHookSchema = z.object({
 
 export type InsertWebHookData = z.infer<typeof InsertWebHookSchema>
 export type TempleateWebhookData = z.infer<typeof TempleateWebHookSchema>
-export type ConsumptionWebHookData = z.infer<typeof ConsumptionWebHookSchema>

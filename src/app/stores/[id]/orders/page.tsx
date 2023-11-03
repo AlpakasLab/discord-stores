@@ -25,7 +25,8 @@ export default async function Orders({
     } = await getOrders(
         params.id,
         searchParams.start?.toString(),
-        searchParams.end?.toString()
+        searchParams.end?.toString(),
+        searchParams.client?.toString()
     )
 
     return (

@@ -126,7 +126,7 @@ export default function ConsumptionWebhookTempleate({
                 }}
                 color={themed ? 'custom-secondary' : 'secondary'}
                 size="sm"
-                text="Customizar Templeate"
+                text="Customizar Templeate de Consumo"
             />
             <Dialog
                 open={opened}
