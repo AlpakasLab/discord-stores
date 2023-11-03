@@ -1,10 +1,10 @@
 import { EmbedBuilder } from '@discordjs/builders'
-import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/sell'
 import { sendMessageByWebhook } from '@/providers/discord/webhooks'
 import { db } from '@/providers/database/client'
 import { employees, orders } from '@/providers/database/schema'
 import { and, between, desc, eq, like } from 'drizzle-orm'
 import moment from 'moment'
+import { SELL_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/constants'
 
 type SellFields = keyof typeof SELL_TEMPLEATE_FIELDS
 type OrderData = Record<SellFields, string | undefined>

@@ -17,20 +17,10 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { FaPlusCircle, FaTrash } from 'react-icons/fa'
 
-export const SELL_TEMPLEATE_FIELDS = {
-    'employee-name': 'Nome do Vendedor',
-    'client-name': 'Nome do Cliente',
-    items: 'Lista de Items',
-    'discount-percentage': '% Desconto',
-    total: 'Valor Total',
-    'total-client': 'Valor Cliente',
-    delivery: 'Valor do Delivery',
-    comission: 'Comissão da Loja',
-    'employee-comission': 'Comissão do Vendedor'
-}
-
-type SellWebhookTempleateProps = {
-    webhook: {
+type WebhookTempleateProps = {
+    fields: Record<string, string>
+    title: string
+    webhook?: {
         id: string
         image: string | null
         title: string | null
@@ -45,9 +35,11 @@ type SellWebhookTempleateProps = {
     }
 }
 
-export default function SellWebhookTempleate({
-    webhook
-}: SellWebhookTempleateProps) {
+export default function WebhookTempleate({
+    webhook,
+    fields: templeateFields,
+    title
+}: WebhookTempleateProps) {
     const { themed } = useStoreContext()
     const router = useRouter()
 
@@ -103,6 +95,8 @@ export default function SellWebhookTempleate({
     }
 
     useEffect(() => {
+        if (webhook === undefined) return
+
         setValue('id', webhook.id)
         if (webhook.title) setValue('title', webhook.title)
         if (webhook.image) setValue('image', webhook.image)
@@ -126,6 +120,7 @@ export default function SellWebhookTempleate({
     return (
         <>
             <Button
+                disabled={webhook === undefined}
                 component="button"
                 type="button"
                 onClick={() => {
@@ -133,7 +128,7 @@ export default function SellWebhookTempleate({
                 }}
                 color={themed ? 'custom-secondary' : 'secondary'}
                 size="sm"
-                text="Customizar Templeate de Vendas"
+                text="Customizar Templeate"
             />
             <Dialog
                 open={opened}
@@ -148,7 +143,7 @@ export default function SellWebhookTempleate({
                     <div className="flex min-h-full items-center justify-center p-4">
                         <Dialog.Panel className="flex w-full max-w-3xl flex-col items-center rounded bg-zinc-800 p-5 text-white">
                             <Dialog.Title className="mb-5 text-xl font-semibold">
-                                Customizando Webhook de Vendas
+                                Customizando Webhook - {title}
                             </Dialog.Title>
 
                             <form
@@ -160,7 +155,7 @@ export default function SellWebhookTempleate({
                                     label="Título:"
                                     type="text"
                                     autoComplete="none"
-                                    placeholder="💰 Registro de Venda"
+                                    placeholder="💰 Registro de Consumo"
                                     error={errors.title?.message}
                                 />
                                 <TextInput
@@ -208,7 +203,7 @@ export default function SellWebhookTempleate({
                                                     label="Valor:"
                                                     defaultOption={form.value}
                                                     options={Object.entries(
-                                                        SELL_TEMPLEATE_FIELDS
+                                                        templeateFields
                                                     ).map(([key, value]) => ({
                                                         label: value,
                                                         value: key

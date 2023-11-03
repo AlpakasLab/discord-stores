@@ -120,7 +120,7 @@ export const discordWebhooks = mysqlTable('discord_webhooks', {
     url: varchar('url', { length: 255 }).notNull(),
     category: varchar('category', {
         length: 6,
-        enum: ['SELL', 'LOGS', 'CONSUM']
+        enum: ['SELL', 'LOGS', 'CONSUM', 'STOCK']
     }).notNull(),
     storeId: varchar('store_id', { length: 255 }).notNull(),
     webhooksTemplateId: varchar('webhook_id', { length: 255 })
@@ -195,7 +195,7 @@ export const notifications = mysqlTable('notifications', {
     createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
 })
 
-export const payments = mysqlTable('payments',{
+export const payments = mysqlTable('payments', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     value: int('value').notNull(),
     userId: varchar('user_id', { length: 255 }).notNull(),

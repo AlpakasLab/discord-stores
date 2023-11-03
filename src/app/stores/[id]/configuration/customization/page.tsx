@@ -1,8 +1,13 @@
 import StoreColors from '@/components/configuration/colors'
-import ConsumptionWebhookTempleate from '@/components/configuration/webhooks/templeates/consumption'
-import SellWebhookTempleate from '@/components/configuration/webhooks/templeates/sell'
+import {
+    CONSUMPTION_TEMPLEATE_FIELDS,
+    SELL_TEMPLEATE_FIELDS,
+    STOCK_TEMPLEATE_FIELDS
+} from '@/components/configuration/webhooks/templeates/constants'
+import WebhookTempleate from '@/components/configuration/webhooks/templeates/dialog'
 import { getColors, getWebhooks } from '@/services/configuration'
 import { Metadata } from 'next'
+import { FaBox, FaHamburger, FaUtensils } from 'react-icons/fa'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -23,7 +28,10 @@ export default async function Configuration({
         webhook => webhook.category === 'SELL'
     )
     const consumptionWebhookTempleateData = webhooks.find(
-        webhook => webhook.category === 'SELL'
+        webhook => webhook.category === 'CONSUM'
+    )
+    const stockWebhookTempleateData = webhooks.find(
+        webhook => webhook.category === 'STOCK'
     )
 
     return (
@@ -38,16 +46,39 @@ export default async function Configuration({
                 <p className="col-span-full shrink-0 whitespace-nowrap text-lg font-semibold">
                     Webhook Templeates
                 </p>
-                {webhooks && sellWebhookTempleateData !== undefined && (
-                    <SellWebhookTempleate
-                        webhook={sellWebhookTempleateData.template}
+                <div className="flex w-full flex-col gap-y-2">
+                    <p className="text-sm">
+                        <FaHamburger className="mr-2 inline text-base" />{' '}
+                        Mensagem de Vendas
+                    </p>
+                    <WebhookTempleate
+                        webhook={sellWebhookTempleateData?.template}
+                        fields={SELL_TEMPLEATE_FIELDS}
+                        title="Vendas"
                     />
-                )}
-                {webhooks && consumptionWebhookTempleateData !== undefined && (
-                    <ConsumptionWebhookTempleate
-                        webhook={consumptionWebhookTempleateData.template}
+                </div>
+                <div className="flex w-full flex-col gap-y-2">
+                    <p className="text-sm">
+                        <FaUtensils className="mr-2 inline text-base" />{' '}
+                        Mensagem de Consumo
+                    </p>
+                    <WebhookTempleate
+                        webhook={consumptionWebhookTempleateData?.template}
+                        fields={CONSUMPTION_TEMPLEATE_FIELDS}
+                        title="Consumo"
                     />
-                )}
+                </div>
+                <div className="flex w-full flex-col gap-y-2">
+                    <p className="text-sm">
+                        <FaBox className="mr-2 inline text-base" /> Mensagem de
+                        Estoque
+                    </p>
+                    <WebhookTempleate
+                        webhook={stockWebhookTempleateData?.template}
+                        fields={STOCK_TEMPLEATE_FIELDS}
+                        title="Estoque"
+                    />
+                </div>
             </div>
         </div>
     )

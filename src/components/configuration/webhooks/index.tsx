@@ -6,7 +6,7 @@ import TextInput from '../../inputs/text'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useEffect, useState } from 'react'
-import { InsertWebHookData, InsertWebHookSchema } from '@/entities/webhook'
+import { InsertWebHookData, WebHookSchema } from '@/entities/webhook'
 import { useStoreContext } from '@/components/store/context'
 import toast from 'react-hot-toast'
 
@@ -14,7 +14,7 @@ type WebHooksFormProps = {
     webhooks: {
         id: string
         url: string
-        category: 'SELL' | 'LOGS' | 'CONSUM'
+        category: 'SELL' | 'LOGS' | 'CONSUM' | 'STOCK'
     }[]
     store: string
 }
@@ -30,13 +30,14 @@ export default function WebHooksForm({ webhooks, store }: WebHooksFormProps) {
         setValue,
         formState: { errors, isSubmitting, defaultValues }
     } = useForm<InsertWebHookData>({
-        resolver: zodResolver(InsertWebHookSchema),
+        resolver: zodResolver(WebHookSchema),
         defaultValues: {
             storeId: store,
             sell: webhooks.find(webhook => webhook.category === 'SELL')?.url,
             logs: webhooks.find(webhook => webhook.category === 'LOGS')?.url,
             consumption: webhooks.find(webhook => webhook.category === 'CONSUM')
-                ?.url
+                ?.url,
+            stock: webhooks.find(webhook => webhook.category === 'STOCK')?.url
         }
     })
 
@@ -73,6 +74,7 @@ export default function WebHooksForm({ webhooks, store }: WebHooksFormProps) {
         const consumption = webhooks.find(
             webhook => webhook.category === 'CONSUM'
         )
+        const stock = webhooks.find(webhook => webhook.category === 'STOCK')
 
         if (sell !== defaultValues?.sell) {
             setValue('sell', sell?.url)
@@ -85,13 +87,11 @@ export default function WebHooksForm({ webhooks, store }: WebHooksFormProps) {
         if (consumption !== defaultValues?.consumption) {
             setValue('consumption', consumption?.url)
         }
-    }, [
-        defaultValues?.consumption,
-        defaultValues?.logs,
-        defaultValues?.sell,
-        setValue,
-        webhooks
-    ])
+
+        if (stock !== defaultValues?.stock) {
+            setValue('stock', stock?.url)
+        }
+    }, [defaultValues, setValue, webhooks])
 
     return (
         <form
@@ -128,7 +128,6 @@ export default function WebHooksForm({ webhooks, store }: WebHooksFormProps) {
                     webhook.
                 </p>
             </div>
-
             <div className="flex flex-col gap-y-2">
                 <TextInput
                     {...register('consumption')}
@@ -142,6 +141,21 @@ export default function WebHooksForm({ webhooks, store }: WebHooksFormProps) {
                     Todo consumo registro na aba &quot;Consumo&quot; será
                     enviada para este webhook; Com a mensagem personalizada em
                     &quot;Customizações&quot;.
+                </p>
+            </div>
+            <div className="flex flex-col gap-y-2">
+                <TextInput
+                    {...register('stock')}
+                    label="Webhook de Estoque:"
+                    type="url"
+                    autoComplete="none"
+                    error={errors.stock?.message}
+                    placeholder="https://discord.com/api/webhooks/..."
+                />
+                <p className="text-sm text-zinc-500">
+                    Todo registro de entrada ou retirada de items na aba
+                    &quot;Estoque&quot; será enviada para este webhook; Com a
+                    mensagem personalizada em &quot;Customizações&quot;.
                 </p>
             </div>
             <div className="col-span-full">

@@ -2,10 +2,10 @@ import { db } from '@/providers/database/client'
 import { discordWebhooks, webhooksTemplates } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'node:crypto'
 import { authOptions } from '../../auth/[...nextauth]/route'
-import { InsertWebHookSchema } from '@/entities/webhook'
+import { WebHookSchema } from '@/entities/webhook'
 import { and, eq } from 'drizzle-orm'
+import crypto from 'node:crypto'
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
@@ -16,11 +16,18 @@ export async function POST(request: NextRequest) {
         )
 
     const data = await request.json()
-    const parsedBody = InsertWebHookSchema.safeParse(data)
+    const parsedBody = WebHookSchema.safeParse(data)
 
     if (parsedBody.success) {
         try {
-            const { storeId, logs, sell, consumption } = parsedBody.data
+            const { storeId, logs, sell, consumption, stock } = parsedBody.data
+
+            const webhooksAlias = {
+                SELL: sell,
+                LOGS: logs,
+                CONSUM: consumption,
+                STOCK: stock
+            }
 
             const discordWebhooksRegisters = await db
                 .select({
@@ -30,84 +37,53 @@ export async function POST(request: NextRequest) {
                 .from(discordWebhooks)
                 .where(and(eq(discordWebhooks.storeId, storeId)))
 
-            const logsRegistered = discordWebhooksRegisters.find(
-                item => item.category === 'LOGS'
-            )
-            const sellsRegistered = discordWebhooksRegisters.find(
-                item => item.category === 'SELL'
-            )
-            const consumptionRegistered = discordWebhooksRegisters.find(
-                item => item.category === 'CONSUM'
-            )
+            const promisses: Promise<unknown>[] = []
 
-            if (logsRegistered !== undefined && logs) {
-                await db
-                    .update(discordWebhooks)
-                    .set({
-                        url: logs
-                    })
-                    .where(eq(discordWebhooks.id, logsRegistered.id))
-            } else if (logs) {
-                const webhookTempleateId = crypto.randomUUID()
+            Object.entries(webhooksAlias).forEach(([key, value]) => {
+                if (value === undefined) return
 
-                await db.insert(webhooksTemplates).values({
-                    id: webhookTempleateId
-                })
+                const logsRegistered = discordWebhooksRegisters.find(
+                    item => item.category === key
+                )
 
-                await db.insert(discordWebhooks).values({
-                    id: crypto.randomUUID(),
-                    storeId: storeId,
-                    category: 'LOGS',
-                    url: logs,
-                    webhooksTemplateId: webhookTempleateId
-                })
-            }
+                if (logsRegistered !== undefined) {
+                    return promisses.push(
+                        db
+                            .update(discordWebhooks)
+                            .set({
+                                url: logs
+                            })
+                            .where(eq(discordWebhooks.id, logsRegistered.id))
+                    )
+                } else {
+                    return promisses.push(
+                        new Promise(async resolve => {
+                            const webhookTempleateId = crypto.randomUUID()
+                            const discordWebhookId = crypto.randomUUID()
 
-            if (sellsRegistered !== undefined && sell) {
-                await db
-                    .update(discordWebhooks)
-                    .set({
-                        url: sell
-                    })
-                    .where(eq(discordWebhooks.id, sellsRegistered.id))
-            } else if (sell) {
-                const webhookTempleateId = crypto.randomUUID()
+                            await db.insert(webhooksTemplates).values({
+                                id: webhookTempleateId
+                            })
 
-                await db.insert(webhooksTemplates).values({
-                    id: webhookTempleateId
-                })
+                            await db.insert(discordWebhooks).values({
+                                id: discordWebhookId,
+                                storeId: storeId,
+                                category: key as
+                                    | 'SELL'
+                                    | 'LOGS'
+                                    | 'CONSUM'
+                                    | 'STOCK',
+                                url: value,
+                                webhooksTemplateId: webhookTempleateId
+                            })
 
-                await db.insert(discordWebhooks).values({
-                    id: crypto.randomUUID(),
-                    storeId: storeId,
-                    category: 'SELL',
-                    url: sell,
-                    webhooksTemplateId: webhookTempleateId
-                })
-            }
+                            return resolve(true)
+                        })
+                    )
+                }
+            })
 
-            if (consumptionRegistered !== undefined && consumption) {
-                await db
-                    .update(discordWebhooks)
-                    .set({
-                        url: consumption
-                    })
-                    .where(eq(discordWebhooks.id, consumptionRegistered.id))
-            } else if (consumption) {
-                const webhookTempleateId = crypto.randomUUID()
-
-                await db.insert(webhooksTemplates).values({
-                    id: webhookTempleateId
-                })
-
-                await db.insert(discordWebhooks).values({
-                    id: crypto.randomUUID(),
-                    storeId: storeId,
-                    category: 'CONSUM',
-                    url: consumption,
-                    webhooksTemplateId: webhookTempleateId
-                })
-            }
+            await Promise.all(promisses)
 
             return NextResponse.json({ success: true }, { status: 201 })
         } catch (e) {

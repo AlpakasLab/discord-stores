@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders'
 import { sendMessageByWebhook } from '@/providers/discord/webhooks'
-import { CONSUMPTION_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/consumption'
+import { CONSUMPTION_TEMPLEATE_FIELDS } from '@/components/configuration/webhooks/templeates/constants'
 
 type SellFields = keyof typeof CONSUMPTION_TEMPLEATE_FIELDS
 type OrderData = Record<SellFields, string | undefined>
