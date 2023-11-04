@@ -35,7 +35,7 @@ export async function updateUseDiscordToken(
     refreshToken: string,
     scope: string
 ) {
-    await db
+    return await db
         .update(accounts)
         .set({
             access_token: accessToken,
@@ -47,5 +47,5 @@ export async function updateUseDiscordToken(
             refresh_token: refreshToken,
             scope: scope
         })
-        .where(eq(users.id, userId))
+        .where(eq(accounts.userId, userId))
 }

@@ -5,7 +5,7 @@ import { FaDiscord } from 'react-icons/fa'
 import Signout from '@/components/auth/signout'
 import Image from 'next/image'
 import Notifications from '@/components/stores/notifications'
-import VerifySessionError from '@/components/auth/session'
+import SessionError from '@/components/auth/session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -33,7 +33,7 @@ export default async function DashboardLayout({
                     </div>
 
                     <div className="flex items-center sm:gap-x-3">
-                        <Notifications />
+                        {session.error === undefined && <Notifications />}
                         {session.user.image && (
                             <div className="relative h-8 w-8 overflow-hidden rounded-full">
                                 <Image
@@ -51,8 +51,7 @@ export default async function DashboardLayout({
                     </div>
                 </div>
             </header>
-            {children}
-            {/* <VerifySessionError sessionError={session.error} /> */}
+            {session.error ? <SessionError /> : children}
         </div>
     )
 }
