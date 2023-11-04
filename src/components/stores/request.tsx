@@ -105,7 +105,8 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
                                 error={errors.name?.message}
                             />
                             <Button
-                                disabled={isSubmitting || creating}
+                                // disabled={isSubmitting || creating}
+                                disabled={true}
                                 component="button"
                                 type="submit"
                                 color="secondary"
