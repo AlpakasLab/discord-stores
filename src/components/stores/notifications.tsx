@@ -4,7 +4,7 @@ import { Popover } from '@headlessui/react'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaRegBell, FaTimes, FaTruck, FaUtensils } from 'react-icons/fa'
+import { FaBox, FaRegBell, FaTimes, FaTruck, FaUtensils } from 'react-icons/fa'
 
 moment.updateLocale('en', {
     relativeTime: {
@@ -39,7 +39,8 @@ type Notification = {
 
 const NotificationIcons: Record<string, React.ReactNode> = {
     truck: <FaTruck className="mr-3 inline text-xl text-zinc-200" />,
-    utensils: <FaUtensils className="mr-3 inline text-xl text-zinc-200" />
+    utensils: <FaUtensils className="mr-3 inline text-xl text-zinc-200" />,
+    box: <FaBox className="mr-3 inline text-xl text-zinc-200" />
 }
 
 export default function Notifications() {
