@@ -18,6 +18,6 @@ export const CONSUMPTION_TEMPLEATE_FIELDS = {
 export const STOCK_TEMPLEATE_FIELDS = {
     'employee-name': 'Nome do Vendedor',
     items: 'Todos os Items',
-    itemsAdd: 'Items Adicionados',
-    itemsRemove: 'Items Retirados'
+    'items-add': 'Items Adicionados',
+    'items-remove': 'Items Retirados'
 }

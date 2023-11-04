@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     if (!productId)
         return NextResponse.json(
-            { error: 'Store id is not provided' },
+            { error: 'Product id is not provided' },
             { status: 400 }
         )
 

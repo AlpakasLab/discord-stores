@@ -51,7 +51,6 @@ export default function OrderResume({
         }
     })
 
-    const [result, setResult] = useState<null | string>(null)
     const [saving, setSaving] = useState(false)
     const [isDelivery, setIsDelivery] = useState(false)
     const [opened, setOpened] = useState(false)
@@ -95,7 +94,6 @@ export default function OrderResume({
     }, [deliveryValue, discountValue, items])
 
     const saveOrder = async (data: OrderCreateData) => {
-        setResult(null)
         setSaving(true)
 
         try {
@@ -110,7 +108,7 @@ export default function OrderResume({
             setSaving(false)
 
             if (!response.ok) {
-                setResult('Não foi possível realizar o pedido :(')
+                toast.error('Não foi possível realizar o pedido :(')
             } else {
                 reset()
                 dispatchSell('RESET')
@@ -119,7 +117,7 @@ export default function OrderResume({
                 router.refresh()
             }
         } catch (e) {
-            setResult('Não foi possível realizar o pedido :(')
+            toast.error('Não foi possível realizar o pedido :(')
         }
     }
 
@@ -340,11 +338,6 @@ export default function OrderResume({
                             color={themed ? 'custom-primary' : 'primary'}
                             text="Finalizar Venda"
                         />
-                        {result && (
-                            <p className="col-span-full w-full pt-1 text-center text-xs text-red-700">
-                                {result}
-                            </p>
-                        )}
                     </div>
                 </form>
             )}

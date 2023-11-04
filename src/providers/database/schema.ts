@@ -202,3 +202,11 @@ export const payments = mysqlTable('payments', {
     storeId: varchar('store_id', { length: 255 }).notNull(),
     createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow()
 })
+
+export const items = mysqlTable('items', {
+    id: varchar('id', { length: 255 }).notNull().primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    image: varchar('image', { length: 255 }),
+    categoryId: varchar('category_id', { length: 255 }).notNull(),
+    storeId: varchar('store_id', { length: 255 }).notNull()
+})

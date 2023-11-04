@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import ProductCard from './card'
 import ProductDetailDialog, { ProductDetailDialogHandles } from './detail'
 import CreateProductDialog, { CreateProductDialogHandles } from './create'

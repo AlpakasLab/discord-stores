@@ -7,7 +7,6 @@ import Button from '../inputs/button'
 import { FaSpinner } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-import { useStoreContext } from '../store/context'
 
 export type DeleteProductDialogHandles = {
     open: (product: { id: string; name: string }) => void

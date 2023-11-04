@@ -141,3 +141,23 @@ export async function verifyConsumptionEnabled(store: string) {
         throw new Error('Cannot get webhooks')
     }
 }
+
+export async function verifyStockEnabled(store: string) {
+    try {
+        const hooksRegistred = await db
+            .select({
+                id: discordWebhooks.id,
+                url: discordWebhooks.url,
+                category: discordWebhooks.category
+            })
+            .from(discordWebhooks)
+            .where(eq(discordWebhooks.storeId, store))
+
+        return (
+            hooksRegistred.length > 0 &&
+            hooksRegistred.find(hook => hook.category === 'STOCK') !== undefined
+        )
+    } catch (error) {
+        throw new Error('Cannot get webhooks')
+    }
+}

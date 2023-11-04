@@ -14,6 +14,7 @@ import { FaSpinner } from 'react-icons/fa'
 import MessageInput from '../inputs/mensagem'
 import { useStoreContext } from '../store/context'
 import CheckboxInput from '../inputs/checkbox'
+import toast from 'react-hot-toast'
 
 export type CreateProductDialogHandles = {
     open: (storeId: string) => void
@@ -58,7 +59,6 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
             null | { label: string; value: string }[]
         >(null)
         const [creating, setCreating] = useState(false)
-        const [result, setResult] = useState<string | null>(null)
         const [storeId, setStoreId] = useState<string | null>(null)
         const [isEditing, setIsEditing] = useState(false)
         const [productId, setProductId] = useState<string | null>(null)
@@ -79,7 +79,6 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
         })
 
         const saveProduct = async (data: ProductData) => {
-            setResult(null)
             setCreating(true)
 
             try {
@@ -94,8 +93,9 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                 setCreating(false)
 
                 if (!response.ok) {
-                    setResult('Não foi possível salvar o produto :(')
+                    toast.error('Não foi possível salvar o produto :(')
                 } else {
+                    toast.success('Produto salvo com sucesso!')
                     reset()
                     router.refresh()
                     setIsEditing(false)
@@ -106,7 +106,7 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                     setDialogData({ opened: false })
                 }
             } catch (e) {
-                setResult('Não foi possível salvar o produto :(')
+                toast.error('Não foi possível salvar o produto :(')
             }
         }
 
@@ -397,11 +397,6 @@ const CreateProductDialog = React.forwardRef<CreateProductDialogHandles>(
                                         }
                                     />
                                 </div>
-                                {result && (
-                                    <p className="col-span-full w-full pt-1 text-center text-xs text-red-700">
-                                        {result}
-                                    </p>
-                                )}
                             </form>
                         )}
                     </Dialog.Panel>

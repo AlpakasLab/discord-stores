@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 import { useStoreContext } from './context'
 import {
+    FaBox,
     FaCog,
     FaHamburger,
     FaShoppingBasket,
@@ -16,6 +17,7 @@ type MenuProps = {
     isAdmin: boolean
     storeId: string
     enabledConsumption: boolean
+    enabledStock: boolean
 }
 
 type MenuItemProps = {
@@ -27,7 +29,8 @@ type MenuItemProps = {
 export default function Menu({
     isAdmin,
     storeId,
-    enabledConsumption
+    enabledConsumption,
+    enabledStock
 }: MenuProps) {
     const { isManager } = useStoreContext()
 
@@ -46,6 +49,15 @@ export default function Menu({
                         title="Consumo"
                         route={`/stores/${storeId}/consumption/`}
                         icon={<FaUtensils className="text-lg" />}
+                    />
+                </li>
+            )}
+            {enabledStock && (
+                <li>
+                    <MenuItem
+                        title="Estoque"
+                        route={`/stores/${storeId}/stock/`}
+                        icon={<FaBox className="text-lg" />}
                     />
                 </li>
             )}
