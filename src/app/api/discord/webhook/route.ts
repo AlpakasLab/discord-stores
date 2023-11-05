@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
                         db
                             .update(discordWebhooks)
                             .set({
-                                url: logs
+                                url: value
                             })
                             .where(eq(discordWebhooks.id, logsRegistered.id))
                     )
