@@ -9,7 +9,7 @@ import { authOptions } from '../auth/[...nextauth]/route'
 
 export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== 'ADMIN')
+    if (!session || session.user.role === 'SELLER')
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -35,7 +35,7 @@ export async function PUT(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== 'ADMIN' || !session.user.id)
+    if (!session || session.user.role === 'SELLER' || !session.user.id)
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }

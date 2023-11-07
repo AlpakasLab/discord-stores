@@ -55,7 +55,10 @@ export default async function StoreLayout({
                         </Link>
                         <span>/</span>
                         <Menu
-                            isAdmin={session?.user.role === 'ADMIN'}
+                            isAdmin={
+                                session?.user.role === 'ADMIN' ||
+                                session?.user.role === 'MASTER'
+                            }
                             storeId={params.id}
                             enabledConsumption={enabledConsumption}
                             enabledStock={enabledStock}

@@ -47,7 +47,8 @@ export async function getUserStores() {
                 )
             )
 
-        const userAreAdmin = session.user.role === 'ADMIN'
+        const userAreAdmin =
+            session.user.role === 'ADMIN' || session.user.role === 'MASTER'
 
         if (userAreAdmin) {
             return guilds.map(guild => {

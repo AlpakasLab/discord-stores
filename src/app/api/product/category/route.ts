@@ -9,7 +9,7 @@ import { eq } from 'drizzle-orm'
 
 export async function DELETE(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== 'ADMIN')
+    if (!session || session.user.role === 'SELLER')
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
-    if (!session || session.user.role !== 'ADMIN')
+    if (!session || session.user.role === 'SELLER')
         return NextResponse.json(
             { error: 'User not authenticated or not authorized' },
             { status: 401 }

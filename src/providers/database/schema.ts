@@ -19,7 +19,7 @@ export const users = mysqlTable('user', {
         fsp: 3
     }).defaultNow(),
     image: varchar('image', { length: 255 }),
-    role: varchar('role', { length: 6, enum: ['SELLER', 'ADMIN'] })
+    role: varchar('role', { length: 6, enum: ['SELLER', 'ADMIN', 'MASTER'] })
         .default('SELLER')
         .notNull()
 })

@@ -4,7 +4,7 @@ declare module 'next-auth' {
     interface Session {
         user: {
             id?: string
-            role?: 'SELLER' | 'ADMIN'
+            role?: 'SELLER' | 'ADMIN' | 'MASTER'
             accessToken?: string
         } & DefaultSession['user']
         error?: 'RefreshAccessTokenError'
