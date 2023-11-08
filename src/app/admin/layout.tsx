@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Notifications from '@/components/stores/notifications'
 import SessionError from '@/components/auth/session'
 import Link from 'next/link'
+import Menu from '@/components/admin/menu'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -18,7 +19,7 @@ export default async function DashboardLayout({
 }) {
     const session = await getServerSession(authOptions)
 
-    if (!session) {
+    if (!session || session.user.role !== 'MASTER') {
         redirect('/')
     }
 
@@ -60,7 +61,16 @@ export default async function DashboardLayout({
                     </div>
                 </div>
             </header>
-            {session.error ? <SessionError /> : children}
+            <div className="flex w-full flex-grow flex-col">
+                <header className="w-full border-b border-zinc-700">
+                    <div className="container hidden items-center gap-x-4 md:flex md:gap-x-8">
+                        <p className="py-2 text-base">Administração</p>
+                        <span>/</span>
+                        <Menu />
+                    </div>
+                </header>
+                {session.error ? <SessionError /> : children}
+            </div>
         </div>
     )
 }
