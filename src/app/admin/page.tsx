@@ -14,7 +14,7 @@ export default async function Admin() {
 
     return (
         <div className="container relative grid h-full w-full flex-grow grid-cols-3 py-5">
-            <div className="grid w-full grid-cols-3">
+            <div className="grid w-full grid-cols-3 gap-3">
                 <p className="col-span-full pb-4 text-lg font-semibold">
                     Lojas
                 </p>
