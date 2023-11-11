@@ -1,6 +1,7 @@
 import { db } from '@/providers/database/client'
 import { accounts, employeeRoles, employees } from '@/providers/database/schema'
 import { and, desc, eq } from 'drizzle-orm'
+import { redirect } from 'next/navigation'
 
 export async function getEmployeeRoles(store: string) {
     try {
@@ -31,6 +32,7 @@ export async function getEmployee(store: string) {
                 role: employeeRoles.name,
                 roleId: employeeRoles.id,
                 id: employees.id,
+                user: employees.userId,
                 store: employees.storeId
             })
             .from(employees)
@@ -83,9 +85,9 @@ export async function getEmployeeData(id: string, access_token?: string) {
                 comission: user.comission
             }
         } else {
-            throw new Error('Cannot get employee data')
+            redirect('/stores/')
         }
     } catch (error) {
-        throw new Error('Cannot get employee data')
+        redirect('/stores/')
     }
 }

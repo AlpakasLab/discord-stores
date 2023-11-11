@@ -71,6 +71,7 @@ const CreateEmployeeDialog = React.forwardRef<CreateEmployeeDialogHandles>(
             setRoleDefaultValue(null)
             setIsAdminRole(false)
             reset()
+            setRoles(null)
         }
 
         const saveEmployee = async (data: EmployeeData) => {

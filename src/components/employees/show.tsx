@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useRef } from 'react'
-import { FaPencilAlt } from 'react-icons/fa'
+import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa'
 import CreateEmployeeDialog, { CreateEmployeeDialogHandles } from './create'
-import { useStoreContext } from '../store/context'
+import DeleteEmployeeDialog, { DeleteEmployeeDialogHandles } from './delete'
 
 type ShowEmployeesProps = {
     employees: {
@@ -12,14 +12,18 @@ type ShowEmployeesProps = {
         role: string | null
         roleId: string | null
         id: string
+        user: string
         store: string
     }[]
+    userId: string
 }
 
-export default function ShowEmployees({ employees }: ShowEmployeesProps) {
-    const { isManager } = useStoreContext()
-
+export default function ShowEmployees({
+    employees,
+    userId
+}: ShowEmployeesProps) {
     const createEmployeeDialogRef = useRef<CreateEmployeeDialogHandles>(null)
+    const deleteEmployeeDialogRef = useRef<DeleteEmployeeDialogHandles>(null)
 
     return (
         <>
@@ -35,8 +39,11 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
                         <th className="px-1 py-2 text-base font-semibold text-zinc-400">
                             Status
                         </th>
-                        <th className="px-1 py-2 text-end text-base font-semibold text-zinc-400">
+                        <th className="px-1 py-2 text-base font-semibold text-zinc-400">
                             Editar
+                        </th>
+                        <th className="px-1 py-2 text-end text-base font-semibold text-zinc-400">
+                            Deletar
                         </th>
                     </tr>
                 </thead>
@@ -60,9 +67,8 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
                                     {employee.status === 'PENDING' &&
                                         'Pendente'}
                                 </td>
-                                <td className="py-2 pl-1 pr-2 text-end text-sm text-zinc-300">
+                                <td className="px-1 py-2 text-center text-sm text-zinc-300">
                                     <button
-                                        disabled={!isManager}
                                         type="button"
                                         onClick={() =>
                                             createEmployeeDialogRef.current?.edit(
@@ -73,12 +79,30 @@ export default function ShowEmployees({ employees }: ShowEmployeesProps) {
                                         <FaPencilAlt />
                                     </button>
                                 </td>
+                                <td className="py-2 pl-1 pr-2 text-end text-sm text-zinc-300">
+                                    <button
+                                        className="disabled:cursor-not-allowed disabled:opacity-50"
+                                        disabled={
+                                            employee.role === 'Proprietário' ||
+                                            employee.user === userId
+                                        }
+                                        type="button"
+                                        onClick={() =>
+                                            deleteEmployeeDialogRef.current?.open(
+                                                employee
+                                            )
+                                        }
+                                    >
+                                        <FaTrashAlt />
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     )}
                 </tbody>
             </table>
             <CreateEmployeeDialog ref={createEmployeeDialogRef} />
+            <DeleteEmployeeDialog ref={deleteEmployeeDialogRef} />
         </>
     )
 }
