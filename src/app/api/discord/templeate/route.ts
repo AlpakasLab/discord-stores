@@ -1,7 +1,7 @@
 import { TempleateWebHookSchema } from '@/entities/webhook'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
-import { authOptions } from '../../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { db } from '@/providers/database/client'
 import { webhooksTemplates } from '@/providers/database/schema'
 import { eq } from 'drizzle-orm'

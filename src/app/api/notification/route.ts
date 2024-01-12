@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { NotificationSchema } from '@/entities/notification'
 import { db } from '@/providers/database/client'
 import { notifications } from '@/providers/database/schema'

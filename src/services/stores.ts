@@ -2,7 +2,7 @@ import { db } from '@/providers/database/client'
 import { and, eq, inArray } from 'drizzle-orm'
 import { employees, stores } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 
 export async function getUserStores() {
     const session = await getServerSession(authOptions)

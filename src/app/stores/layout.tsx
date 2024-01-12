@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { redirect } from 'next/navigation'
 import { FaDiscord, FaGem } from 'react-icons/fa'
 import Signout from '@/components/auth/signout'

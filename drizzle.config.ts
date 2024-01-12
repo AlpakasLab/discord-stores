@@ -6,6 +6,6 @@ export default {
     out: './drizzle',
     driver: 'mysql2',
     dbCredentials: {
-        connectionString: process.env.URL_DATABASE
+        uri: process.env.URL_DATABASE
     }
 } satisfies Config

@@ -1,4 +1,4 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import NewEmployeeRole from '@/components/employees/roles/new'
 import ShowEmployeeRoles from '@/components/employees/roles/show'
 import ShowEmployees from '@/components/employees/show'

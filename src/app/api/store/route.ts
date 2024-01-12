@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 
 export async function PUT(request: NextRequest) {
     const session = await getServerSession(authOptions)

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { authOptions } from '../../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { getServerSession } from 'next-auth'
 import { db } from '@/providers/database/client'
 import { notifications } from '@/providers/database/schema'

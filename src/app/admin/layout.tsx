@@ -1,5 +1,4 @@
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth]/route'
 import { redirect } from 'next/navigation'
 import { FaDiscord, FaGem } from 'react-icons/fa'
 import Signout from '@/components/auth/signout'
@@ -8,6 +7,7 @@ import Notifications from '@/components/stores/notifications'
 import SessionError from '@/components/auth/session'
 import Link from 'next/link'
 import Menu from '@/components/admin/menu'
+import { authOptions } from '@/core/auth'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

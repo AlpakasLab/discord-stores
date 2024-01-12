@@ -1,4 +1,4 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { StoreContextProvider } from '@/components/store/context'
 import Menu from '@/components/store/menu'
 import {

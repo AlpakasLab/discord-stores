@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { OrderCreateSchema, OrderItem } from '@/entities/order'
 import { db } from '@/providers/database/client'
 import crypto from 'node:crypto'

@@ -3,7 +3,7 @@ import { productCategories, products } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { authOptions } from '../../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { ProductCategorySchema } from '@/entities/productCategory'
 import { eq } from 'drizzle-orm'
 

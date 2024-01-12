@@ -3,7 +3,7 @@ import { productsToTags, tags } from '@/providers/database/schema'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '@/core/auth'
 import { InsertTagSchema } from '@/entities/tag'
 import { eq } from 'drizzle-orm'
 
