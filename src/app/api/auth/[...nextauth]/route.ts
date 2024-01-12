@@ -1,4 +1,5 @@
 import NextAuth, { NextAuthOptions, TokenSet } from 'next-auth'
+import type { Adapter } from 'next-auth/adapters'
 import DiscordProvider from 'next-auth/providers/discord'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '@/providers/database/client'
@@ -6,7 +7,7 @@ import { getUserAccount, updateUseDiscordToken } from '@/services/user'
 import moment from 'moment'
 
 export const authOptions: NextAuthOptions = {
-    adapter: DrizzleAdapter(db),
+    adapter: DrizzleAdapter(db) as Adapter,
     providers: [
         DiscordProvider({
             clientId: process.env.DISCORD_CLIENT_ID,
