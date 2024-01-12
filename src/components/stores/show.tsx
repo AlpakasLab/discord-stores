@@ -1,6 +1,6 @@
 'use client'
 
-import { FaClock, FaCrown, FaStoreAlt } from 'react-icons/fa'
+import { FaClock, FaCrown, FaLink, FaStoreAlt } from 'react-icons/fa'
 import CreateStoreDialog, {
     CreateStoreDialogHandles
 } from '@/components/stores/create'
@@ -26,6 +26,16 @@ export default function StoresShow({ stores }: StoresShowProps) {
     return (
         <>
             <div className="grid w-full max-w-md grid-cols-1 gap-5 sm:grid-cols-2">
+                <button
+                    type="button"
+                    onClick={() => {
+                        requestEntryDialogRef.current?.open()
+                    }}
+                    className="flex items-center justify-between rounded-md bg-teal-800 p-4 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    <p className="text-lg">Código da Loja</p>
+                    <FaLink className="text-green-500" />
+                </button>
                 {React.Children.toArray(
                     stores.map(store => (
                         <button

@@ -1,5 +1,3 @@
-import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v10'
 import { db } from '@/providers/database/client'
 import { and, eq, inArray } from 'drizzle-orm'
 import { employees, stores } from '@/providers/database/schema'
@@ -16,19 +14,7 @@ export async function getUserStores() {
     )
         throw new Error('User not authenticated')
 
-    const rest = new REST({ version: '10', authPrefix: 'Bearer' }).setToken(
-        session.user.accessToken
-    )
-
     try {
-        const guilds = (await rest.get(Routes.userGuilds())) as {
-            id: string
-            name: string
-            permissions: string
-        }[]
-
-        const serversIds = guilds.map(guild => guild.id)
-
         const storesRegistred = await db
             .select({
                 name: stores.name,
@@ -38,7 +24,6 @@ export async function getUserStores() {
                 employee: employees.status
             })
             .from(stores)
-            .where(inArray(stores.serverId, serversIds))
             .leftJoin(
                 employees,
                 and(
@@ -50,26 +35,9 @@ export async function getUserStores() {
         const userAreAdmin =
             session.user.role === 'ADMIN' || session.user.role === 'MASTER'
 
-        if (userAreAdmin) {
-            return guilds.map(guild => {
-                const storeData = storesRegistred.find(
-                    item => item.server === guild.id
-                )
-
-                const haveAdministratorPermission =
-                    (Number(guild.permissions) & 0x8) === 8
-
-                return {
-                    id: storeData ? storeData.id : guild.id,
-                    name: storeData ? storeData.name : guild.name,
-                    active:
-                        storeData !== undefined && storeData.active === true,
-                    administrator: haveAdministratorPermission && userAreAdmin,
-                    employee: null
-                }
-            })
-        } else {
-            return storesRegistred.map(store => {
+        return storesRegistred
+            .filter(store => store.employee !== null)
+            .map(store => {
                 return {
                     id: store.id,
                     name: store.name,
@@ -77,11 +45,10 @@ export async function getUserStores() {
                         store.employee === 'DISABLED'
                             ? false
                             : store.active === true,
-                    administrator: false,
+                    administrator: userAreAdmin,
                     employee: store.employee
                 }
             })
-        }
     } catch (error) {
         throw new Error('Cannot get user guilds')
     }

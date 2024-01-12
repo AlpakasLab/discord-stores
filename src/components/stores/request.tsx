@@ -11,7 +11,7 @@ import Button from '../inputs/button'
 import { RequestEntryData, RequestEntrySchema } from '@/entities/store'
 
 export type RequestEntryDialogHandles = {
-    open: (id: string) => void
+    open: (id?: string) => void
 }
 
 const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
@@ -33,8 +33,10 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
 
         const [dialogData, setDialogData] = useState<{
             opened: boolean
+            hasServer: boolean
         }>({
-            opened: false
+            opened: false,
+            hasServer: false
         })
 
         const requestEntry = async (data: RequestEntryData) => {
@@ -55,7 +57,7 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
                 if (!response.ok) {
                     setResult('Não foi possível solicitar a entrada :(')
                 } else {
-                    setDialogData({ opened: false })
+                    setDialogData({ opened: false, hasServer: false })
                     reset()
                     router.refresh()
                 }
@@ -67,10 +69,18 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
         useImperativeHandle(ref, () => {
             return {
                 open(id) {
-                    setDialogData({
-                        opened: true
-                    })
-                    setValue('server', id)
+                    if (id) {
+                        setDialogData({
+                            opened: true,
+                            hasServer: true
+                        })
+                        setValue('server', id)
+                    } else {
+                        setDialogData({
+                            opened: true,
+                            hasServer: false
+                        })
+                    }
                 }
             }
         })
@@ -80,7 +90,8 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
                 open={dialogData.opened}
                 onClose={() => {
                     setDialogData({
-                        opened: false
+                        opened: false,
+                        hasServer: false
                     })
                 }}
                 className="relative z-50"
@@ -96,6 +107,16 @@ const RequestEntryDialog = React.forwardRef<RequestEntryDialogHandles>(
                             onSubmit={handleSubmit(requestEntry)}
                             className="flex w-full flex-col gap-5"
                         >
+                            {!dialogData.hasServer && (
+                                <TextInput
+                                    {...register('server')}
+                                    label="Código:"
+                                    type="text"
+                                    autoComplete="none"
+                                    placeholder="5980b2b3-03e3-4166-b7a1-13d131dcd48a"
+                                    error={errors.name?.message}
+                                />
+                            )}
                             <TextInput
                                 {...register('name')}
                                 label="Nome:"

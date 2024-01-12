@@ -40,6 +40,7 @@ export const RequestEntrySchema = z.object({
             required_error: 'Campo obrigatório',
             invalid_type_error: 'Escolha um servidor válido'
         })
+        .uuid('Digite um código válido')
         .nonempty('Campo obrigatório')
 })
 

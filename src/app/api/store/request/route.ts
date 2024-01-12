@@ -1,6 +1,6 @@
 import { RequestEntrySchema } from '@/entities/store'
 import { db } from '@/providers/database/client'
-import { discordWebhooks, employees } from '@/providers/database/schema'
+import { discordWebhooks, employees, stores } from '@/providers/database/schema'
 import { and, eq } from 'drizzle-orm'
 import { getServerSession } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
@@ -20,6 +20,18 @@ export async function POST(request: NextRequest) {
     const parsedBody = RequestEntrySchema.safeParse(data)
 
     if (parsedBody.success) {
+        const storeRegisters = await db
+            .select({ id: stores.id })
+            .from(stores)
+            .where(eq(stores.id, parsedBody.data.server))
+        const store = storeRegisters.at(0)
+        if (!store || store.id !== parsedBody.data.server) {
+            return NextResponse.json(
+                { error: 'Invalidy store' },
+                { status: 400 }
+            )
+        }
+
         const hooksRegistred = await db
             .select({
                 url: discordWebhooks.url
