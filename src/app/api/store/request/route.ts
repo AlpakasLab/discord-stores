@@ -21,14 +21,28 @@ export async function POST(request: NextRequest) {
 
     if (parsedBody.success) {
         const storeRegisters = await db
-            .select({ id: stores.id })
+            .select({ id: stores.id, employee: employees.status })
             .from(stores)
             .where(eq(stores.id, parsedBody.data.server))
+            .leftJoin(
+                employees,
+                and(
+                    eq(employees.storeId, stores.id),
+                    eq(employees.userId, session.user.id)
+                )
+            )
         const store = storeRegisters.at(0)
         if (!store || store.id !== parsedBody.data.server) {
             return NextResponse.json(
                 { error: 'Invalidy store' },
                 { status: 400 }
+            )
+        }
+
+        if (store.employee !== null) {
+            return NextResponse.json(
+                { error: 'Already is employee' },
+                { status: 401 }
             )
         }
 
